@@ -9,17 +9,16 @@ namespace Cyh.Modules.ModPager
     /// <typeparam name="T">要分頁的資料</typeparam>
     public class MyPageList<T> : IPageList
     {
-        delegate IPage FnCreateNewPage();
-        FnCreateNewPage _Callback_CreateNewPage;
-
-        int _PageCapacity;
+        private delegate IPage FnCreateNewPage();
+        private FnCreateNewPage _Callback_CreateNewPage;
+        private int _PageCapacity;
 
         /// <summary>
         /// 建立新頁面的函數
         /// </summary>
         /// <typeparam name="U"></typeparam>
         /// <returns></returns>
-        static IPage __Impl_CreateNewPage<U>() where U : class, IPage, new() {
+        private static IPage __Impl_CreateNewPage<U>() where U : class, IPage, new() {
             return new U();
         }
 

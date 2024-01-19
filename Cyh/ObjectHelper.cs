@@ -2,6 +2,9 @@
 
 namespace Cyh
 {
+    /// <summary>
+    /// 物件操作的 Helper
+    /// </summary>
     public static partial class ObjectHelper
     {
         delegate T? FnForceCast<T>(object? obj);

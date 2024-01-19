@@ -28,6 +28,9 @@ namespace Cyh.EFCore
 
         public Type DataType => typeof(TEntity);
 
+        /// <summary>
+        /// 當前資料來源的資料筆數
+        /// </summary>
         public int Count => this.Entities?.Count() ?? 0;
 
         public IDataTransResult EmptyResult => new DbTransResult();
