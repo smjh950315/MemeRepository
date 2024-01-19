@@ -121,6 +121,7 @@ namespace Cyh.MyException
         public MyArgumentException(params ArgumentDetail[] args) {
             if (args.IsNullOrEmpty()) return;
             ArgumentDetails.AddRange(args);
+            Console.WriteLine("ArgumentException: " + GetDetailString() + DateTime.Now.ToString());
         }
     }
 }
