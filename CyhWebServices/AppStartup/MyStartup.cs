@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Cyh.WebServices.AppStartup
@@ -89,7 +88,7 @@ namespace Cyh.WebServices.AppStartup
 
             MyStartup.UseCookie = true;
         }
-     
+
         /// <summary>
         /// 註冊 IIS 選項
         /// </summary>
@@ -166,7 +165,7 @@ namespace Cyh.WebServices.AppStartup
                 throw new MyArgumentException(ArgumentDetail.NewDetails<IServiceCollection>("startup.Services"));
 
             startup.Services?.AddEndpointsApiExplorer();
-            if(setupAction != null) {
+            if (setupAction != null) {
                 startup.Services.AddSwaggerGen(setupAction);
             } else {
                 startup.Services.AddSwaggerGen();

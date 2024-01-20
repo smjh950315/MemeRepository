@@ -52,7 +52,7 @@ namespace MemeRepository.Controllers
         [Route("tag/get_ids")]
         [HttpGet]
         public IEnumerable<long> GetTagIds() {
-            if(!AllAccesserIsValid)
+            if (!AllAccesserIsValid)
                 return Enumerable.Empty<long>();
 
             return TagAccesser?.TryGetDatasAs(x => x.ID) ?? Enumerable.Empty<long>();

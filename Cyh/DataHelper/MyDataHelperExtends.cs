@@ -49,7 +49,7 @@ namespace Cyh.DataHelper
         public static bool TryAddOrUpdateSingleT<T>(this IWritableDataAccesser<T> writable,
             object? dataInputs) {
 
-            if (writable == null || dataInputs == null) 
+            if (writable == null || dataInputs == null)
                 return false;
 
             try {
@@ -69,10 +69,10 @@ namespace Cyh.DataHelper
         /// <typeparam name="T"></typeparam>
         /// <returns>可查詢數</returns>
         public static int Count<T>(this IReadOnlyDataAccesser<T> src) {
-            if (src == null) 
+            if (src == null)
                 return 0;
 
-            if (src.Queryable == null) 
+            if (src.Queryable == null)
                 return 0;
 
             return src.Queryable.Count();
@@ -149,7 +149,7 @@ namespace Cyh.DataHelper
             try {
                 var filterT = filter as Expression<Func<T, bool>>;
 
-                if (filterT == null) 
+                if (filterT == null)
                     return Enumerable.Empty<T>();
 
                 return src?.Queryable?.Where(filterT).Skip(indexBegin).Take(count) ?? Enumerable.Empty<T>();
@@ -179,7 +179,7 @@ namespace Cyh.DataHelper
             try {
                 var filterT = filter as Expression<Func<T, bool>>;
 
-                if (filterT == null) 
+                if (filterT == null)
                     return default;
 
                 return src.Queryable.Where(filterT).FirstOrDefault();

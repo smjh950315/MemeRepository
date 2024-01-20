@@ -217,7 +217,7 @@ namespace Cyh.Modules.ModForm
 
     public static partial class FormModExtends
     {
-        public static TOut? GetMainFormAs<TForm,TOut>(this IFormManager<TForm>? formManager,
+        public static TOut? GetMainFormAs<TForm, TOut>(this IFormManager<TForm>? formManager,
             Expression<Func<TForm, TOut>>? selector,
             Expression<Func<TForm, bool>>? expression) {
             if (!formManager.SourceIsValid())

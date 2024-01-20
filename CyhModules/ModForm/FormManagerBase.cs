@@ -33,7 +33,7 @@ namespace Cyh.Modules.ModForm
     /// <typeparam name="MFEntity">表單的模型</typeparam>
     public abstract class FormManagerBase<MFEntity> : FormManagerBase, IFormManager<MFEntity>
     {
-        public IMyDataAccesser<MFEntity>? MainFormSource { get; set; }       
+        public IMyDataAccesser<MFEntity>? MainFormSource { get; set; }
     }
 
     /// <summary>

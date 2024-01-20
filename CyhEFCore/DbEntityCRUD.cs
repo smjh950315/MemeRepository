@@ -58,7 +58,7 @@ namespace Cyh.EFCore
         }
 
         public IDataTransResult TryAddOrUpdate(IEnumerable<TEntity> dataInput) {
-            if (!this.IsAccessable) 
+            if (!this.IsAccessable)
                 return this.EmptyResult;
 
             var result = this.EmptyResult;

@@ -66,7 +66,8 @@ namespace Cyh.MyException
         /// <param name="isNull">是否為 null</param>
         /// <returns>參數資訊</returns>
         static public ArgumentDetail NewDetails<T>(string para_name, bool isNull = true) {
-            ArgumentDetail res = new() {
+            ArgumentDetail res = new()
+            {
                 TypeName = typeof(T).Name,
                 ArgumentName = para_name,
                 IsNull = isNull

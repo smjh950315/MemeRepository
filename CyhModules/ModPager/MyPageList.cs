@@ -37,7 +37,8 @@ namespace Cyh.Modules.ModPager
         /// <returns>新建立的分頁清單</returns>
         public static MyPageList<T> CreatePageList<U>(int pageCapacity) where U : class, IPage, new() {
 
-            MyPageList<T> ret = new() {
+            MyPageList<T> ret = new()
+            {
                 _PageCapacity = pageCapacity,
                 _Callback_CreateNewPage = __Impl_CreateNewPage<U>
             };

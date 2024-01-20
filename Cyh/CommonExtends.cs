@@ -122,7 +122,7 @@ namespace Cyh
         /// </summary>
         /// <param name="val_if_null">null 時要回傳的結果</param>
         /// <returns>最終結果</returns>
-        public static bool NullOr(this bool? val, bool val_if_null) {            
+        public static bool NullOr(this bool? val, bool val_if_null) {
             return val == null ? val_if_null : (bool)val;
         }
 

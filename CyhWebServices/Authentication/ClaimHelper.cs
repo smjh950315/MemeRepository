@@ -68,7 +68,8 @@ namespace Cyh.WebServices.Authentication
         /// </summary>
         public static AuthenticationProperties DefaultProperties {
             get {
-                return new AuthenticationProperties {
+                return new AuthenticationProperties
+                {
                     AllowRefresh = true,
                     IsPersistent = true,
                     ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
@@ -113,8 +114,8 @@ namespace Cyh.WebServices.Authentication
 
                 foreach (var claim in claimed) {
                     _Identity.RemoveClaim(claim);
-                }                    
-                
+                }
+
                 _Identity.AddClaims((List<Claim>)Claims);
                 return _Identity;
             }

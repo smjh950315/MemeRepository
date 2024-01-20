@@ -1,0 +1,61 @@
+# 参考自 https://learn.microsoft.com/zh-cn/dotnet/fundamentals/code-analysis/style-rules/csharp-formatting-options
+
+root = true
+
+
+
+[*]
+indent_style = space
+charset = utf-8
+
+
+
+[*.cs]
+indent_size = 4
+tab_width = 4
+# if (...) {
+#     ...
+# }
+csharp_new_line_before_open_brace = object_collection_array_initializers, types
+# if (...) {
+#     ...
+# } else {
+#     ...
+# }
+csharp_new_line_before_else = false
+# try {
+#     ...
+# } catch (Exception e) {
+#     ...
+# }
+csharp_new_line_before_catch = false
+# try {
+#     ...
+# } catch (Exception e) {
+#     ...
+# } finally {
+#     ...
+# }
+csharp_new_line_before_finally = false
+
+# var z = new B()
+# {
+#     A = 3,
+#     B = 4
+# }
+csharp_new_line_before_members_in_object_initializers = true
+
+# var z = new
+# {
+#     A = 3,
+#     B = 4
+# }
+csharp_new_line_before_members_in_anonymous_types = true
+
+# var q = from a in e
+#         from b in e
+#         select a * b;
+csharp_new_line_between_query_expression_clauses = true
+
+# 错误提示
+dotnet_diagnostic.IDE0055.severity = error

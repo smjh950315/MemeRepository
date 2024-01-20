@@ -58,7 +58,7 @@ namespace Cyh
         /// <param name="_objs">驗證的資料</param>
         /// <returns>是否包含空值</returns>
         public static bool HasNull([NotNullWhen(false)] params object?[] _objs) {
-            if (_objs == null) 
+            if (_objs == null)
                 return true;
             foreach (var obj in _objs) {
                 if (obj == null)

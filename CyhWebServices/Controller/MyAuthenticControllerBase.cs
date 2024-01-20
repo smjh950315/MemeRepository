@@ -31,8 +31,8 @@ namespace Cyh.WebServices.Controller
         /// 驗證器是否都有效
         /// </summary>
         public bool ValidatorIsReady {
-            get => this.SignInHelper != null 
-                && this.UserValidator != null 
+            get => this.SignInHelper != null
+                && this.UserValidator != null
                 && this.RoleValidator != null;
         }
 

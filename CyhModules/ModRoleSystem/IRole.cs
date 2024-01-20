@@ -14,6 +14,5 @@
         /// 規則的名稱
         /// </summary>
         public string NAME { get; set; }
-
     }
 }

@@ -8,8 +8,7 @@ namespace Cyh.EFCore
         /// <summary>
         /// 用 DbContext 初始化要使用的 Entity
         /// </summary>
-        public static DbSet<TEntity>? GetDbSet<TEntity>(this IDbQuery dbQuery) where TEntity : class
-        {
+        public static DbSet<TEntity>? GetDbSet<TEntity>(this IDbQuery dbQuery) where TEntity : class {
 #if DEBUG
             return dbQuery._Context?.Set<TEntity>();
 #else
@@ -19,16 +18,14 @@ namespace Cyh.EFCore
         /// <summary>
         /// 用 DbContext 初始化要使用的 Entity
         /// </summary>
-        public static DbSet<TEntity>? GetDbSet<TEntity>(this IDbQuery dbQuery, ref object? dst) where TEntity : class
-        {
+        public static DbSet<TEntity>? GetDbSet<TEntity>(this IDbQuery dbQuery, ref object? dst) where TEntity : class {
             dst = dbQuery.GetDbSet<TEntity>(); return dst as DbSet<TEntity>;
         }
 
         /// <summary>
         /// 用 DbContext 初始化要使用的 Entity
         /// </summary>
-        public static DbSet<TInterface>? GetDbSet<TInterface, TEntity>(this IDbQuery dbQuery, ref object? dst) where TInterface : class where TEntity : class, TInterface
-        {
+        public static DbSet<TInterface>? GetDbSet<TInterface, TEntity>(this IDbQuery dbQuery, ref object? dst) where TInterface : class where TEntity : class, TInterface {
             return dbQuery.GetDbSet<TEntity>(ref dst) as DbSet<TInterface>;
         }
 

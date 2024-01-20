@@ -6,13 +6,11 @@ namespace Cyh.WebServices.AppStartup
 {
     public class ServiceConfigurator
     {
-        public static void Configuration(ref IServiceCollection _Services, IWebAppConfigurations _AppConf)
-        {
+        public static void Configuration(ref IServiceCollection _Services, IWebAppConfigurations _AppConf) {
             IRouteSettings _Route = _AppConf.RouteSettings;
             ICookieAuthenticOptions _Cookie = _AppConf.CookieAuthenticOptions;
             _Services.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
-              .Configure<Microsoft.AspNetCore.DataProtection.IDataProtectionProvider>((options, dp) =>
-              {
+              .Configure<Microsoft.AspNetCore.DataProtection.IDataProtectionProvider>((options, dp) => {
                   options.LoginPath = _Route.Login;
                   options.LogoutPath = _Route.Logout;
                   options.AccessDeniedPath = _Route.AccessDenied;
@@ -38,6 +36,5 @@ namespace Cyh.WebServices.AppStartup
             _Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
         }
-
     }
 }

@@ -1,17 +1,20 @@
 ﻿using Cyh.DataHelper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyh.Modules.ModViewData
 {
     public static partial class ViewDataExtends
     {
+        /// <summary>
+        /// 用條件取得 ViewModel
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel的類型</typeparam>
+        /// <typeparam name="TDataModel">資料來源物件的類型</typeparam>
+        /// <typeparam name="IModel">ViewModel與資料來源共同的介面</typeparam>
+        /// <param name="expression">條件式</param>
+        /// <returns>取得的ViewModel</returns>
         public static TViewModel? GetViewModel<TViewModel, TDataModel, IModel>(
-            this IViewModelGetter<TViewModel, TDataModel, IModel> viewModelGetter,
+            this IViewModelGetter<TDataModel, IModel> viewModelGetter,
             Expression<Func<TDataModel, bool>>? expression
             )
             where TViewModel : IModel, ISelectableDataModel<TViewModel, IModel>, new()
@@ -22,11 +25,19 @@ namespace Cyh.Modules.ModViewData
 
             TViewModel t = new();
 
-            return viewModelGetter.DataAccesser.TryGetDataAs(t.GetSelector<TDataModel>(), expression);
+            return viewModelGetter.GetDataSource().TryGetDataAs(t.GetSelector<TDataModel>(), expression);
         }
 
+        /// <summary>
+        /// 用條件取得所有符合條件的 ViewModel
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel的類型</typeparam>
+        /// <typeparam name="TDataModel">資料來源物件的類型</typeparam>
+        /// <typeparam name="IModel">ViewModel與資料來源共同的介面</typeparam>
+        /// <param name="expression">條件式</param>
+        /// <returns>取得的ViewModel集合</returns>
         public static IEnumerable<TViewModel> GetViewModels<TViewModel, TDataModel, IModel>(
-            this IViewModelGetter<TViewModel, TDataModel, IModel> viewModelGetter,
+            this IViewModelGetter<TDataModel, IModel> viewModelGetter,
             Expression<Func<TDataModel, bool>>? expression
             )
             where TViewModel : IModel, ISelectableDataModel<TViewModel, IModel>, new()
@@ -37,7 +48,7 @@ namespace Cyh.Modules.ModViewData
 
             TViewModel t = new();
 
-            return viewModelGetter.DataAccesser.TryGetDatasAs(t.GetSelector<TDataModel>(), expression) ?? Enumerable.Empty<TViewModel>();
+            return viewModelGetter.GetDataSource().TryGetDatasAs(t.GetSelector<TDataModel>(), expression) ?? Enumerable.Empty<TViewModel>();
         }
     }
 }
