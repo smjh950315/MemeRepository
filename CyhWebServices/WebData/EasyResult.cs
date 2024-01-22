@@ -1,14 +1,29 @@
 ﻿
 namespace Cyh.WebServices.WebData
 {
+    /// <summary>
+    /// 簡化的回傳結果
+    /// </summary>
     public class EasyResult
     {
+        /// <summary>
+        /// 是否成功
+        /// </summary>
         public bool Succeed { get; set; }
 
+        /// <summary>
+        /// 結果標題("成功","失敗")
+        /// </summary>
         public string Result => Succeed ? "成功" : "失敗";
 
+        /// <summary>
+        /// 訊息(如果有)
+        /// </summary>
         public string Message { get; set; }
 
+        /// <summary>
+        /// 其他資訊(如果有)
+        /// </summary>
         public List<object> Details { get; set; }
 
         public EasyResult() {

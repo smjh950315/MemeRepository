@@ -1,4 +1,5 @@
-﻿using System.Collections;
+using Cyh.Common;
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Cyh
@@ -127,12 +128,12 @@ namespace Cyh
         }
 
         /// <summary>
-        /// 加入集合到 List
+        /// 取得例外狀況的詳細資訊
         /// </summary>
-        /// <typeparam name="T">集合的資料類型</typeparam>
-        /// <param name="values">資料集合</param>
-        public static void Adds<T>(this List<T> list, params T[] values) {
-            list.AddRange(values);
+        /// <param name="exception">內建的例外狀況</param>
+        /// <returns>詳細資訊</returns>
+        public static ExceptionDetails GetDetails(this Exception? exception) {
+            return new(exception);
         }
     }
 }

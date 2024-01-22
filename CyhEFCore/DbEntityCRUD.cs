@@ -1,6 +1,7 @@
-﻿using Cyh.DataHelper;
+using Cyh.DataHelper;
 using Cyh.EFCore.Interface;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace Cyh.EFCore
 {
@@ -51,32 +52,27 @@ namespace Cyh.EFCore
 #pragma warning restore CS8602
                 return true;
             } catch (Exception ex) {
-                this.ExceptionHandler(ex);
+                this.HandleException(ex);
                 return false;
             }
-
         }
 
         public IDataTransResult TryAddOrUpdate(IEnumerable<TEntity> dataInput) {
             if (!this.IsAccessable)
                 return this.EmptyResult;
-
             var result = this.EmptyResult;
-
             foreach (var data in dataInput) {
 #pragma warning disable CS8602
                 this.Entities.Update(data);
-
                 result.TotalTransCount++;
                 try {
                     this._Context.SaveChanges();
                     result.SucceedTransCount++;
                 } catch (Exception ex) {
-                    this.ExceptionHandler(ex);
+                    this.HandleException(ex);
                 }
 #pragma warning restore CS8602
             }
-
             return result;
         }
 
@@ -84,9 +80,10 @@ namespace Cyh.EFCore
             return this.TryAddOrUpdateSingleT(dataInput);
         }
 
-        public virtual void ExceptionHandler(Exception? exception) {
-            //throw new NotImplementedException();
+        public virtual void HandleException(Exception? exception) {
+            if (exception == null)
+                return;
+            Console.WriteLine(exception.GetDetails().ToString());
         }
     }
-
 }

@@ -1,4 +1,5 @@
 ﻿using Cyh.EFCore.Interface;
+using Cyh.Modules.ModAuthentication;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.AppStartup;
 using MemeRepository.Db.Accesser;
@@ -15,6 +16,10 @@ namespace MemeRepository
     {
         public string ApplicationName => "MemeRepository";
 
+        public ICookieAuthenticOptions CookieAuthenticOptions { get; }
+        public ILoginOptions LoginOptions { get; }
+        public IRouteSettings RouteSettings { get; }
+        public IViewSettings ViewSettings { get; }
     }
     public class Startup : Cyh.WebServices.AppStartup.MyStartup
     {
@@ -38,14 +43,19 @@ namespace MemeRepository
             // FormOptions
             // Authentic(Cookie)
 
+            services.AddExceptionHandler(e=>{
+                e.ExceptionHandlingPath = "/Error";
+                e.AllowStatusCode404Response = true;
+            });
+
             this.RegisterControllerService();
 
             this.RegisterDefaultCORSPolicy(c => c.AllowAnyOrigin());
 
-            this.RegisterIISOptions(iis => {
-                iis.ForwardClientCertificate = false;
-                iis.AutomaticAuthentication = false;
-            });
+            // this.RegisterIISOptions(iis => {
+            //     iis.ForwardClientCertificate = false;
+            //     iis.AutomaticAuthentication = false;
+            // });
 
             this.RegisterSwagger(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });

@@ -11,9 +11,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cyh.Modules", "CyhModules\C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cyh.WebServices", "CyhWebServices\Cyh.WebServices.csproj", "{EC497A26-46F3-401C-BB49-2FADFF2F0D00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemeRepository", "MemeRepository\MemeRepository.csproj", "{EAC9B433-B2BD-4E07-8735-8EC16BB5412F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MemeRepository", "MemeRepository\MemeRepository.csproj", "{EAC9B433-B2BD-4E07-8735-8EC16BB5412F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MemeRepository.Db", "MemeRepositoryDb\MemeRepository.Db.csproj", "{6446CBEE-DDE0-4AA6-967F-5E4B891295C7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "方案項目", "方案項目", "{959AD515-BDA5-47C6-BBAD-DECFA4ABA5DE}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

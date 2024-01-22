@@ -1,4 +1,4 @@
-﻿using Cyh.DataHelper;
+using Cyh.DataHelper;
 
 namespace Cyh.EFCore
 {
@@ -11,6 +11,7 @@ namespace Cyh.EFCore
         /// 交易的總數
         /// </summary>
         public int TotalTransCount { get; set; }
+
         /// <summary>
         /// 交易成功數
         /// </summary>

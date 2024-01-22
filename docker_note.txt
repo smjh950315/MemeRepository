@@ -1,0 +1,13 @@
+# 用 dockerfile 建立 image
+指令:docker build -t [要建立的 image 名稱] [腳本的相對目錄]
+範例:docker build -t memerepository .
+
+# 讓 docker 在指定 bridge 建立 container
+指令:docker run --net [指定 bridge] -p 8091:80 [要使用的的 image]
+範例:docker run --net sqlserver_default -p 8091:80 memerepository
+
+# 列出使用中的 bridge
+指令:docker network ls
+
+# 觀察指定的 network bridge
+指令:docker inspect [bridge 名稱]

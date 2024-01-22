@@ -8,21 +8,21 @@
         /// <summary>
         /// 是否記住此認證
         /// </summary>
-        public bool IsPersist { get; }
+        bool IsPersist { get; }
 
         /// <summary>
         /// 是否允許F5
         /// </summary>
-        public bool AllowRefresh { get; }
+        bool AllowRefresh { get; }
 
         /// <summary>
         /// 認證有效期限
         /// </summary>
-        public uint ExpireTime { get; }
+        uint ExpireTime { get; }
 
         /// <summary>
         /// 登入用的 Model
         /// </summary>
-        public ILoginModel LoginModel { get; }
+        ILoginModel LoginModel { get; }
     }
 }

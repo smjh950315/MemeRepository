@@ -5,10 +5,10 @@
     /// </summary>
     public interface IViewSettings
     {
-        public string Title_CurrentUser => "目前使用者: ";
-        public string Title_Default { get; }
-        public bool Display_LoginState { get; }
-        public bool Display_AppTitle { get; }
-        public bool Display_ActionName => false;
+        string Title_CurrentUser { get; }
+        string Title_Default { get; }
+        bool Display_LoginState { get; }
+        bool Display_AppTitle { get; }
+        bool Display_ActionName { get; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 
@@ -15,7 +15,7 @@ namespace Cyh
         /// 對內建 Exception 要處理的方法，可以透過 FuncHandleException 設定
         /// </summary>
         /// <param name="ex">Exception 物件</param>
-        internal static void HandleException(Exception? ex) {
+        public static void HandleException(Exception? ex) {
             if (ex != null && FuncHandleException != null) { FuncHandleException(ex); }
         }
 
@@ -27,11 +27,14 @@ namespace Cyh
         /// <param name="_return_if_exception">發生例外時要回傳的值</param>
         /// <param name="_objs">其餘的參數</param>
         /// <returns>返回的值</returns>
-        public static T? TryGetValue<T>(CommonFuncType.FnGetValue<T> _fn, T? _return_if_exception, params object?[] _objs) {
+        public static T? TryGetValue<T>(CommonFuncType.FnGetValue<T> _fn, T? _return_if_exception, Exception? cust_exception = null) {
             try {
-                return _fn(_objs);
+                return _fn();
             } catch (Exception ex) {
-                HandleException(ex);
+                if (cust_exception != null)
+                    HandleException(cust_exception);
+                else
+                    HandleException(ex);
                 return _return_if_exception;
             }
         }
@@ -42,12 +45,15 @@ namespace Cyh
         /// <param name="_fn">要執行的函數</param>
         /// <param name="_objs">其餘的參數</param>
         /// <returns>是否發生例外</returns>
-        public static bool TryExecute(CommonFuncType.FnNoReturn _fn, params object?[] _objs) {
+        public static bool TryExecute(CommonFuncType.FnNoReturn _fn, Exception? cust_exception = null) {
             try {
-                _fn(_objs);
+                _fn();
                 return true;
             } catch (Exception ex) {
-                HandleException(ex);
+                if (cust_exception != null)
+                    HandleException(cust_exception);
+                else
+                    HandleException(ex);
                 return false;
             }
         }

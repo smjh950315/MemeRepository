@@ -1,4 +1,4 @@
-﻿namespace Cyh.DataHelper
+namespace Cyh.DataHelper
 {
     /// <summary>
     /// 資料寫入器
@@ -28,10 +28,10 @@
         bool TryAddOrUpdateSingle(object? dataInput);
 
         /// <summary>
-        /// 處理例外的方法
+        /// 處理例外
         /// </summary>
         /// <param name="exception"></param>
-        void ExceptionHandler(Exception? exception);
+        void HandleException(Exception? exception);
     }
 
     /// <summary>

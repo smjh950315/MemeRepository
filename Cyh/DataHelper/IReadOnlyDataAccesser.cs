@@ -1,4 +1,4 @@
-﻿namespace Cyh.DataHelper
+namespace Cyh.DataHelper
 {
     /// <summary>
     /// 資料讀取器
@@ -15,6 +15,11 @@
         /// </summary>
         bool IsAccessable { get; }
 
+        /// <summary>
+        /// 處理例外
+        /// </summary>
+        /// <param name="exception"></param>
+        void HandleException(Exception? exception);
     }
 
     /// <summary>
@@ -27,6 +32,5 @@
         /// 資料源查詢的介面
         /// </summary>
         IQueryable<T>? Queryable { get; }
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Cyh.MyException;
 using Cyh.WebServices.AppConfigs;
+using Cyh.WebServices.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -65,7 +66,7 @@ namespace Cyh.WebServices.AppStartup
                     options.LogoutPath = route.Logout;
                     options.AccessDeniedPath = route.AccessDenied;
                     options.ReturnUrlParameter = route.ReturnUrlParameter;
-                    options.Cookie.MaxAge = cookie.MaxCookieAge;
+                    options.Cookie.MaxAge = cookie.MaxCookieAge();
                     options.SlidingExpiration = cookie.SlidingExpiration;
                     options.Cookie.Name = cookie.Name;
                     options.Cookie.Path = cookie.Path;

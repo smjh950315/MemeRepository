@@ -1,6 +1,8 @@
-﻿using Cyh.WebServices.Controller;
+﻿using Cyh.WebServices.AppConfigs;
+using Cyh.WebServices.Controller;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cyh.WebServices.Authentication
@@ -73,6 +75,25 @@ namespace Cyh.WebServices.Authentication
             }
             //新舊ID相同且不選擇必須重登選項，無須再進行登入
             return false;
+        }
+
+        /// <summary>
+        /// 取得 Cookie 的最大生命週期
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static TimeSpan MaxCookieAge(this ICookieAuthenticOptions options) {
+            return TimeSpan.FromSeconds(options.CookieAge);
+        }
+
+        /// <summary>
+        /// 不知道幹嘛的，大概是資料安全相關的格式
+        /// </summary>
+        /// <param name="dataProtectProvider">An interface that can be used to create <see cref="IDataProtector"/> instances</param>
+        /// <returns>資料安全相關的格式設定</returns>
+        public static ISecureDataFormat<AuthenticationTicket> TicketDataFormat(this ICookieAuthenticOptions options, IDataProtectionProvider dataProtectProvider) {
+            var dataProtecter = dataProtectProvider.CreateProtector(CookieAuthenticationDefaults.AuthenticationScheme);
+            return new TicketDataFormat(dataProtecter);
         }
     }
 }
