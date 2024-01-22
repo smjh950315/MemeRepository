@@ -1,7 +1,7 @@
 using Cyh.Modules.ModAuthentication;
 using Cyh.WebServices.AppConfigs;
 
-namespace WebMain.AppConfigs
+namespace MemeRepository.AppConfigs
 {
     public class AppConfigurations : AppConfigurationBase
     {

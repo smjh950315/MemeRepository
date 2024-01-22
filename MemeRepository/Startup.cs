@@ -1,5 +1,4 @@
 ﻿using Cyh.EFCore.Interface;
-using Cyh.Modules.ModAuthentication;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.AppStartup;
 using MemeRepository.Db.Accesser;
@@ -12,15 +11,6 @@ using System.Reflection;
 
 namespace MemeRepository
 {
-    public class AppConfigurations : IWebAppConfigurations
-    {
-        public string ApplicationName => "MemeRepository";
-
-        public ICookieAuthenticOptions CookieAuthenticOptions { get; }
-        public ILoginOptions LoginOptions { get; }
-        public IRouteSettings RouteSettings { get; }
-        public IViewSettings ViewSettings { get; }
-    }
     public class Startup : Cyh.WebServices.AppStartup.MyStartup
     {
         public override IWebAppConfigurations AppConfigurations { get; set; }
@@ -32,7 +22,7 @@ namespace MemeRepository
 #pragma warning restore CS8618
 
         public override void ConfigureServices(IServiceCollection services) {
-            this.SetServiceSource<AppConfigurations>(services);
+            this.SetServiceSource<AppConfigs.AppConfigurations>(services);
 
             // 可用的部分:
             // UseControllers

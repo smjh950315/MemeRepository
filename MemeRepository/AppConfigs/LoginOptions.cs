@@ -1,6 +1,6 @@
 using Cyh.Modules.ModAuthentication;
 
-namespace WebMain.AppConfigs
+namespace MemeRepository.AppConfigs
 {
     public class LoginModel : ILoginModel
     {
