@@ -186,7 +186,8 @@ namespace Cyh.WebServices.AppStartup
         public IServiceCollection? Services { get; private set; }
         public IConfiguration? Configuration { get; }
 
-        public abstract IWebAppConfigurations AppConfigurations { get; set; }
+        public abstract IWebAppConfigurations AppConfigurations { get; }
+
         /// <summary>
         /// Startup 類需要的函數，注入用的地方
         /// </summary>
@@ -214,6 +215,11 @@ namespace Cyh.WebServices.AppStartup
             this.Services.AddScoped<IWebAppConfigurations, T>();
 
             Callback_AddConfigsToAppBuilder = AddAdditionalConfigs;
+
+            this.Services.AddExceptionHandler(e => {
+                e.ExceptionHandlingPath = "/Error";
+                e.AllowStatusCode404Response = true;
+            });
         }
 
         public static void SetStartupRequirements(IApplicationBuilder app, IWebHostEnvironment env) {

@@ -13,7 +13,7 @@ namespace MemeRepository
 {
     public class Startup : Cyh.WebServices.AppStartup.MyStartup
     {
-        public override IWebAppConfigurations AppConfigurations { get; set; }
+        public override IWebAppConfigurations AppConfigurations { get; }
 
 #pragma warning disable CS8618
         public Startup(IConfiguration configuration) : base(configuration) {
@@ -32,11 +32,6 @@ namespace MemeRepository
             // SignalR
             // FormOptions
             // Authentic(Cookie)
-
-            services.AddExceptionHandler(e=>{
-                e.ExceptionHandlingPath = "/Error";
-                e.AllowStatusCode404Response = true;
-            });
 
             this.RegisterControllerService();
 

@@ -14,5 +14,20 @@
         /// 成功交易的筆數
         /// </summary>
         int SucceedTransCount { get; set; }
+
+        /// <summary>
+        /// 交易開始的時間
+        /// </summary>
+        public DateTime BeginTime { get; set; }
+
+        /// <summary>
+        /// 交易結束的時間
+        /// </summary>
+        public DateTime EndTime { get; set; }
+
+        /// <summary>
+        /// 每筆交易的紀錄
+        /// </summary>
+        public TransDetails[] TransDetails { get; set; }
     }
 }

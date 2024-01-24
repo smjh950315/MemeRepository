@@ -1,4 +1,5 @@
-﻿using Cyh.DataHelper;
+using Cyh.DataHelper;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Numerics;
@@ -405,7 +406,7 @@ namespace Cyh.Modules.ModForm
                 return Enumerable.Empty<TF2Out>();
             return formMgr.TargetFormSource2?.TryGetDatasAs(selector, expression) ?? Enumerable.Empty<TF2Out>();
         }
-        
+
         /// <summary>
         /// 取得表單相關的資料模型的集合
         /// </summary>
@@ -497,10 +498,11 @@ namespace Cyh.Modules.ModForm
             if (!formMgr.SourceIsValid())
                 return null;
 
-            TFormGroup formGroup = new TFormGroup();
-
-            formGroup.MainForm = formMgr.GetMainForm(expression);
-            formGroup.TargetForms = formMgr.GetTargetForms(expression2);
+            TFormGroup formGroup = new TFormGroup
+            {
+                MainForm = formMgr.GetMainForm(expression),
+                TargetForms = formMgr.GetTargetForms(expression2)
+            };
 
             return formGroup;
         }
@@ -562,6 +564,118 @@ namespace Cyh.Modules.ModForm
             return formManager.TargetFormSource?.TryAddOrUpdate(forms);
         }
     }
+
+    public static partial class FormModExtends
+    {
+        /// <summary>
+        /// 儲存表單單頭
+        /// </summary>
+        /// <typeparam name="TForm">表單單頭的模型</typeparam>
+        /// <param name="form">表單單頭</param>
+        /// <returns>是否成功</returns>
+        public static bool SaveMainForm<TForm, TDataIn>(this IFormManager<TForm>? formManager,
+            Expression<Func<TDataIn, TForm>>? expression,
+            TDataIn? form) {
+            if (!formManager.SourceIsValid() || form == null || expression == null)
+                return false;
+
+            try {
+                var program = expression.Compile();
+                return formManager.MainFormSource?.TryAddOrUpdate(program(form)) ?? false;
+            } catch (Exception ex) {
+                CommonLib.HandleException(ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 儲存表單單身
+        /// </summary>
+        /// <typeparam name="TMainForm">表單單頭的模型</typeparam>
+        /// <typeparam name="TTargetForm">表單單身的模型</typeparam>
+        /// <param name="form">表單單身</param>
+        /// <returns>是否成功</returns>
+        public static bool SaveTargetForm<TMainForm, TTargetForm, TTargetDataIn>(this IFormManager<TMainForm, TTargetForm>? formManager,
+            Expression<Func<TTargetDataIn, TTargetForm>>? expression,
+            TTargetDataIn? form) {
+            if (!formManager.SourceIsValid() || form == null || expression == null)
+                return false;
+            try {
+                var program = expression.Compile();
+                return formManager.TargetFormSource?.TryAddOrUpdate(program(form)) ?? false;
+            } catch (Exception ex) {
+                CommonLib.HandleException(ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 儲存表單單頭集合
+        /// </summary>
+        /// <typeparam name="TForm">表單單頭的模型</typeparam>
+        /// <param name="forms">表單單頭集合</param>
+        /// <returns>資料交易的結果</returns>
+        public static IDataTransResult? SaveMainForms<TForm, TDataIn>(this IFormManager<TForm>? formManager,
+            Expression<Func<TDataIn, TForm>>? expression,
+            IEnumerable<TDataIn> forms) {
+            if (!formManager.SourceIsValid() || forms.IsNullOrEmpty() || expression == null)
+                return formManager?.MainFormSource?.EmptyResult;
+            IDataTransResult? result = formManager?.MainFormSource?.EmptyResult;
+            if (result == null)
+                return result;
+
+            Func<TDataIn, TForm>? program = null;
+            try {
+                program = expression.Compile();
+                if (program == null)
+                    return result;
+            } catch (Exception ex) {
+                CommonLib.HandleException(ex);
+                return result;
+            }
+
+            try {
+                IEnumerable<TForm> data = forms.Select(program);
+                return formManager?.MainFormSource?.TryAddOrUpdate(data);
+            } catch (Exception ex) {
+                CommonLib.HandleException(ex);
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// 儲存表單單身集合
+        /// </summary>
+        /// <typeparam name="TMainForm">表單單頭的模型</typeparam>
+        /// <typeparam name="TTargetForm">表單單身的模型</typeparam>
+        /// <param name="forms">表單單身集合</param>
+        /// <returns>資料交易的結果</returns>
+        public static IDataTransResult? SaveTargetForms<TMainForm, TTargetForm, TTargetDataIn>(this IFormManager<TMainForm, TTargetForm>? formManager,
+            Expression<Func<TTargetDataIn, TTargetForm>>? expression,
+            IEnumerable<TTargetDataIn> tforms) {
+            if (!formManager.SourceIsValid() || tforms.IsNullOrEmpty() || expression == null)
+                return formManager?.TargetFormSource?.EmptyResult;
+            IDataTransResult? result = formManager?.MainFormSource?.EmptyResult;
+            if (result == null)
+                return result;
+            Func<TTargetDataIn, TTargetForm>? program = null;
+            try {
+                program = expression.Compile();
+                if (program == null)
+                    return result;
+            } catch (Exception ex) {
+                CommonLib.HandleException(ex);
+                return result;
+            }
+            try {
+                IEnumerable<TTargetForm> data = tforms.Select(program);
+                return formManager?.TargetFormSource?.TryAddOrUpdate(data);
+            } catch (Exception ex) {
+                CommonLib.HandleException(ex);
+                return result;
+            }
+        }
+    };
 
     public static partial class FormModExtends
     {

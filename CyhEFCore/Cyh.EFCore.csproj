@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CyhModules\Cyh.Modules.csproj" />
+    <ProjectReference Include="..\Cyh\Cyh.csproj" />
   </ItemGroup>
 
   <ItemGroup>
