@@ -1,10 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyh.WebServices.AppConfigs
 {
@@ -13,15 +8,24 @@ namespace Cyh.WebServices.AppConfigs
     /// </summary>
     public partial class DefaultCookieAuthenticOptions : ICookieAuthenticOptions
     {
+        private string? _Name;
+        private string? _Path;
+        private ChunkingCookieManager? _CookieManager;
         /// <summary>
         /// 要使用的Cookie名稱(通常與APP名稱相同)
         /// </summary>
-        public string Name { get; set; }
+        public string Name {
+            get => this._Name ?? "unamed";
+            set => this._Name = value;
+        }
 
         /// <summary>
         /// ????
         /// </summary>
-        public string Path { get; set; }
+        public string Path {
+            get => this._Path ?? "unsetted";
+            set => this._Path = value;
+        }
 
         /// <summary>
         /// 是否僅允許HTTP協定
@@ -56,6 +60,9 @@ namespace Cyh.WebServices.AppConfigs
         /// <summary>
         /// 不知道幹嘛的，預設 <see cref="ChunkingCookieManager"/> 
         /// </summary>
-        public ChunkingCookieManager CookieManager { get; set; }
+        public ChunkingCookieManager CookieManager {
+            get => this._CookieManager ?? new();
+            set => this._CookieManager = value;
+        }
     }
 }

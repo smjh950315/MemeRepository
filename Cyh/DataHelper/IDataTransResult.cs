@@ -1,4 +1,4 @@
-﻿namespace Cyh.DataHelper
+namespace Cyh.DataHelper
 {
     /// <summary>
     /// 資料交易後的結果
@@ -16,18 +16,28 @@
         int SucceedTransCount { get; set; }
 
         /// <summary>
+        /// 交易的訊息
+        /// </summary>
+        string Message { get; set; }
+
+        /// <summary>
+        /// 交易的執行者
+        /// </summary>
+        string Accesser { get; set; }
+
+        /// <summary>
         /// 交易開始的時間
         /// </summary>
-        public DateTime BeginTime { get; set; }
+        DateTime BeginTime { get; set; }
 
         /// <summary>
         /// 交易結束的時間
         /// </summary>
-        public DateTime EndTime { get; set; }
+        DateTime EndTime { get; set; }
 
         /// <summary>
         /// 每筆交易的紀錄
         /// </summary>
-        public TransDetails[] TransDetails { get; set; }
+        TransDetails[] TransDetails { get; set; }
     }
 }

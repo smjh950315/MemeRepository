@@ -20,16 +20,30 @@ namespace Cyh.DataHelper
         /// </summary>
         public string? Message { get; set; }
 
+        /// <summary>
+        /// 執行交易的時間
+        /// </summary>
+        public DateTime InvokedTime { get; set; }
+
         public TransDetails() {
             this.Index = -1;
             this.IsSucceed = false;
             this.Message = null;
+            this.InvokedTime = DateTime.Now;
+        }
+
+        public TransDetails(bool _isSucceed, string? message = null) {
+            this.Index = 0;
+            this.IsSucceed = _isSucceed;
+            this.Message = message;
+            this.InvokedTime = DateTime.Now;
         }
 
         public TransDetails(int index_of_data, bool _isSucceed, string? message = null) {
             this.Index = index_of_data;
             this.IsSucceed = _isSucceed;
             this.Message = message;
+            this.InvokedTime = DateTime.Now;
         }
     }
 }

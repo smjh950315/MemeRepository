@@ -135,5 +135,24 @@ namespace Cyh
         public static ExceptionDetails GetDetails(this Exception? exception) {
             return new(exception);
         }
+
+        /// <summary>
+        /// 比較時間在小時與分的部分是否相同
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns>是否相同</returns>
+        public static bool EqualInHourAndMinute(this DateTime self, DateTime other) {
+            return self.Hour == other.Hour && self.Minute == other.Minute;
+        }
+
+        /// <summary>
+        /// 取得與當前實體的小時以及分鐘相同但日期是今天的時間
+        /// </summary>
+        /// <returns>時間</returns>
+        public static DateTime Today(this DateTime self) {
+            DateTime now = DateTime.Now;
+            return new DateTime(now.Year, now.Month, now.Day, self.Hour, self.Minute, self.Millisecond, self.Kind);
+        }
+
     }
 }

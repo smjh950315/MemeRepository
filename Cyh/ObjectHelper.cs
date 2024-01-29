@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 
 namespace Cyh
 {
@@ -198,7 +198,7 @@ namespace Cyh
 
             MemberInfo? memberInfo = memberInfos.FirstOrDefault();
 
-            return CommonLib.TryGetValue(fn => _GetValue_FromMemberInfo(instance, memberInfo), null);
+            return _GetValue_FromMemberInfo(instance, memberInfo);
         }
 
         /// <summary>
@@ -220,14 +220,45 @@ namespace Cyh
         }
 
         /// <summary>
+        /// 嘗試取得物件 obj 內成員名稱為 name 的值
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="name"></param>
+        /// <returns>取得的物件</returns>
+        public static object? TryGetValue(object? obj, string? name) {
+            return GetInstanceMemberValue(obj, name);
+        }
+
+        /// <summary>
+        /// 嘗試取得物件 obj 內成員 MemberInfo 與輸入相同的值
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="name"></param>
+        /// <returns>取得的物件</returns>
+        public static object? TryGetValue(object? obj, MemberInfo? memberInfo) {
+            return _GetValue_FromMemberInfo(obj, memberInfo);
+        }
+
+        /// <summary>
         /// 嘗試用型別 T 取得物件 obj 內成員名稱為 name 的值
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
-        /// <param name="_name"></param>
+        /// <param name="name"></param>
         /// <returns>取得的物件</returns>
         public static T? TryGetValueAs<T>(object? obj, string? name) {
             return (T?)GetInstanceMemberValue(obj, name);
+        }
+
+        /// <summary>
+        /// 嘗試用型別 T 取得物件 obj 內成員 MemberInfo 與輸入相同的值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="memberInfo"></param>
+        /// <returns>取得的物件</returns>
+        public static T? TryGetValueAs<T>(object? obj, MemberInfo? memberInfo) {
+            return (T?)_GetValue_FromMemberInfo(obj, memberInfo);
         }
 
         /// <summary>
@@ -239,6 +270,17 @@ namespace Cyh
         /// <returns>是否成功設定</returns>
         public static bool TrySetValue(object? obj, string? name, object? value) {
             return SetInstanceMemberValue(obj, name, value);
+        }
+
+        /// <summary>
+        /// 嘗試用 MemberInfo 將 obj 該成員的值設定為 value
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="memberInfo"></param>
+        /// <param name="value"></param>
+        /// <returns>是否成功設定</returns>
+        public static bool TrySetValue(object? obj, MemberInfo? memberInfo, object? value) {
+            return _SetValue_ToMemberInfo(obj, memberInfo, value);
         }
 
         /// <summary>

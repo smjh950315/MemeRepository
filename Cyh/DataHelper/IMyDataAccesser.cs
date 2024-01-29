@@ -17,6 +17,12 @@ namespace Cyh.DataHelper
         /// <param name="exception"></param>
         void HandleException(Exception? exception);
 #pragma warning restore CS0108
+
+        /// <summary>
+        /// 設定存取者 ID
+        /// </summary>
+        /// <param name="accesserId">存取者 ID</param>
+        void SetAccesserId(string accesserId);
     }
 
 

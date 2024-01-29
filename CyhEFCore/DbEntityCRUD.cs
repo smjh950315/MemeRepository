@@ -15,6 +15,7 @@ namespace Cyh.EFCore
         where TEntity : class
     {
         object? _Entities;
+        string? _AccesserId { get; set; }
 
         /// <summary>
         /// 特定類型的TABLE
@@ -33,7 +34,11 @@ namespace Cyh.EFCore
         /// </summary>
         public int Count => this.Entities?.Count() ?? 0;
 
-        public IDataTransResult EmptyResult => new DbTransResult();
+        public IDataTransResult EmptyResult => new DbTransResult()
+        {
+            Accesser = this._AccesserId ?? String.Empty,
+            BeginTime = DateTime.Now
+        };
 
         public IQueryable<TEntity>? Queryable => this.Entities;
 
@@ -42,6 +47,10 @@ namespace Cyh.EFCore
         public DbEntityCRUD() { }
 
         public DbEntityCRUD(IDbContext? dbContext) : base(dbContext) { }
+
+        public void SetAccesserId(string accesserId) {
+            this._AccesserId = accesserId;
+        }
 
         public bool TryAddOrUpdate(TEntity data) {
             if (!this.IsAccessable)
@@ -62,15 +71,15 @@ namespace Cyh.EFCore
             if (!this.IsAccessable || dataInput.IsNullOrEmpty())
                 return this.EmptyResult;
 
-            var result = this.EmptyResult;
-            result.BeginTime = DateTime.Now;
+
+            IDataTransResult result = this.EmptyResult;
 
             int index = 0;
             TransDetails[]? transDetails = null;
             if (this.VeryDetail)
                 transDetails = new TransDetails[dataInput.Count()];
 
-            foreach (var data in dataInput) {
+            foreach (TEntity data in dataInput) {
 #pragma warning disable CS8602
                 if (data == null) {
                     transDetails[index] = new TransDetails(index, false, "null data input!");
@@ -109,5 +118,6 @@ namespace Cyh.EFCore
                 return;
             Console.WriteLine(exception.GetDetails().ToString());
         }
+
     }
 }
