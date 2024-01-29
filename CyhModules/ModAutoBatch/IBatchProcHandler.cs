@@ -17,7 +17,7 @@ namespace Cyh.Modules.ModAutoBatch
         /// </summary>
         /// <param name="batchName">排程名稱，如果空白則執行所有排程</param>
         /// <returns>排程執行的結果</returns>
-        IEnumerable<IDataTransResult> Execute(string batchName);
+        IEnumerable<IDataTransResult> Execute(string? batchName, bool _forceRun = false);
 
         /// <summary>
         /// 加入排程

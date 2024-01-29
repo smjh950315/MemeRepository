@@ -21,6 +21,5 @@ namespace Cyh.Modules.ModAutoBatch
         /// </summary>
         /// <returns>是否可以執行</returns>
         public bool CanExecute();
-
     }
 }

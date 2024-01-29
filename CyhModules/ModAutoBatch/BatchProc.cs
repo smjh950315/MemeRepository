@@ -1,7 +1,6 @@
 #pragma warning disable IDE1006 // 命名樣式
 #pragma warning disable IDE0049 // 命名樣式
 using Cyh.DataHelper;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Cyh.Modules.ModAutoBatch
 {
@@ -16,7 +15,7 @@ namespace Cyh.Modules.ModAutoBatch
     }
 
     /// <summary>
-    /// 排程執行規則
+    /// 排程執行規則的FLAG
     /// </summary>
     public enum BATCH_INVOKE_ROLE
     {
@@ -61,6 +60,9 @@ namespace Cyh.Modules.ModAutoBatch
         }
     }
 
+    /// <summary>
+    /// 排程執行規則
+    /// </summary>
     public struct BatchInvokeRule
     {
         bool _RepeatOnFixedTime = false;
@@ -68,11 +70,17 @@ namespace Cyh.Modules.ModAutoBatch
         readonly TimeSpan _RepeatTimeSpan;
         BATCH_INVOKE_ROLE _Role = BATCH_INVOKE_ROLE.UNDEFINED;
 
-
+        /// <summary>
+        /// 在有允許多次執行的情況下檢查是否該立即執行
+        /// </summary>
+        /// <param name="lastInvoked">最後執行的時間</param>
+        /// <returns>是否該立即執行</returns>
         private bool _CheckCanExecuteByTime(DateTime lastInvoked) {
-            if (this._RepeatOnFixedTime) { // 定時執行 
+            if (this._RepeatOnFixedTime) {
+                // 定時執行，如果今天應該要實行的時間晚於最後執行的時間就立即執行
                 return this._RepeatFixedTime.Today() > lastInvoked;
             } else {
+                // 定期執行，如果上次到現在的時間間隔大於設定的間隔就立即執行
                 return DateTime.Now - lastInvoked > _RepeatTimeSpan;
             }
         }
@@ -110,8 +118,10 @@ namespace Cyh.Modules.ModAutoBatch
         /// <returns>可否立刻執行</returns>
         public bool CanExecute(bool isInvoked, bool isSucceed, DateTime lastInvoked) {
             if (this._Role == BATCH_INVOKE_ROLE.INVOKE_ONCE && !isInvoked) {
+                // 只執行一次且還沒被執行
                 if (this._RepeatOnFixedTime) {
-                    return this._RepeatFixedTime.Today() < DateTime.Now;
+                    // 定時執行，如果當前時間早於設定時間，就立刻執行
+                    return this._RepeatFixedTime.Today() > DateTime.Now;
                 }
             }
 
@@ -119,8 +129,10 @@ namespace Cyh.Modules.ModAutoBatch
                 case BATCH_INVOKE_ROLE.UNDEFINED:
                     throw new NotImplementedException("Undifined batch invoke role!");
                 case BATCH_INVOKE_ROLE.INVOKE_ONCE:
+                    // 只執行一次，如果還沒執行就立即執行
                     return !isInvoked;
                 case BATCH_INVOKE_ROLE.INVOKE_BY_LOOP:
+                    // 多次執行，額外判斷是否該立即執行
                     return this._CheckCanExecuteByTime(lastInvoked);
                 default:
                     throw new NotImplementedException("Undifined batch invoke role!");
@@ -134,8 +146,12 @@ namespace Cyh.Modules.ModAutoBatch
     public abstract class BatchProc : IBatchProc
     {
         private bool _ForceExecuteOnce = false;
+        private BatchInvokeRule _BatchInvokeRule;
         private List<IDataTransResult> _ExecLogs = new List<IDataTransResult>();
 
+        /// <summary>
+        /// 是否已經設定要強迫執行一次(透過 Invoke (bool) 設定)，如果設定過 TRUE，回傳一次 TRUE後，下次呼叫會變回 FALSE
+        /// </summary>
         private bool ForceExecuteOnce {
             get {
                 if (this._ForceExecuteOnce) {
@@ -160,22 +176,8 @@ namespace Cyh.Modules.ModAutoBatch
             this.IsExecuting = false;
         }
         private bool _CanExecute() {
-            if (this.ForceExecuteOnce)
-                return true;
-
-            if (!this.ExecuteStatus.IsInvoked())
-                return true;
-
-            if (!this.AllowRepeat)
-                return false;
-
-            if (this.IsExecuting)
-                return false;
-
-            if (this.RepeatOnlyFailed)
-                return !this.ExecuteStatus.IsSucceed();
-
-            return true;
+            return this.ForceExecuteOnce
+            || this._BatchInvokeRule.CanExecute(this.IsInvoked, this.IsSucceed, this.InvokedTime);
         }
         private IDataTransResult _NoStatusCheck_RunProgram() {
             this._OnExecute();
@@ -203,6 +205,11 @@ namespace Cyh.Modules.ModAutoBatch
         public static IDataTransResult EmptyResult => new DataTransResultBase();
 
         /// <summary>
+        /// 此排程的狀態
+        /// </summary>
+        public BATCH_STATUS ExecuteStatus { get; private set; }
+
+        /// <summary>
         /// 排程被呼叫的時間
         /// </summary>
         public DateTime InvokedTime { get; private set; }
@@ -213,9 +220,14 @@ namespace Cyh.Modules.ModAutoBatch
         public DateTime FinishedTime { get; private set; }
 
         /// <summary>
-        /// 此排程的狀態
+        /// 是否執行過
         /// </summary>
-        public BATCH_STATUS ExecuteStatus { get; private set; }
+        public bool IsInvoked => this.ExecuteStatus.IsInvoked();
+
+        /// <summary>
+        /// 是否成功執行
+        /// </summary>
+        public bool IsSucceed => this.ExecuteStatus.IsSucceed();
 
         /// <summary>
         /// 此排程是否正在執行
@@ -223,28 +235,24 @@ namespace Cyh.Modules.ModAutoBatch
         public bool IsExecuting { get; private set; }
 
         /// <summary>
-        /// 是否只有在失敗才允許重複執行
+        /// 是否在失敗時重複執行
         /// </summary>
-        public bool RepeatOnlyFailed { get; set; }
-
-        /// <summary>
-        /// 是否允許重複執行
-        /// </summary>
-        public bool AllowRepeat { get; set; }
+        public bool RepeatOnFailed { get; private set; }
 
         /// <summary>
         /// 此排程的名稱
         /// </summary>
-        public string Name { get; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// 此排程的描述
         /// </summary>
-        public string? Description { get; }
+        public string? Description { get; private set; }
 
         /// <summary>
         /// 執行
         /// </summary>
+        /// <param name="_forceExecute">是否強迫執行</param>
         /// <returns>執行的結果</returns>
         public IDataTransResult Invoke(bool _forceExecute = false) {
             this._ForceExecuteOnce = _forceExecute;
@@ -258,6 +266,9 @@ namespace Cyh.Modules.ModAutoBatch
         /// </summary>
         /// <returns>是否可以執行</returns>
         public virtual bool CanExecute() {
+            // 若開啟"失敗時重新執行"且已經執行但是尚未成功的情況下，設定強迫執行
+            if (this.RepeatOnFailed && this.IsInvoked && !this.IsSucceed)
+                this._ForceExecuteOnce = true;
             return this._CanExecute();
         }
 
@@ -275,16 +286,23 @@ namespace Cyh.Modules.ModAutoBatch
             return this._ExecLogs;
         }
 
+        /// <summary>
+        /// 排程程式的建構子
+        /// </summary>
+        /// <param name="name">排程的名稱</param>
+        /// <param name="rule">排程執行規則</param>
+        /// <param name="_repeatOnFailed">失敗時重新執行</param>
+        /// <param name="description">描述</param>
         public BatchProc(
             String name,
-            bool _allowRepeat = false,
-            bool _repeatOnlyFailed = true,
+            BatchInvokeRule rule,
+            bool _repeatOnFailed = true,
             string? description = null
             ) {
+            this._BatchInvokeRule = rule;
             this.Name = name;
             this.Description = description;
-            this.AllowRepeat = _allowRepeat;
-            this.RepeatOnlyFailed = _repeatOnlyFailed;
+            this.RepeatOnFailed = _repeatOnFailed;
         }
     }
 }

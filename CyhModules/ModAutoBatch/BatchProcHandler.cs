@@ -9,7 +9,7 @@ namespace Cyh.Modules.ModAutoBatch
     {
         List<IBatchProc>? _Processes;
 
-        public IEnumerable<IDataTransResult> Execute(string batchName) {
+        public IEnumerable<IDataTransResult> Execute(string? batchName, bool _forceRun = false) {
             if (this._Processes.IsNullOrEmpty())
                 return Enumerable.Empty<IDataTransResult>();
 
@@ -24,7 +24,7 @@ namespace Cyh.Modules.ModAutoBatch
             if (processHandlers.Any()) {
                 List<IDataTransResult> results = new List<IDataTransResult>();
                 foreach (IBatchProc batch in processHandlers) {
-                    results.Add(batch.Invoke());
+                    results.Add(batch.Invoke(_forceRun));
                 }
                 return results;
             }
