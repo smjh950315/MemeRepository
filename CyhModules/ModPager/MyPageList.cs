@@ -1,4 +1,3 @@
-﻿#pragma warning disable IDE1006 // 命名樣式
 using Cyh.DataHelper;
 
 namespace Cyh.Modules.ModPager

@@ -1,4 +1,4 @@
-﻿using Cyh.DataHelper;
+using Cyh.DataHelper;
 
 namespace Cyh.Modules.ModViewData
 {
@@ -7,8 +7,7 @@ namespace Cyh.Modules.ModViewData
     /// </summary>
     /// <typeparam name="TDataModel">資料來源，需要實作輸入介面</typeparam>
     /// <typeparam name="IViewModel">輸入與輸出資料共同的介面</typeparam>
-    public interface IViewModelGetter<TDataModel, IViewModel>
-        where TDataModel : IViewModel
+    public interface IViewModelGetter<TDataModel, IViewModel> where TDataModel : IViewModel
     {
         /// <summary>
         /// 取得來源資料存取器

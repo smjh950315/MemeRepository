@@ -1,11 +1,9 @@
-﻿using Cyh.DataHelper;
-
-namespace Cyh.Modules.ModForm
+namespace Cyh.DataHelper
 {
     /// <summary>
     /// 表單管理活性化工具的介面
     /// </summary>
-    public interface IFormManagerActivator
+    public interface IDataManagerActivator
     {
         /// <summary>
         /// 取得資料存取器
@@ -18,13 +16,13 @@ namespace Cyh.Modules.ModForm
     /// <summary>
     /// 表單管理活性化工具的介面
     /// </summary>
-    public interface IFormManagerCreater
+    public interface IDataManagerCreater
     {
         /// <summary>
         /// 新建未初始化的表單管理器
         /// </summary>
         /// <typeparam name="TFormManager">表單管理器</typeparam>
         /// <returns>未初始化得表單管理器</returns>
-        TFormManager CreateManager<TFormManager>() where TFormManager : IFormManager;
+        TFormManager CreateManager<TFormManager>() where TFormManager : IDataManager;
     }
 }

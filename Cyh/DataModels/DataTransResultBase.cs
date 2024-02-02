@@ -1,17 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cyh.DataHelper
+namespace Cyh.DataModels
 {
     /// <summary>
     /// 資料交易後的結果
     /// </summary>
     public class DataTransResultBase : IDataTransResult
     {
-        TransDetails[]? _TransDetails;
+        List<TransDetails>? _TransDetails;
         DateTime? _EndTime;
         string? _Message;
         string? _Accesser;
@@ -20,13 +14,15 @@ namespace Cyh.DataHelper
 
         public int SucceedTransCount { get; set; }
 
+        public bool IsFinished { get; set; }
+
         public string Message {
-            get => _Message ?? String.Empty;
+            get => _Message ?? string.Empty;
             set => _Message = value;
         }
 
         public string Accesser {
-            get => _Accesser ?? String.Empty;
+            get => _Accesser ?? string.Empty;
             set => _Accesser = value;
         }
 
@@ -37,10 +33,10 @@ namespace Cyh.DataHelper
             set => this._EndTime = value;
         }
 
-        public TransDetails[] TransDetails {
+        public List<TransDetails> TransDetails {
             get {
                 if (this._TransDetails == null)
-                    this._TransDetails = new TransDetails[this.TotalTransCount];
+                    this._TransDetails = new List<TransDetails>();
                 return this._TransDetails;
             }
             set { this._TransDetails = value; }

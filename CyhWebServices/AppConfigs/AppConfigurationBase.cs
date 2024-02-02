@@ -1,10 +1,5 @@
-﻿using Cyh.Modules.ModAuthentication;
+using Cyh.Modules.ModAuthentication;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyh.WebServices.AppConfigs
 {
@@ -12,8 +7,9 @@ namespace Cyh.WebServices.AppConfigs
     {
         public abstract string ApplicationName { get; }
 
-        public virtual ICookieAuthenticOptions CookieAuthenticOptions => new DefaultCookieAuthenticOptions() {
-            Name = ApplicationName,
+        public virtual ICookieAuthenticOptions CookieAuthenticOptions => new DefaultCookieAuthenticOptions()
+        {
+            Name = this.ApplicationName,
             Path = "/",
             HttpOnly = false,
             CookieAge = 300,
@@ -24,17 +20,19 @@ namespace Cyh.WebServices.AppConfigs
             CookieManager = new Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager()
         };
 
-        public virtual ILoginOptions LoginOptions => throw new NotImplementedException();
+        public abstract IMyAuthorizationOptions LoginOptions { get; }
 
-        public virtual IRouteSettings RouteSettings => new DefaultAppRoutes() {
-            Login = "Account/Login",
-            Logout = "Account/Logout",
+        public virtual IRouteSettings RouteSettings => new DefaultAppRoutes()
+        {
+            Login = "/Account/Login",
+            Logout = "/Account/Logout",
             AccessDenied = "/Account/AccessDenied",
             ReturnUrlParameter = "returnUrl",
             Error = "/Home/Error"
         };
 
-        public virtual IViewSettings ViewSettings => new DefaultViewSettings() {
+        public virtual IViewSettings ViewSettings => new DefaultViewSettings()
+        {
             Title_CurrentUser = "目前使用者: ",
             Title_Default = "Untitled",
             Display_LoginState = true,

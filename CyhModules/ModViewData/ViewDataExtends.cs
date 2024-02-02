@@ -1,4 +1,5 @@
-﻿using Cyh.DataHelper;
+using Cyh.DataHelper;
+using Cyh.DataModels;
 using System.Linq.Expressions;
 
 namespace Cyh.Modules.ModViewData
@@ -17,7 +18,7 @@ namespace Cyh.Modules.ModViewData
             this IViewModelGetter<TDataModel, IModel> viewModelGetter,
             Expression<Func<TDataModel, bool>>? expression
             )
-            where TViewModel : IModel, ISelectableDataModel<TViewModel, IModel>, new()
+            where TViewModel : class, IModel, ISelectableDestModel<TViewModel, IModel>, new()
             where TDataModel : IModel {
 
             if (viewModelGetter == null)
@@ -25,7 +26,7 @@ namespace Cyh.Modules.ModViewData
 
             TViewModel t = new();
 
-            return viewModelGetter.GetDataSource().TryGetDataAs(t.GetSelector<TDataModel>(), expression);
+            return viewModelGetter.GetDataSource().TryGetDataAs(t.GetSelectorFrom<TDataModel>(), expression);
         }
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace Cyh.Modules.ModViewData
             this IViewModelGetter<TDataModel, IModel> viewModelGetter,
             Expression<Func<TDataModel, bool>>? expression
             )
-            where TViewModel : IModel, ISelectableDataModel<TViewModel, IModel>, new()
+            where TViewModel : class, IModel, ISelectableDestModel<TViewModel, IModel>, new()
             where TDataModel : IModel {
 
             if (viewModelGetter == null)
@@ -48,7 +49,7 @@ namespace Cyh.Modules.ModViewData
 
             TViewModel t = new();
 
-            return viewModelGetter.GetDataSource().TryGetDatasAs(t.GetSelector<TDataModel>(), expression) ?? Enumerable.Empty<TViewModel>();
+            return viewModelGetter.GetDataSource().TryGetDatasAs(t.GetSelectorFrom<TDataModel>(), expression) ?? Enumerable.Empty<TViewModel>();
         }
     }
 }

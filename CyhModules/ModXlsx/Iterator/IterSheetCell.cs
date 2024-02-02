@@ -9,22 +9,22 @@ namespace Cyh.Modules.ModXlsx.Iterator
         IEnumerator<IXLCell> _Enumerator;
 
         public IterSheetCell(XlsxSheetRow _mySheetRow) {
-            _MySheetRow = _mySheetRow;
-            _Enumerator = _mySheetRow._XlsxRow.Cells().GetEnumerator();
+            this._MySheetRow = _mySheetRow;
+            this._Enumerator = _mySheetRow._XlsxRow.Cells().GetEnumerator();
         }
 
-        public XlsxSheetCell Current => _MySheetRow[_Enumerator.Current.Address.ColumnNumber];
+        public XlsxSheetCell Current => this._MySheetRow[this._Enumerator.Current.Address.ColumnNumber];
 
-        object IEnumerator.Current => Current;
+        object IEnumerator.Current => this.Current;
 
         public void Dispose() { }
 
         public bool MoveNext() {
-            return _Enumerator.MoveNext();
+            return this._Enumerator.MoveNext();
         }
 
         public void Reset() {
-            _Enumerator = _MySheetRow._XlsxRow.Cells().GetEnumerator();
+            this._Enumerator = _MySheetRow._XlsxRow.Cells().GetEnumerator();
         }
     }
 }

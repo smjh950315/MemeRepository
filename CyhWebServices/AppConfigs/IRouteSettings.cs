@@ -1,4 +1,4 @@
-﻿namespace Cyh.WebServices.AppConfigs
+namespace Cyh.WebServices.AppConfigs
 {
     /// <summary>
     /// 專案的基本路徑
@@ -8,12 +8,12 @@
         /// <summary>
         /// 登入路徑
         /// </summary>
-        public string Login => "Account/Login";
+        public string Login => "/Account/Login";
 
         /// <summary>
         /// 登出路徑
         /// </summary>
-        public string Logout => "Account/Logout";
+        public string Logout => "/Account/Logout";
 
         /// <summary>
         /// 拒絕存取時的路徑

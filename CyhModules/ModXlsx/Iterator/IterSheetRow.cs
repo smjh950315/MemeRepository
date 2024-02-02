@@ -1,11 +1,5 @@
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyh.Modules.ModXlsx.Iterator
 {
@@ -15,22 +9,22 @@ namespace Cyh.Modules.ModXlsx.Iterator
         IEnumerator<IXLRow> _Enumerator;
 
         public IterSheetRow(XlsxWorksheet myWorksheet) {
-            _MyWorksheet = myWorksheet;
-            _Enumerator = myWorksheet._Worksheet.Rows().GetEnumerator();
+            this._MyWorksheet = myWorksheet;
+            this._Enumerator = myWorksheet._Worksheet.Rows().GetEnumerator();
         }
 
-        public XlsxSheetRow Current => _MyWorksheet[_Enumerator.Current.RowNumber()];
+        public XlsxSheetRow Current => this._MyWorksheet[this._Enumerator.Current.RowNumber()];
 
-        object IEnumerator.Current => Current;
+        object IEnumerator.Current => this.Current;
 
         public void Dispose() { }
 
         public bool MoveNext() {
-            return _Enumerator.MoveNext();
+            return this._Enumerator.MoveNext();
         }
 
         public void Reset() {
-            _Enumerator = _MyWorksheet._Worksheet.Rows().GetEnumerator();
+            this._Enumerator = this._MyWorksheet._Worksheet.Rows().GetEnumerator();
         }
     }
 }

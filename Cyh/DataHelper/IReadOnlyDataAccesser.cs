@@ -25,7 +25,7 @@ namespace Cyh.DataHelper
     /// <summary>
     /// 資料讀取器
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">要讀取的資料型別</typeparam>
     public interface IReadOnlyDataAccesser<T> : IReadOnlyDataAccesser
     {
         /// <summary>

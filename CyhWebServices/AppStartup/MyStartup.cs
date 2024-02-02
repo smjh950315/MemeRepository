@@ -1,4 +1,4 @@
-﻿using Cyh.MyException;
+using Cyh.MyException;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -20,15 +20,23 @@ namespace Cyh.WebServices.AppStartup
         /// <summary>
         /// 註冊 Controller 服務
         /// </summary>
-        public static void RegisterControllerService(this MyStartup startup, Action<MvcOptions>? configure = null) {
+        public static void RegisterControllerService(this MyStartup startup, Action<MvcOptions>? configure = null, Action<JsonOptions>? jsonOption = null) {
             if (MyStartup.UseController)
                 return;
 
-            if (configure != null)
-                startup.Services?.AddControllers(configure);
-            else
-                startup.Services?.AddControllers();
-
+            if (configure != null) {
+                if (jsonOption != null) {
+                    startup.Services?.AddControllers(configure).AddJsonOptions(jsonOption);
+                } else {
+                    startup.Services?.AddControllers(configure);
+                }
+            } else {
+                if (jsonOption != null) {
+                    startup.Services?.AddControllers().AddJsonOptions(jsonOption);
+                } else {
+                    startup.Services?.AddControllers();
+                }
+            }
             MyStartup.UseController = true;
         }
 
@@ -174,7 +182,6 @@ namespace Cyh.WebServices.AppStartup
 
             MyStartup.UseSwagger = true;
         }
-
     }
 
 
@@ -231,6 +238,5 @@ namespace Cyh.WebServices.AppStartup
             MyStartup.ApplicationBuilder = app;
             MyStartup.WebHostEnvironment = env;
         }
-
     }
 }

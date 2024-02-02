@@ -1,7 +1,7 @@
-﻿namespace Cyh.Modules.ModRoleSystem
+namespace Cyh.Modules.ModRoleSystem
 {
     /// <summary>
-    /// 授權驗證的介面
+    /// 權限驗證器，通常透過DB存取類別庫繼承
     /// </summary>
     public interface IRoleValidator
     {

@@ -8,6 +8,7 @@ namespace Cyh
     public static partial class ObjectHelper
     {
         delegate T? FnForceCast<T>(object? obj);
+        internal delegate MemberInfo[] FnGetMemberInfo(object? _Obj);
 
         class MemberInfoPair
         {
@@ -32,8 +33,6 @@ namespace Cyh
                 ? Enumerable.Empty<MemberInfo>()
                 : infos.Where(m => m.MemberType != MemberTypes.Method && !m.Name.StartsWith(".c")).AsEnumerable();
         }
-
-        internal delegate MemberInfo[] FnGetMemberInfo(object? _Obj);
 
         private static IEnumerable<MemberInfo> _Get_ObjectType_MemberInfos(Type? type, BindingFlags _flag, string? name = null) {
             if (type == null)
@@ -402,5 +401,4 @@ namespace Cyh
             return _GetMemberNames(typeof(T), ComplexBindingFlags.Type_ObjectType_Member).ToList();
         }
     }
-
 }

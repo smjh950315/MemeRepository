@@ -1,4 +1,4 @@
-﻿using Cyh.MyException;
+using Cyh.MyException;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -60,6 +60,5 @@ namespace Cyh.WebServices.AppStartup
             if (UseCookie)
                 RegisterAuthentication();
         }
-
     }
 }

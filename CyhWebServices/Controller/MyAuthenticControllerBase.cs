@@ -1,4 +1,4 @@
-﻿using Cyh.Modules.ModAuthentication;
+using Cyh.Modules.ModAuthentication;
 using Cyh.Modules.ModIdentity;
 using Cyh.Modules.ModRoleSystem;
 using Cyh.WebServices.AppConfigs;
@@ -15,7 +15,7 @@ namespace Cyh.WebServices.Controller
     /// </summary>
     public abstract class MyAuthenticControllerBase : MyControllerBase, IAuthenticController
     {
-        public ILoginOptions? LoginOptions => this._AppConfigurations?.LoginOptions;
+        public IMyAuthorizationOptions? LoginOptions => this._AppConfigurations?.LoginOptions;
 
         public ILoginModel? LoginModel => this.LoginOptions?.LoginModel;
 
@@ -26,6 +26,8 @@ namespace Cyh.WebServices.Controller
         public ISignInHelper? SignInHelper { get; set; }
 
         public bool AlwaysRelogin { get; set; }
+
+        public bool HasRoleSystem { get; set; }
 
         /// <summary>
         /// 驗證器是否都有效
@@ -41,11 +43,13 @@ namespace Cyh.WebServices.Controller
             IRoleValidator? roleValidator,
             IUserValidator? userValidator,
             ISignInHelper? signInHelper,
-            bool alwaysRelogin) : base(webAppConfigurations) {
+            bool alwaysRelogin,
+            bool hasRoleSystem) : base(webAppConfigurations) {
             this.RoleValidator = roleValidator;
             this.UserValidator = userValidator;
             this.SignInHelper = signInHelper;
             this.AlwaysRelogin = alwaysRelogin;
+            this.HasRoleSystem = hasRoleSystem;
         }
 
         /// <summary>
@@ -57,8 +61,11 @@ namespace Cyh.WebServices.Controller
             if (loginModel == null)
                 return false;
 
-            if (!this.ValidatorIsReady)
-                return false;
+            if (this.HasRoleSystem) {
+                if (!this.ValidatorIsReady) {
+                    return false;
+                }
+            }
 
             var user = this.UserValidator?
                 .FindUserByLoginModel(loginModel);
@@ -97,6 +104,5 @@ namespace Cyh.WebServices.Controller
         public void LogUserout() {
             this.SignInHelper?.SignOutAsync(this);
         }
-
     }
 }

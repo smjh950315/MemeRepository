@@ -1,4 +1,4 @@
-﻿namespace Cyh.Modules.ModForm
+namespace Cyh.Modules.ModForm
 {
     /// <summary>
     /// 用來表示單頭與單身的關聯
@@ -15,7 +15,7 @@
         /// <summary>
         /// 表單的單身
         /// </summary>
-        IEnumerable<TTargetForm>? TargetForms { get; set; }
+        IEnumerable<TTargetForm>? SubForms { get; set; }
     }
 
     /// <summary>
@@ -27,6 +27,6 @@
     {
         public TMainForm? MainForm { get; set; }
 
-        public IEnumerable<TTargetForm>? TargetForms { get; set; }
+        public IEnumerable<TTargetForm>? SubForms { get; set; }
     }
 }

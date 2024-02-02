@@ -3,7 +3,7 @@
     /// <summary>
     /// 與登入有關的選項
     /// </summary>
-    public interface ILoginOptions
+    public interface IMyAuthorizationOptions
     {
         /// <summary>
         /// 是否記住此認證

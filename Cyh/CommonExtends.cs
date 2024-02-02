@@ -1,6 +1,9 @@
 using Cyh.Common;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
+using System.Reflection;
+using static Cyh.ObjectHelper;
 
 namespace Cyh
 {
@@ -154,5 +157,29 @@ namespace Cyh
             return new DateTime(now.Year, now.Month, now.Day, self.Hour, self.Minute, self.Millisecond, self.Kind);
         }
 
+        /// <summary>
+        /// 將物件內的成員以類似字典的形式儲存成資料集
+        /// </summary>
+        /// <param name="obj">要被擷取的物件</param>
+        /// <returns>擷取的資料集</returns>
+        public static MyDataSet GetMyDataSet(this object? obj, Expression<Func<string, bool>>? expression = null) {
+            if (obj == null) return new();
+            IEnumerable<MemberInfo> memberInfos;
+            if (expression != null) {
+                IEnumerable<MemberInfo> _memberInfos = GetMemberInfosOf(obj.GetType(), ComplexBindingFlags.Inst_ObjectType_Member);
+                IEnumerable<string> memberNames = _memberInfos.Select(m => m.Name).AsQueryable().Where(expression);
+                memberInfos = _memberInfos.Where(x => memberNames.Contains(x.Name));
+            } else {
+                memberInfos = GetMemberInfosOf(obj.GetType(), ComplexBindingFlags.Inst_ObjectType_Member);
+            }
+            if (!memberInfos.Any()) { return new(); }
+            MyDataSet myDataSet = new();
+            foreach (MemberInfo memberInfo in memberInfos) {
+                try {
+                    myDataSet[memberInfo.Name] = TryGetValue(obj, memberInfo);
+                } catch { }
+            }
+            return myDataSet;
+        }
     }
 }

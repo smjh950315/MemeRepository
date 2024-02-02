@@ -1,4 +1,4 @@
-﻿namespace Cyh.DataHelper
+﻿namespace Cyh.DataModels
 {
     /// <summary>
     /// 要驗證用的資料介面

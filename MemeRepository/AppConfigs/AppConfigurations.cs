@@ -6,6 +6,6 @@ namespace MemeRepository.AppConfigs
     public class AppConfigurations : AppConfigurationBase
     {
         public override string ApplicationName => "ApiTest";
-        public override ILoginOptions LoginOptions => new LoginOptions();
+        public override IMyAuthorizationOptions LoginOptions => new LoginOptions();
     }
 }

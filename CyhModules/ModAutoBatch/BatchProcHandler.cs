@@ -1,4 +1,4 @@
-using Cyh.DataHelper;
+using Cyh.DataModels;
 
 namespace Cyh.Modules.ModAutoBatch
 {

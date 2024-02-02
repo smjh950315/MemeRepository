@@ -44,6 +44,5 @@ namespace Cyh.EFCore
             return TryGetValue(fn => setT.Where(_Predicate).AsEnumerable(), new List<TEntity>());
 #pragma warning restore
         }
-
     }
 }

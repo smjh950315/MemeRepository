@@ -1,9 +1,9 @@
-namespace Cyh.DataHelper
+namespace Cyh.DataModels
 {
     /// <summary>
     /// 每筆交易的紀錄
     /// </summary>
-    public struct TransDetails
+    public class TransDetails
     {
         /// <summary>
         /// 在資料集合中的索引
@@ -21,6 +21,11 @@ namespace Cyh.DataHelper
         public string? Message { get; set; }
 
         /// <summary>
+        /// 加入貯列的時間
+        /// </summary>
+        public DateTime InqueueTime { get; set; }
+
+        /// <summary>
         /// 執行交易的時間
         /// </summary>
         public DateTime InvokedTime { get; set; }
@@ -29,6 +34,7 @@ namespace Cyh.DataHelper
             this.Index = -1;
             this.IsSucceed = false;
             this.Message = null;
+            this.InqueueTime = DateTime.Now;
             this.InvokedTime = DateTime.Now;
         }
 
@@ -36,6 +42,7 @@ namespace Cyh.DataHelper
             this.Index = 0;
             this.IsSucceed = _isSucceed;
             this.Message = message;
+            this.InqueueTime = DateTime.Now;
             this.InvokedTime = DateTime.Now;
         }
 
@@ -43,6 +50,7 @@ namespace Cyh.DataHelper
             this.Index = index_of_data;
             this.IsSucceed = _isSucceed;
             this.Message = message;
+            this.InqueueTime = DateTime.Now;
             this.InvokedTime = DateTime.Now;
         }
     }

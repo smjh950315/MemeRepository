@@ -1,4 +1,4 @@
-using Cyh.DataHelper;
+using Cyh.DataModels;
 
 namespace Cyh.EFCore
 {
@@ -7,6 +7,5 @@ namespace Cyh.EFCore
     /// </summary>
     public class DbTransResult : DataTransResultBase
     {
-
     }
 }

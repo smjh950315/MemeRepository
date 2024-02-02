@@ -20,7 +20,7 @@ namespace Cyh.WebServices.AppConfigs
         /// <summary>
         /// 與登入有關的選項
         /// </summary>
-        public ILoginOptions LoginOptions { get; }
+        public IMyAuthorizationOptions LoginOptions { get; }
 
         /// <summary>
         /// 專案的基本路徑

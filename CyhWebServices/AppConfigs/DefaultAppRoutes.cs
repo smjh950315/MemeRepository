@@ -15,7 +15,7 @@ namespace Cyh.WebServices.AppConfigs
         /// 登入路徑
         /// </summary>
         public string Login {
-            get => this._Login ?? "Account/Login";
+            get => this._Login ?? "/Account/Login";
             set => this._Login = value;
         }
 
@@ -23,7 +23,7 @@ namespace Cyh.WebServices.AppConfigs
         /// 登出路徑
         /// </summary>
         public string Logout {
-            get => this._Logout ?? "Account/Logout";
+            get => this._Logout ?? "/Account/Logout";
             set => this._Logout = value;
         }
 

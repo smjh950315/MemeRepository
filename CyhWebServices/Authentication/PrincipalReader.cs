@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using System.Security.Principal;
 
 namespace Cyh.WebServices.Authentication
@@ -35,7 +35,7 @@ namespace Cyh.WebServices.Authentication
         /// <summary>
         /// 當前 USER 綁定的 CLAIM
         /// </summary>
-        public ReadOnlyClaimList Claims => new(_Claims);
+        public IReadOnlyClaimList Claims => new ClaimList(this._Claims);
 
         public PrincipalReader(ClaimsPrincipal? user) => _Principal = user;
 

@@ -1,4 +1,6 @@
-﻿namespace Cyh.DataHelper
+﻿using Cyh.DataModels;
+
+namespace Cyh.DataHelper
 {
     /// <summary>
     /// 資料驗證器

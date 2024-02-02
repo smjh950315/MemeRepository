@@ -1,37 +1,52 @@
-﻿using Cyh.Modules.ModAuthentication;
+using Cyh.Common;
+using Cyh.Modules.ModAuthentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Collections;
 using System.Security.Claims;
 
 namespace Cyh.WebServices.Authentication
 {
-    public class ReadOnlyClaimList
+    public interface IReadOnlyClaimList : IEnumerable<Claim>
     {
-        IEnumerable<Claim>? _Claims;
-        public string? this[string _ClaimType] {
-            get => _Claims?.FirstOrDefault(c => c.Type == _ClaimType)?.Value;
-        }
-        public ReadOnlyClaimList(IEnumerable<Claim>? _claims) {
-            _Claims = _claims;
-        }
+        public string? this[string _claimType] { get; }
     }
-    public class ClaimList
+
+    public class ClaimList : IReadOnlyClaimList
     {
-        List<Claim> _Claims = new();
-        public string? this[string _ClaimType] {
-            get => _Claims.FirstOrDefault(c => c.Type == _ClaimType)?.Value;
+        List<Claim>? _Claims;
+
+        public string? this[string claimType] {
+            get {
+                if (this._Claims == null)
+                    return null;
+                return this._Claims.FirstOrDefault(c => c.Type == claimType)?.Value;
+            }
             set {
                 if (value == null)
                     return;
-                Claim? _Fnd = _Claims.Find(c => c.Type == _ClaimType);
-                if (_Fnd != null) {
-                    if (_Fnd.Value != value) {
-                        _Claims.Remove(_Fnd);
-                    }
+                if (this._Claims == null) {
+                    this._Claims = new List<Claim>
+                    {
+                        new Claim(claimType, value)
+                    };
+                } else if (!this._Claims.Any()) {
+                    this._Claims.Add(new Claim(claimType, value));
                 } else {
-                    _Claims.Add(new Claim(_ClaimType, value));
+                    Claim? find = this._Claims.Find(c => c.Type == claimType);
+                    if (find != null) {
+                        if (find.Value != value) {
+                            this._Claims.Remove(find);
+                        } else { }
+                    } else {
+                        this._Claims.Add(new Claim(claimType, value));
+                    }
                 }
             }
+        }
+        public ClaimList() { }
+        public ClaimList(IEnumerable<Claim>? _claims) {
+            this._Claims = _claims?.ToList();
         }
 
         public static implicit operator ClaimList(ClaimsIdentity claims) {
@@ -41,9 +56,15 @@ namespace Cyh.WebServices.Authentication
             }
             return _Ret;
         }
-
         public static implicit operator List<Claim>(ClaimList claims) {
-            return claims._Claims;
+            return claims._Claims ?? new();
+        }
+
+        public IEnumerator<Claim> GetEnumerator() {
+            return this._Claims?.GetEnumerator() ?? Enumerable.Empty<Claim>().GetEnumerator();   
+        }
+        IEnumerator IEnumerable.GetEnumerator() {
+            return this.GetEnumerator();
         }
     }
 
@@ -82,10 +103,10 @@ namespace Cyh.WebServices.Authentication
         /// </summary>
         public string Scheme {
             get {
-                return _AuthenticationScheme ?? DefaultScheme;
+                return this._AuthenticationScheme ?? DefaultScheme;
             }
             set {
-                _AuthenticationScheme = value;
+                this._AuthenticationScheme = value;
             }
         }
 
@@ -93,8 +114,8 @@ namespace Cyh.WebServices.Authentication
         /// Claim 規則
         /// </summary>
         public string? Role {
-            get => Claims[ClaimTypes.Role];
-            set => Claims[ClaimTypes.Role] = value;
+            get => this.Claims[ClaimTypes.Role];
+            set => this.Claims[ClaimTypes.Role] = value;
         }
 
         /// <summary>
@@ -107,55 +128,55 @@ namespace Cyh.WebServices.Authentication
         /// </summary>
         public ClaimsIdentity Identity {
             get {
-                if (_Identity == null)
-                    _Identity = new ClaimsIdentity(Scheme);
+                if (this._Identity == null)
+                    this._Identity = new ClaimsIdentity(this.Scheme);
 
-                var claimed = _Identity.Claims.ToList();
+                var claimed = this._Identity.Claims.ToList();
 
                 foreach (var claim in claimed) {
-                    _Identity.RemoveClaim(claim);
+                    this._Identity.RemoveClaim(claim);
                 }
 
-                _Identity.AddClaims((List<Claim>)Claims);
-                return _Identity;
+                this._Identity.AddClaims((List<Claim>)this.Claims);
+                return this._Identity;
             }
         }
 
         /// <summary>
         /// 以到目前為止加入的資訊取得Principal
         /// </summary>
-        public ClaimsPrincipal Principal => new ClaimsPrincipal(Identity);
+        public ClaimsPrincipal Principal => new ClaimsPrincipal(this.Identity);
 
         /// <summary>
         /// 以到目前為止加入的資訊取得Property(就是登入選項)
         /// </summary>
         public AuthenticationProperties Property {
             get {
-                return _Property ??= DefaultProperties;
+                return this._Property ??= DefaultProperties;
             }
             set {
-                _Property = value;
+                this._Property = value;
             }
         }
 
         /// <summary>
         /// 設定要用來當作識別的使用者ID
         /// </summary>
-        /// <param name="_userId">要用來當作識別的使用者ID</param>
+        /// <param name="clientId">要用來當作識別的使用者ID</param>
         public void SetClientId(string clientId) {
-            Claims[ClaimTypes.Name] = clientId;
+            this.Claims[ClaimTypes.Name] = clientId;
         }
 
         /// <summary>
         /// 設定與登入有關的資訊
         /// </summary>
         /// <param name="_options">與登入有關的資訊</param>
-        public void SetLoginOptions(ILoginOptions _options) {
-            if (_Property == null) {
-                _Property = new AuthenticationProperties();
-                _Property.AllowRefresh = _options.AllowRefresh;
-                _Property.ExpiresUtc = DateTimeOffset.Now.AddMinutes(_options.ExpireTime);
-                _Property.IsPersistent = _options.IsPersist;
+        public void SetLoginOptions(IMyAuthorizationOptions _options) {
+            if (this._Property == null) {
+                this._Property = new AuthenticationProperties();
+                this._Property.AllowRefresh = _options.AllowRefresh;
+                this._Property.ExpiresUtc = DateTimeOffset.Now.AddMinutes(_options.ExpireTime);
+                this._Property.IsPersistent = _options.IsPersist;
             }
         }
 
@@ -171,7 +192,7 @@ namespace Cyh.WebServices.Authentication
                 if (claims.IsNullOrEmpty())
                     return;
                 foreach (var claim in claims) {
-                    Claims[claim.Type] = claim.Value;
+                    this.Claims[claim.Type] = claim.Value;
                 }
             }
         }
@@ -181,7 +202,7 @@ namespace Cyh.WebServices.Authentication
         /// </summary>
         public ClaimHelper(string? _AppName = null) {
             if (_AppName != null)
-                Claims[ClaimTypes.NameIdentifier] = _AppName;
+                this.Claims[ClaimTypes.NameIdentifier] = _AppName;
         }
     }
 }

@@ -1,6 +1,4 @@
-#pragma warning disable IDE1006 // 命名樣式
-#pragma warning disable IDE0049 // 命名樣式
-using Cyh.DataHelper;
+using Cyh.DataModels;
 
 namespace Cyh.Modules.ModAutoBatch
 {

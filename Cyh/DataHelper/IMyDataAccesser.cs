@@ -31,6 +31,5 @@ namespace Cyh.DataHelper
     /// </summary>
     public interface IMyDataAccesser<T> : IMyDataAccesser, IWritableDataAccesser<T>, IReadOnlyDataAccesser<T>
     {
-
     }
 }

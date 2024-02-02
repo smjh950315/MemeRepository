@@ -1,4 +1,5 @@
 using Cyh.DataHelper;
+using Cyh.DataModels;
 using Cyh.EFCore.Interface;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,69 +49,90 @@ namespace Cyh.EFCore
 
         public DbEntityCRUD(IDbContext? dbContext) : base(dbContext) { }
 
+        private void _AddOrUpdate(TEntity? entity) {
+            if (entity == null) return;
+            if (entity is IModelWithKey withKey) {
+#pragma warning disable CS8602
+                TEntity? model = this.Entities.Find(withKey.GetKey());
+#pragma warning restore
+                if (model == null) {
+                    this.Entities.Add(entity);
+                } else {
+                    if (model is IUpdateableModel<TEntity> upd) {
+                        upd.UpdateFrom(entity);
+                    }
+                    this.Entities.Update(model);
+                }
+            }
+        }
+
         public void SetAccesserId(string accesserId) {
             this._AccesserId = accesserId;
         }
 
-        public bool TryAddOrUpdate(TEntity data) {
+        public bool TryAddOrUpdate(TEntity data, IDataTransResult? prevResult = null, bool execNow = true) {
             if (!this.IsAccessable)
                 return false;
-            try {
 #pragma warning disable CS8602
-                this.Entities.Update(data);
-                this._Context.SaveChanges();
-#pragma warning restore CS8602
+            try {
+                // 不立即執行則先設定為 false
+                prevResult.TryAppendTransResult(false);
+
+                this._AddOrUpdate(data);
+
+                if (execNow) {
+                    // 立即執行
+                    this._Context.SaveChanges();
+                    // 執行成功，
+                    prevResult.BatchOnFinish(true);
+                }
                 return true;
             } catch (Exception ex) {
                 this.HandleException(ex);
+                if (prevResult != null)
+                    prevResult.Message = ex.Message;
+
+                if (!execNow)
+                    return true;
+                    
+                prevResult.BatchOnFinish(false);
                 return false;
             }
+#pragma warning restore CS8602
         }
 
-        public IDataTransResult TryAddOrUpdate(IEnumerable<TEntity> dataInput) {
+        public IDataTransResult TryAddOrUpdate(IEnumerable<TEntity> dataInput, IDataTransResult? prevResult = null, bool execNow = true) {
             if (!this.IsAccessable || dataInput.IsNullOrEmpty())
                 return this.EmptyResult;
 
-
-            IDataTransResult result = this.EmptyResult;
-
-            int index = 0;
-            TransDetails[]? transDetails = null;
-            if (this.VeryDetail)
-                transDetails = new TransDetails[dataInput.Count()];
-
-            foreach (TEntity data in dataInput) {
+            IDataTransResult result = prevResult ?? this.EmptyResult;
 #pragma warning disable CS8602
-                if (data == null) {
-                    transDetails[index] = new TransDetails(index, false, "null data input!");
-                    index++;
-                    continue;
+            try {
+                foreach (TEntity data in dataInput) {
+                    result.TryAppendTransResult(false);
+
+                    this._AddOrUpdate(data);
+
                 }
-                this.Entities.Update(data);
-                result.TotalTransCount++;
-                try {
+                if (execNow) {
                     this._Context.SaveChanges();
-                    result.SucceedTransCount++;
-                    if (this.VeryDetail)
-                        transDetails[index] = new TransDetails(index, true);
-                } catch (Exception ex) {
-                    if (this.VeryDetail)
-                        transDetails[index] = new TransDetails(index, false, ex.Message);
-                    this.HandleException(ex);
+                    result.BatchOnFinish(true);
                 }
-#pragma warning restore CS8602
-                index++;
+            } catch (Exception ex) {
+                this.HandleException(ex);
+
+                if (prevResult != null)
+                    prevResult.Message = ex.Message;
+
+                if (execNow)
+                    result.BatchOnFinish(false);
             }
-            if (this.VeryDetail)
-#pragma warning disable CS8601
-                result.TransDetails = transDetails;
-#pragma warning restore CS8601
-            result.EndTime = DateTime.Now;
+#pragma warning restore CS8602
             return result;
         }
 
-        public bool TryAddOrUpdateSingle(object? dataInput) {
-            return this.TryAddOrUpdateSingleT(dataInput);
+        public bool TryAddOrUpdateSingle(object? dataInput, IDataTransResult? prevResult = null, bool execNow = true) {
+            return this.TryAddOrUpdateSingleT(dataInput, prevResult, execNow);
         }
 
         public virtual void HandleException(Exception? exception) {
@@ -118,6 +140,5 @@ namespace Cyh.EFCore
                 return;
             Console.WriteLine(exception.GetDetails().ToString());
         }
-
     }
 }

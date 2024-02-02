@@ -1,4 +1,4 @@
-﻿using Cyh.WebServices.AppConfigs;
+using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.Controller;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -92,7 +92,7 @@ namespace Cyh.WebServices.Authentication
         /// <param name="dataProtectProvider">An interface that can be used to create <see cref="IDataProtector"/> instances</param>
         /// <returns>資料安全相關的格式設定</returns>
         public static ISecureDataFormat<AuthenticationTicket> TicketDataFormat(this ICookieAuthenticOptions options, IDataProtectionProvider dataProtectProvider) {
-            var dataProtecter = dataProtectProvider.CreateProtector(CookieAuthenticationDefaults.AuthenticationScheme);
+            IDataProtector dataProtecter = dataProtectProvider.CreateProtector(CookieAuthenticationDefaults.AuthenticationScheme);
             return new TicketDataFormat(dataProtecter);
         }
     }

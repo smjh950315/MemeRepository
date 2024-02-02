@@ -1,4 +1,4 @@
-﻿using Cyh.Modules.ModAuthentication;
+using Cyh.Modules.ModAuthentication;
 using Cyh.Modules.ModIdentity;
 using Cyh.Modules.ModRoleSystem;
 using Cyh.WebServices.Authentication;
@@ -14,7 +14,8 @@ namespace Cyh.WebServices.Controller
         /// <summary>
         /// 登入選項
         /// </summary>
-        ILoginOptions? LoginOptions { get; }
+        IMyAuthorizationOptions? LoginOptions { get; }
+
         /// <summary>
         /// 登入用的模型
         /// </summary>

@@ -1,4 +1,4 @@
-﻿namespace Cyh.EFCore.Interface
+namespace Cyh.EFCore.Interface
 {
     /// <summary>
     /// DB CRUD 的介面
@@ -14,5 +14,4 @@
     public interface IDbCRUD<TEntity> : IDbQuery<TEntity> where TEntity : class
     {
     }
-
 }

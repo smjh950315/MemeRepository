@@ -43,7 +43,7 @@ namespace Cyh.Common
             get {
                 this._Stacks ??= new();
                 if (!this.StackTrace.IsNullOrEmpty()) {
-                    var array = this.StackTrace.Split("\n   at ");
+                    string[] array = this.StackTrace.Split("\n   at ");
                     this._Stacks.AddRange(array);
                 }
                 return this._Stacks;

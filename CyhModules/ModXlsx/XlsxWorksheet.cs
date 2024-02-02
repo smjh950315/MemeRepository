@@ -1,4 +1,3 @@
-#pragma warning disable IDE1006
 using ClosedXML.Excel;
 using Cyh.Modules.ModXlsx.Iterator;
 using System.Collections;
@@ -9,7 +8,6 @@ namespace Cyh.Modules.ModXlsx
     {
         string _SheetName;
         internal XlsxWorkbook _MyWorkBook;
-
         internal IXLWorksheet _Worksheet {
             get {
                 IXLWorksheet? workSheet = CommonLib.TryGetValue(fn => this._MyWorkBook?._Workbook?.Worksheet(_SheetName), null);
@@ -18,32 +16,10 @@ namespace Cyh.Modules.ModXlsx
                 return workSheet;
             }
         }
-
-        private IXLWorksheet __Unchecked_CreateSheet(string name) {
+        IXLWorksheet __Unchecked_CreateSheet(string name) {
 #pragma warning disable CS8603
             return this._MyWorkBook._Workbook?.AddWorksheet(name);
 #pragma warning restore CS8603
-        }
-
-        public XlsxSheetRow this[int rowNumber] {
-            get {
-                return new XlsxSheetRow(this, rowNumber);
-            }
-        }
-
-        public bool IsValid => this._Worksheet != null;
-
-        public string SheetName {
-            get {
-                return this._SheetName;
-            }
-            set {
-                IXLWorksheet? worksheet = this._Worksheet;
-                if (worksheet == null)
-                    throw new InvalidOperationException("current worksheet is invalid!");
-                worksheet.Name = value;
-                this._SheetName = value;
-            }
         }
 
         /// <summary>
@@ -58,13 +34,46 @@ namespace Cyh.Modules.ModXlsx
             }
         }
 
+
+        /// <summary>
+        /// 用行號取得資料行
+        /// </summary>
+        /// <param name="rowNumber">行號</param>
+        /// <returns>資料行</returns>
+        public XlsxSheetRow this[int rowNumber] {
+            get {
+                return new XlsxSheetRow(this, rowNumber);
+            }
+        }
+
+        /// <summary>
+        /// 該資料表是否有效
+        /// </summary>
+        public bool IsValid => this._Worksheet != null;
+
+        /// <summary>
+        /// 該資料表的名稱
+        /// </summary>
+        public string SheetName {
+            get {
+                return this._SheetName;
+            }
+            set {
+                IXLWorksheet? worksheet = this._Worksheet;
+                if (worksheet == null)
+                    throw new InvalidOperationException("current worksheet is invalid!");
+                worksheet.Name = value;
+                this._SheetName = value;
+            }
+        }
+
+
+
         public IEnumerator<XlsxSheetRow> GetEnumerator() {
             return new IterSheetRow(this);
         }
-
         IEnumerator IEnumerable.GetEnumerator() {
             return this.GetEnumerator();
         }
-
     }
 }

@@ -8,7 +8,7 @@ namespace MemeRepository.AppConfigs
         public string? Password { get; set; }
     }
 
-    public class LoginOptions : ILoginOptions
+    public class LoginOptions : IMyAuthorizationOptions
     {
         public bool IsPersist => true;
 
