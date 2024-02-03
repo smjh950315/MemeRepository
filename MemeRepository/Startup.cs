@@ -1,4 +1,5 @@
-﻿using Cyh.EFCore.Interface;
+using Cyh.DataHelper;
+using Cyh.EFCore.Interface;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.AppStartup;
 using MemeRepository.Db.Accesser;
@@ -56,6 +57,8 @@ namespace MemeRepository
             });
 
             services.AddScoped<IDbContext, MyDbContext>();
+            services.AddScoped<IDataManagerActivator, MyDataActivator>();
+            services.AddScoped<IDataManager<IMAGE>, DataManagerBase<IMAGE>>();
 
             this.RegisterRazorPages();
 

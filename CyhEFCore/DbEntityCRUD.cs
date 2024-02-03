@@ -51,10 +51,9 @@ namespace Cyh.EFCore
 
         private void _AddOrUpdate(TEntity? entity) {
             if (entity == null) return;
-            if (entity is IModelWithKey withKey) {
 #pragma warning disable CS8602
+            if (entity is IModelWithKey withKey) {
                 TEntity? model = this.Entities.Find(withKey.GetKey());
-#pragma warning restore
                 if (model == null) {
                     this.Entities.Add(entity);
                 } else {
@@ -63,7 +62,10 @@ namespace Cyh.EFCore
                     }
                     this.Entities.Update(model);
                 }
+            } else {
+                this.Entities.Add(entity);
             }
+#pragma warning restore
         }
 
         public void SetAccesserId(string accesserId) {
@@ -94,7 +96,7 @@ namespace Cyh.EFCore
 
                 if (!execNow)
                     return true;
-                    
+
                 prevResult.BatchOnFinish(false);
                 return false;
             }

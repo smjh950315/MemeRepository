@@ -9,13 +9,13 @@ namespace Cyh.DataHelper
             throw new NotImplementedException();
         }
         public virtual IDataManager<T>? GetDefault<T>() {
-            throw new NotImplementedException();
+            return new DataManagerBase<T>();
         }
         public virtual IDataManager<T, U>? GetDefault<T, U>() {
-            throw new NotImplementedException();
+            return new DataManagerBase<T, U>();
         }
         public virtual IDataManager<T, U, V>? GetDefault<T, U, V>() {
-            throw new NotImplementedException();
+            return new DataManagerBase<T, U, V>();
         }
     }
 

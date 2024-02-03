@@ -1,4 +1,4 @@
-﻿using Cyh.DataHelper;
+using Cyh.DataHelper;
 using Cyh.EFCore;
 using Cyh.EFCore.Interface;
 using Cyh.WebServices.AppConfigs;
