@@ -113,6 +113,7 @@ namespace Cyh.WebServices.Controller
         /// 儲存資料模型集合
         /// </summary>
         /// <param name="dataModels">資料模型集合</param>
+        /// <param name="execNow">是否立即執行</param>
         /// <returns>執行結果</returns>
         protected IDataTransResult SaveDataModels(IEnumerable<DataModel> dataModels, bool execNow = false) {
             if (dataModels.IsNullOrEmpty())
@@ -123,7 +124,6 @@ namespace Cyh.WebServices.Controller
             IDataTransResult result = this.EmptyResult;
             return dataManager.SaveMainForms(dataModels, result, execNow) ?? this.EmptyResult;
         }
-
 
         /// <summary>
         /// 取得資料模型

@@ -59,12 +59,13 @@ namespace MemeRepository
             services.AddScoped<IDbContext, MyDbContext>();
             services.AddScoped<IDataManagerActivator, MyDataActivator>();
             services.AddScoped<IDataManager<Image>, DataManagerBase<Image>>();
+            services.AddScoped<IDataManager<Tag>, DataManagerBase<Tag>>();
+            services.AddScoped<IDataManager<Category>, DataManagerBase<Category>>();
 
             this.RegisterRazorPages();
-
             this.RegisterSignalR();
-
         }
+
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             MyStartup.SetStartupRequirements(app, env);
 

@@ -2,15 +2,13 @@ using Cyh.DataHelper;
 using Cyh.DataModels;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.Controller;
-using MemeRepository.Db.Interface;
 using MemeRepository.Db.Models;
-using MemeRepository.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MemeRepository.Controllers
 {
     [ApiController]
-    [Route("api/test")]
+    [Route("api/image")]
     public class ApiImageController : MyCastableModelController<Image>
     {
         public ApiImageController(
@@ -30,7 +28,7 @@ namespace MemeRepository.Controllers
         [Route("save/single")]
         [HttpPost]
         public IDataTransResult SaveViewModel(IEnumerable<Image> imageViewModel) {
-            return this.SaveDataModels(imageViewModel);
+            return this.SaveDataModels(imageViewModel, true);
         }
 
     }
