@@ -7,11 +7,13 @@ namespace MemeRepository.Db.Models
 {
     public partial class MemeRepositoryContext : DbContext
     {
-        public MemeRepositoryContext() {
+        public MemeRepositoryContext()
+        {
         }
 
         public MemeRepositoryContext(DbContextOptions<MemeRepositoryContext> options)
-            : base(options) {
+            : base(options)
+        {
         }
 
         public virtual DbSet<Category> Category { get; set; } = null!;
