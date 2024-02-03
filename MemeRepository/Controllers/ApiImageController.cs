@@ -11,26 +11,26 @@ namespace MemeRepository.Controllers
 {
     [ApiController]
     [Route("api/test")]
-    public class TestController : MyCastableModelController<IMAGE, ImageViewModel, IMemeImage>
+    public class ApiImageController : MyCastableModelController<Image>
     {
-        public TestController(
+        public ApiImageController(
             IWebAppConfigurations webAppConfigurations,
             IDataManagerActivator dataManagerActivator,
-            IDataManager<IMAGE> dataManager)
+            IDataManager<Image> dataManager)
             : base(webAppConfigurations, dataManagerActivator, dataManager) {
 
         }
 
         [Route("get/single")]
         [HttpGet]
-        public ImageViewModel? GetImageViewModel(long id) {
-            return this.GetViewModel(x => x.ID == id);
+        public Image? GetImageViewModel(long id) {
+            return this.GetDataModel(x => x.ImageID == id);
         }
 
         [Route("save/single")]
         [HttpPost]
-        public IDataTransResult SaveViewModel(ImageViewModel imageViewModel) {
-            return this.SaveFromViewModels(new ImageViewModel[] { imageViewModel }, true);
+        public IDataTransResult SaveViewModel(IEnumerable<Image> imageViewModel) {
+            return this.SaveDataModels(imageViewModel);
         }
 
     }

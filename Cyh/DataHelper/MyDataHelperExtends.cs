@@ -246,7 +246,8 @@ namespace Cyh.DataHelper
         }
     }
 
-    public static partial class MyDataHelperExtends {
+    public static partial class MyDataHelperExtends
+    {
         /// <summary>
         /// 活性化資料管理器
         /// </summary>
@@ -426,6 +427,19 @@ namespace Cyh.DataHelper
         /// <summary>
         /// 取得資料單頭的集合
         /// </summary>
+        /// <typeparam name="MF">資料的模型</typeparam>
+        /// <param name="expression">條件表達式</param>
+        /// <returns>符合條件的資料集合</returns>
+        public static IEnumerable<MF> GetMainForms<MF>(this IDataManager<MF>? formMgr,
+            int begin, int count, Expression<Func<MF, bool>>? expression) {
+            if (!formMgr.SourceIsValid())
+                return Enumerable.Empty<MF>();
+            return formMgr.MainDataSource?.TryGetDatas(begin, count, expression) ?? Enumerable.Empty<MF>();
+        }
+
+        /// <summary>
+        /// 取得資料單頭的集合
+        /// </summary>
         /// <typeparam name="MF">資料單頭的模型</typeparam>
         /// <typeparam name="TF">資料單身的模型</typeparam>
         /// <param name="expression">條件表達式</param>
@@ -545,6 +559,25 @@ namespace Cyh.DataHelper
                 return Enumerable.Empty<TOut>();
 #pragma warning disable CS8604
             return formManager.MainDataSource.TryGetDatasAs(selector, expression);
+#pragma warning restore CS8604
+        }
+
+        /// <summary>
+        /// 取得資料相關的資料模型的集合
+        /// </summary>
+        /// <typeparam name="TForm">資料的模型</typeparam>
+        /// <typeparam name="TOut">資料相關的資料模型</typeparam>
+        /// <param name="selector">從資料模型到資料相關的資料模型的 selector</param>
+        /// <param name="expression">條件表達式</param>
+        /// <returns>資料相關的資料模型的集合</returns>
+        public static IEnumerable<TOut> GetMainFormsAs<TForm, TOut>(this IDataManager<TForm>? formManager,
+            Expression<Func<TForm, TOut>>? selector,
+            int begin, int count,
+            Expression<Func<TForm, bool>>? expression) {
+            if (!formManager.SourceIsValid())
+                return Enumerable.Empty<TOut>();
+#pragma warning disable CS8604
+            return formManager.MainDataSource.TryGetDatasAs(selector, begin, count, expression);
 #pragma warning restore CS8604
         }
 

@@ -54,19 +54,11 @@ namespace Cyh.WebServices.Controller
         }
     }
 
-    /// <summary>
-    /// 可以在 DataModel 與 ViewModel 間轉換存取的控制器基本實作，ViewModel 必須先繼承 ISelectableModel 並實作轉換函數
-    /// </summary>
-    /// <typeparam name="DataModel">DataModel</typeparam>
-    /// <typeparam name="ViewModel">ViewModel，必須先繼承 ISelectableModel 並實作轉換函數</typeparam>
-    /// <typeparam name="IModel">DataModel與ViewModel的共同介面</typeparam>
-    public class MyCastableModelController<DataModel, ViewModel, IModel> : MyCastableModelController
-        where DataModel : class, IModel, new()
-        where ViewModel : class, IModel, ISelectableModel<ViewModel, IModel>, new()
+    public class MyCastableModelController<DataModel> : MyCastableModelController where DataModel : class
     {
         IDataManager _ThisManagerBase;
         IDataManager<DataModel>? _ThisManager;
-        protected IEnumerable<ViewModel> EmptyViewModels => Enumerable.Empty<ViewModel>();
+        protected IEnumerable<DataModel> EmptyDataModels => Enumerable.Empty<DataModel>();
         protected MyCastableModelController(
             IWebAppConfigurations webAppConfigurations,
             IDataManagerActivator dataManagerActivator,
@@ -82,6 +74,107 @@ namespace Cyh.WebServices.Controller
         /// <returns>活性化後的資料管理器，如果活性化失敗，回傳 null</returns>
         protected TManager? GetManager<TManager>() where TManager : class, IDataManager<DataModel> {
             return this.GetDataManager<TManager, DataModel>(this._ThisManagerBase, ref this._ThisManager);
+        }
+
+        /// <summary>
+        /// 取得資料模型
+        /// </summary>
+        /// <param name="expression">條件式</param>
+        /// <returns>資料模型</returns>
+        protected DataModel? GetDataModel(Expression<Func<DataModel, bool>> expression) {
+            return this
+                .GetManager<IDataManager<DataModel>>()
+                .GetMainForm(expression);
+        }
+
+        /// <summary>
+        /// 取得資料模型集合
+        /// </summary>
+        /// <param name="expression">條件式</param>
+        /// <returns>資料模型集合</returns>
+        protected IEnumerable<DataModel> GetDataModels(Expression<Func<DataModel, bool>>? expression = null) {
+            return this
+                .GetManager<IDataManager<DataModel>>()
+                .GetMainForms(expression);
+        }
+
+        /// <summary>
+        /// 取得資料模型集合
+        /// </summary>
+        /// <param name="expression">條件式</param>
+        /// <returns>資料模型集合</returns>
+        protected IEnumerable<DataModel> GetDataModels(int begin, int count, Expression<Func<DataModel, bool>>? expression = null) {
+            return this
+                .GetManager<IDataManager<DataModel>>()
+                .GetMainForms(begin, count, expression);
+        }
+
+        /// <summary>
+        /// 儲存資料模型集合
+        /// </summary>
+        /// <param name="dataModels">資料模型集合</param>
+        /// <returns>執行結果</returns>
+        protected IDataTransResult SaveDataModels(IEnumerable<DataModel> dataModels, bool execNow = false) {
+            if (dataModels.IsNullOrEmpty())
+                return this.EmptyResult;
+            IDataManager<DataModel>? dataManager = this.GetManager<IDataManager<DataModel>>();
+            if (dataManager == null)
+                return this.EmptyResult;
+            IDataTransResult result = this.EmptyResult;
+            return dataManager.SaveMainForms(dataModels, result, execNow) ?? this.EmptyResult;
+        }
+
+
+        /// <summary>
+        /// 取得資料模型
+        /// </summary>
+        /// <param name="expression">條件式</param>
+        /// <returns>資料模型</returns>
+        protected TOut? GetDataModelAs<TOut>(Expression<Func<DataModel, TOut>>? selector, Expression<Func<DataModel, bool>> expression) {
+            return this
+                .GetManager<IDataManager<DataModel>>()
+                .GetMainFormAs(selector, expression);
+        }
+
+        /// <summary>
+        /// 取得資料模型集合
+        /// </summary>
+        /// <param name="expression">條件式</param>
+        /// <returns>資料模型集合</returns>
+        protected IEnumerable<TOut> GetDataModelsAs<TOut>(Expression<Func<DataModel, TOut>>? selector, Expression<Func<DataModel, bool>>? expression = null) {
+            return this
+                .GetManager<IDataManager<DataModel>>()
+                .GetMainFormsAs(selector, expression);
+        }
+
+        /// <summary>
+        /// 取得資料模型集合
+        /// </summary>
+        /// <param name="expression">條件式</param>
+        /// <returns>資料模型集合</returns>
+        protected IEnumerable<TOut> GetDataModelsAs<TOut>(Expression<Func<DataModel, TOut>>? selector, int begin, int count, Expression<Func<DataModel, bool>>? expression = null) {
+            return this
+                .GetManager<IDataManager<DataModel>>()
+                .GetMainFormsAs(selector, begin, count, expression);
+        }
+    }
+
+    /// <summary>
+    /// 可以在 DataModel 與 ViewModel 間轉換存取的控制器基本實作，ViewModel 必須先繼承 ISelectableModel 並實作轉換函數
+    /// </summary>
+    /// <typeparam name="DataModel">DataModel</typeparam>
+    /// <typeparam name="ViewModel">ViewModel，必須先繼承 ISelectableModel 並實作轉換函數</typeparam>
+    /// <typeparam name="IModel">DataModel與ViewModel的共同介面</typeparam>
+    public class MyCastableModelController<DataModel, ViewModel, IModel> : MyCastableModelController<DataModel>
+        where DataModel : class, IModel, new()
+        where ViewModel : class, IModel, ISelectableModel<ViewModel, IModel>, new()
+    {
+        protected IEnumerable<ViewModel> EmptyViewModels => Enumerable.Empty<ViewModel>();
+        protected MyCastableModelController(
+            IWebAppConfigurations webAppConfigurations,
+            IDataManagerActivator dataManagerActivator,
+            IDataManager dataManagerBase)
+            : base(webAppConfigurations, dataManagerActivator, dataManagerBase) {
         }
 
         /// <summary>
