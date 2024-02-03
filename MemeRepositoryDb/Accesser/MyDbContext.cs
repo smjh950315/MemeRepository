@@ -1,4 +1,4 @@
-﻿using Cyh.EFCore.Interface;
+using Cyh.EFCore.Interface;
 using MemeRepository.Db.Models;
 using Microsoft.EntityFrameworkCore;
 

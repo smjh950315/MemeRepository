@@ -3,8 +3,10 @@ using Cyh.EFCore;
 using Cyh.EFCore.Interface;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.Controller;
+using DocumentFormat.OpenXml.Bibliography;
 using MemeRepository.Db.Models;
 using Microsoft.AspNetCore.Mvc;
+using Tag = MemeRepository.Db.Models.Tag;
 
 namespace MemeRepository.Controllers
 {
@@ -14,31 +16,31 @@ namespace MemeRepository.Controllers
     {
         IDbContext _DbContext;
 
-        IMyDataAccesser<TAG>? _TagAccesser;
-        IMyDataAccesser<IMAGE>? _ImageAccesser;
-        IMyDataAccesser<TAG_BINDING>? _TagBindingAccesser;
+        IMyDataAccesser<Tag>? _TagAccesser;
+        IMyDataAccesser<Image>? _ImageAccesser;
+        IMyDataAccesser<Category>? _CategoryAccesser;
 
-        IMyDataAccesser<TAG>? TagAccesser {
+        IMyDataAccesser<Tag>? TagAccesser {
             get {
-                _TagAccesser ??= new DbEntityCRUD<TAG>(this._DbContext);
+                _TagAccesser ??= new DbEntityCRUD<Tag>(this._DbContext);
                 return _TagAccesser;
             }
         }
-        IMyDataAccesser<IMAGE>? ImageAccesser {
+        IMyDataAccesser<Image>? ImageAccesser {
             get {
-                _ImageAccesser ??= new DbEntityCRUD<IMAGE>(this._DbContext);
+                _ImageAccesser ??= new DbEntityCRUD<Image>(this._DbContext);
                 return _ImageAccesser;
             }
         }
-        IMyDataAccesser<TAG_BINDING>? TagBindingAccesser {
+        IMyDataAccesser<Category>? CategoryAccesser {
             get {
-                _TagBindingAccesser ??= new DbEntityCRUD<TAG_BINDING>(this._DbContext);
-                return _TagBindingAccesser;
+                _CategoryAccesser ??= new DbEntityCRUD<Category>(this._DbContext);
+                return _CategoryAccesser;
             }
         }
 
         bool AllAccesserIsValid {
-            get => TagAccesser != null && ImageAccesser != null && TagBindingAccesser != null;
+            get => TagAccesser != null && ImageAccesser != null && CategoryAccesser != null;
             set { }
         }
 
@@ -55,7 +57,7 @@ namespace MemeRepository.Controllers
             if (!AllAccesserIsValid)
                 return Enumerable.Empty<long>();
 
-            return TagAccesser?.TryGetDatasAs(x => x.ID) ?? Enumerable.Empty<long>();
+            return TagAccesser?.TryGetDatasAs(x => x.TagID) ?? Enumerable.Empty<long>();
         }
         [Route("tag/get_names")]
         [HttpGet]
@@ -63,16 +65,37 @@ namespace MemeRepository.Controllers
             if (!AllAccesserIsValid)
                 return Enumerable.Empty<string>();
 
-            return TagAccesser?.TryGetDatasAs(x => x.NAME) ?? Enumerable.Empty<string>();
+            return TagAccesser?.TryGetDatasAs(x => x.TagName) ?? Enumerable.Empty<string>();
         }
 
         [Route("tag/get_all")]
         [HttpGet]
-        public IEnumerable<TAG> GetTags() {
+        public IEnumerable<Tag> GetTags() {
             if (!AllAccesserIsValid)
-                return Enumerable.Empty<TAG>();
+                return Enumerable.Empty<Tag>();
 
-            return TagAccesser?.TryGetDatas() ?? Enumerable.Empty<TAG>();
+            return TagAccesser?.TryGetDatas() ?? Enumerable.Empty<Tag>();
+        }
+
+        [Route("category/get_all")]
+        [HttpGet]
+        public IEnumerable<Category> GetCategory() {
+            if (!AllAccesserIsValid)
+                return Enumerable.Empty<Category>();
+
+            return CategoryAccesser?.TryGetDatas().OrderByDescending(x => x.UpdateTime) ?? Enumerable.Empty<Category>();
+        }
+
+        [Route("category/Add_category")]
+        [HttpPost]
+        public bool AddCategory(string categoryName) {
+            if (!AllAccesserIsValid)
+                return false;
+            var cat = new Category();
+            cat.CategoryName = categoryName;
+            cat.CreateTime = DateTime.Now;
+            cat.UpdateTime = DateTime.Now;
+            return CategoryAccesser.TryAddOrUpdateSingleT(cat);
         }
     }
 }
