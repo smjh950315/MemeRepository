@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System.Diagnostics;
 
 namespace Cyh.EFCore.Interface
 {
@@ -9,6 +12,15 @@ namespace Cyh.EFCore.Interface
     /// </summary>
     public interface IDbContext : IDisposable
     {
+        /// <summary>
+        ///     The metadata about the shape of entities, the relationships between them, and how they map to the database.
+        ///     May not include all the information necessary to initialize the database.
+        /// </summary>
+        /// <remarks>
+        ///     See <see href="https://aka.ms/efcore-docs-modeling">Modeling entity types and relationships</see> for more information.
+        /// </remarks>
+        IModel Model { get; }
+
         /// <summary>
         ///     <para>
         ///         Creates a <see cref="DbSet{TEntity}" /> for a shared-type entity type that can be used to query and save

@@ -1,7 +1,10 @@
 using Cyh.DataHelper;
 using Cyh.DataModels;
 using Cyh.EFCore.Interface;
+using DocumentFormat.OpenXml.InkML;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System.Reflection;
 
 namespace Cyh.EFCore
 {
@@ -16,7 +19,25 @@ namespace Cyh.EFCore
         where TEntity : class
     {
         object? _Entities;
-        string? _AccesserId { get; set; }
+        string? _AccesserId;
+        static EntityTypeInfo? _EntityTypeInfo;
+
+        EntityTypeInfo EntityTypeInfo {
+            get {
+                _TryInitializeEntityTypeInfo(this._Context, this.DataType);
+#pragma warning disable CS8603
+                return _EntityTypeInfo;
+#pragma warning restore CS8603
+            }
+        }
+
+        static private void _TryInitializeEntityTypeInfo(IDbContext? dbContext, Type entityType) {
+            if (_EntityTypeInfo == null) {
+                _EntityTypeInfo = new(dbContext, entityType);
+            } else if (!_EntityTypeInfo.IsValid) {
+                _EntityTypeInfo.Reload(dbContext, entityType);
+            } else { }
+        }
 
         /// <summary>
         /// 特定類型的TABLE
@@ -47,25 +68,55 @@ namespace Cyh.EFCore
 
         public DbEntityCRUD() { }
 
-        public DbEntityCRUD(IDbContext? dbContext) : base(dbContext) { }
+        public DbEntityCRUD(IDbContext? dbContext) : base(dbContext) {
+            _TryInitializeEntityTypeInfo(dbContext, this.DataType);
+        }
+
+        private object? _TryGetEntityKeyValue(TEntity? entity) {
+            if (entity == null) return null;
+            try {
+                if (_EntityTypeInfo != null) {
+                    return ObjectHelper.TryGetValue(entity, _EntityTypeInfo.PrimaryKeyInfo);
+                } else {
+                    return null;
+                }
+            } catch {
+                return null;
+            }
+        }
+
+        private static int _TryUpdateAllExceptPrimaryKey(EntityTypeInfo entityTypeInfo, TEntity? entityOnBinding, TEntity? entityInput, bool passIfNull) {
+            if (entityOnBinding == null || entityInput == null) return 0;
+            IEnumerable<MemberInfo> entityMemberInfos = entityTypeInfo.Attributes;
+            int updateCount = 0;
+            foreach (MemberInfo entityMemberInfo in entityMemberInfos) {
+                object? inputValue = ObjectHelper.TryGetValue(entityInput, entityMemberInfo);
+                if (inputValue == null && passIfNull) {
+                    // do nothing...
+                } else {
+                    bool isSucceed = ObjectHelper.TrySetValue(entityOnBinding, entityMemberInfo, inputValue);
+                    if (isSucceed) updateCount++;
+                }
+            }
+            return updateCount;
+        }
 
         private void _AddOrUpdate(TEntity? entity) {
-            if (entity == null) return;
-#pragma warning disable CS8602
-            if (entity is IModelWithKey withKey) {
-                TEntity? model = this.Entities.Find(withKey.GetKey());
+            if (entity == null || !this.EntityTypeInfo.IsValid || this.Entities == null)
+                return;
+
+            if (this.EntityTypeInfo.HasPrimaryKey) {
+                TEntity? model = this.Entities.Find(this._TryGetEntityKeyValue(entity));
                 if (model == null) {
                     this.Entities.Add(entity);
                 } else {
-                    if (model is IUpdateableModel<TEntity> upd) {
-                        upd.UpdateFrom(entity);
+                    if (_TryUpdateAllExceptPrimaryKey(this.EntityTypeInfo, model, entity, false) != 0) {
+                        this.Entities.Update(model);
                     }
-                    this.Entities.Update(model);
                 }
             } else {
                 this.Entities.Add(entity);
             }
-#pragma warning restore
         }
 
         public void SetAccesserId(string accesserId) {
