@@ -1,60 +1,39 @@
 namespace Cyh.DataHelper
 {
     /// <summary>
-    /// 集合資料管理器的實體
+    /// 資料管理器的介面
     /// </summary>
     public class DataManagerBase : IDataManager
     {
-        public virtual IDataManager? GetDefault() {
-            throw new NotImplementedException();
-        }
-        public virtual IDataManager<T>? GetDefault<T>() {
-            return new DataManagerBase<T>();
-        }
-        public virtual IDataManager<T, U>? GetDefault<T, U>() {
-            return new DataManagerBase<T, U>();
-        }
-        public virtual IDataManager<T, U, V>? GetDefault<T, U, V>() {
-            return new DataManagerBase<T, U, V>();
-        }
     }
 
     /// <summary>
-    /// 集合資料管理器的實體
+    /// 資料管理器的介面
     /// </summary>
-    /// <typeparam name="MFEntity">表單的模型</typeparam>
-    public class DataManagerBase<MFEntity> : DataManagerBase, IDataManager<MFEntity>
+    /// <typeparam name="T">資料的模型</typeparam>
+    public class DataManagerBase<T> : DataManagerBase, IDataManager<T>
     {
-        public IMyDataAccesser<MFEntity>? MainDataSource { get; set; }
-        public override IDataManager? GetDefault() {
-            return new DataManagerBase<MFEntity>();
-        }
+        public IMyDataAccesser<T>? MainDataSource { get; set; }
     }
 
     /// <summary>
-    /// 集合資料管理器的實體
+    /// 資料管理器的介面
     /// </summary>
-    /// <typeparam name="MFEntity">表頭的模型</typeparam>
-    /// <typeparam name="TFEntity">表身的模型</typeparam>
-    public class DataManagerBase<MFEntity, TFEntity> : DataManagerBase<MFEntity>, IDataManager<MFEntity, TFEntity>
+    /// <typeparam name="T">主要資料的模型</typeparam>
+    /// <typeparam name="U">次要資料的模型</typeparam>
+    public class DataManagerBase<T, U> : DataManagerBase<T>, IDataManager<T, U>
     {
-        public IMyDataAccesser<TFEntity>? SubDataSource { get; set; }
-        public override IDataManager? GetDefault() {
-            return new DataManagerBase<MFEntity, TFEntity>();
-        }
+        public IMyDataAccesser<U>? SubDataSource { get; set; }
     }
 
     /// <summary>
-    /// 集合資料管理器的實體
+    /// 資料管理器的介面
     /// </summary>
-    /// <typeparam name="MFEntity">表頭的模型</typeparam>
-    /// <typeparam name="TFEntity1">表身的模型1</typeparam>
-    /// <typeparam name="TFEntity2">表身的模型2</typeparam>
-    public class DataManagerBase<MFEntity, TFEntity1, TFEntity2> : DataManagerBase<MFEntity, TFEntity1>, IDataManager<MFEntity, TFEntity1, TFEntity2>
+    /// <typeparam name="T">主要資料的模型</typeparam>
+    /// <typeparam name="U">次要資料的模型1</typeparam>
+    /// <typeparam name="V">次要資料的模型2</typeparam>
+    public class DataManagerBase<T, U, V> : DataManagerBase<T, U>, IDataManager<T, U, V>
     {
-        public IMyDataAccesser<TFEntity2>? SubDataSource2 { get; set; }
-        public override IDataManager? GetDefault() {
-            return new DataManagerBase<MFEntity, TFEntity1, TFEntity2>();
-        }
+        public IMyDataAccesser<V>? SubDataSource2 { get; set; }
     }
 }

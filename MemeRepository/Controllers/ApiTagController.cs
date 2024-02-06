@@ -16,8 +16,8 @@ namespace MemeRepository.Controllers
         public ApiTagController(
             IWebAppConfigurations webAppConfigurations,
             IDataManagerActivator dataManagerActivator,
-            IDataManager<Tag> dataManager
-            ) : base(webAppConfigurations, dataManagerActivator, dataManager) {
+            IDataManagerCreater dataManagerCreater
+            ) : base(webAppConfigurations, dataManagerActivator, dataManagerCreater) {
         }
 
         [Route("get_ids")]
@@ -41,7 +41,7 @@ namespace MemeRepository.Controllers
         [Route("save")]
         [HttpPost]
         public IDataTransResult SaveTags(IEnumerable<Tag> tags) {
-            return this.SaveDataModels(tags, true);
+            return this.SaveDataModels(tags, null, true);
         }
     }
 }

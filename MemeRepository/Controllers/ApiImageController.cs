@@ -14,8 +14,8 @@ namespace MemeRepository.Controllers
         public ApiImageController(
             IWebAppConfigurations webAppConfigurations,
             IDataManagerActivator dataManagerActivator,
-            IDataManager<Image> dataManager)
-            : base(webAppConfigurations, dataManagerActivator, dataManager) {
+            IDataManagerCreater dataManagerCreater)
+            : base(webAppConfigurations, dataManagerActivator, dataManagerCreater) {
 
         }
 
@@ -28,7 +28,7 @@ namespace MemeRepository.Controllers
         [Route("save/single")]
         [HttpPost]
         public IDataTransResult SaveViewModel(IEnumerable<Image> imageViewModel) {
-            return this.SaveDataModels(imageViewModel, true);
+            return this.SaveDataModels(imageViewModel, null, true);
         }
 
     }

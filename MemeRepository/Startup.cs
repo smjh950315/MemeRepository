@@ -58,9 +58,7 @@ namespace MemeRepository
 
             services.AddScoped<IDbContext, MyDbContext>();
             services.AddScoped<IDataManagerActivator, MyDataActivator>();
-            services.AddScoped<IDataManager<Image>, DataManagerBase<Image>>();
-            services.AddScoped<IDataManager<Tag>, DataManagerBase<Tag>>();
-            services.AddScoped<IDataManager<Category>, DataManagerBase<Category>>();
+            services.AddScoped<IDataManagerCreater, DataManagerCreater>();
 
             this.RegisterRazorPages();
             this.RegisterSignalR();

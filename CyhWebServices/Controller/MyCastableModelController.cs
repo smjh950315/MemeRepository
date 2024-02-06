@@ -14,6 +14,11 @@ namespace Cyh.WebServices.Controller
         /// 資料管理器活性化設定器
         /// </summary>
         IDataManagerActivator DataManagerActivator { get; }
+
+        /// <summary>
+        /// 空的資料交換結果
+        /// </summary>
+        IDataTransResult EmptyResult { get; }
     }
 
     /// <summary>
@@ -22,15 +27,10 @@ namespace Cyh.WebServices.Controller
     /// <typeparam name="DataModel">DataModel</typeparam>
     /// <typeparam name="ViewModel">ViewModel，必須先繼承 ISelectableModel 並實作轉換函數</typeparam>
     /// <typeparam name="IModel">DataModel與ViewModel的共同介面</typeparam>
-    public interface IMyCastableModelController<DataModel, ViewModel, IModel>
+    public interface IMyCastableModelController<DataModel, ViewModel, IModel> : IMyCastableModelController
         where DataModel : class, IModel, new()
         where ViewModel : class, IModel, ISelectableModel<ViewModel, IModel>, new()
     {
-        /// <summary>
-        /// 空的資料交換結果
-        /// </summary>
-        IDataTransResult EmptyResult { get; }
-
         /// <summary>
         /// 取得資料管理器
         /// </summary>
@@ -52,19 +52,23 @@ namespace Cyh.WebServices.Controller
             : base(webAppConfigurations) {
             this._DataManagerActivator = dataManagerActivator;
         }
+
+        protected IViewModelAccesser GetCustomModelAccerss() {
+            return new ViewModelAccesser(this._DataManagerActivator);
+        }
     }
 
     public class MyCastableModelController<DataModel> : MyCastableModelController where DataModel : class
     {
-        IDataManager _ThisManagerBase;
+        protected IDataManagerCreater _ThisManagerCreaterBase;
         IDataManager<DataModel>? _ThisManager;
         protected IEnumerable<DataModel> EmptyDataModels => Enumerable.Empty<DataModel>();
         protected MyCastableModelController(
             IWebAppConfigurations webAppConfigurations,
             IDataManagerActivator dataManagerActivator,
-            IDataManager dataManagerBase)
+            IDataManagerCreater dataManagerCreaterBase)
             : base(webAppConfigurations, dataManagerActivator) {
-            this._ThisManagerBase = dataManagerBase;
+            this._ThisManagerCreaterBase = dataManagerCreaterBase;
         }
 
         /// <summary>
@@ -73,7 +77,7 @@ namespace Cyh.WebServices.Controller
         /// <typeparam name="TManager">資料管理器</typeparam>
         /// <returns>活性化後的資料管理器，如果活性化失敗，回傳 null</returns>
         protected TManager? GetManager<TManager>() where TManager : class, IDataManager<DataModel> {
-            return this.GetDataManager<TManager, DataModel>(this._ThisManagerBase, ref this._ThisManager);
+            return this.GetDataManager<TManager, DataModel>(this._ThisManagerCreaterBase, ref this._ThisManager);
         }
 
         /// <summary>
@@ -84,7 +88,7 @@ namespace Cyh.WebServices.Controller
         protected DataModel? GetDataModel(Expression<Func<DataModel, bool>> expression) {
             return this
                 .GetManager<IDataManager<DataModel>>()
-                .GetMainForm(expression);
+                .GetData(expression, null);
         }
 
         /// <summary>
@@ -95,7 +99,7 @@ namespace Cyh.WebServices.Controller
         protected IEnumerable<DataModel> GetDataModels(Expression<Func<DataModel, bool>>? expression = null) {
             return this
                 .GetManager<IDataManager<DataModel>>()
-                .GetMainForms(expression);
+                .GetDatas(expression, null);
         }
 
         /// <summary>
@@ -106,23 +110,24 @@ namespace Cyh.WebServices.Controller
         protected IEnumerable<DataModel> GetDataModels(int begin, int count, Expression<Func<DataModel, bool>>? expression = null) {
             return this
                 .GetManager<IDataManager<DataModel>>()
-                .GetMainForms(begin, count, expression);
+                .GetDatas(begin, count, expression, null);
         }
 
-        /// <summary>
-        /// 儲存資料模型集合
-        /// </summary>
-        /// <param name="dataModels">資料模型集合</param>
-        /// <param name="execNow">是否立即執行</param>
-        /// <returns>執行結果</returns>
-        protected IDataTransResult SaveDataModels(IEnumerable<DataModel> dataModels, bool execNow = false) {
+        ///// <summary>
+        ///// 儲存資料模型集合
+        ///// </summary>
+        ///// <param name="dataModels">資料模型集合</param>
+        ///// <param name="execNow">是否立即執行</param>
+        ///// <returns>執行結果</returns>
+        protected IDataTransResult SaveDataModels(IEnumerable<DataModel> dataModels, IDataTransResult? transResult = null, bool execNow = false) {
+            IDataTransResult result = transResult ?? this.EmptyResult;
             if (dataModels.IsNullOrEmpty())
-                return this.EmptyResult;
+                return result;
             IDataManager<DataModel>? dataManager = this.GetManager<IDataManager<DataModel>>();
             if (dataManager == null)
-                return this.EmptyResult;
-            IDataTransResult result = this.EmptyResult;
-            return dataManager.SaveMainForms(dataModels, result, execNow) ?? this.EmptyResult;
+                return result;
+            dataManager.SaveDatas(dataModels, result, execNow);
+            return result;
         }
 
         /// <summary>
@@ -133,7 +138,7 @@ namespace Cyh.WebServices.Controller
         protected TOut? GetDataModelAs<TOut>(Expression<Func<DataModel, TOut>>? selector, Expression<Func<DataModel, bool>> expression) {
             return this
                 .GetManager<IDataManager<DataModel>>()
-                .GetMainFormAs(selector, expression);
+                .GetDataAs(selector, expression, null);
         }
 
         /// <summary>
@@ -144,7 +149,7 @@ namespace Cyh.WebServices.Controller
         protected IEnumerable<TOut> GetDataModelsAs<TOut>(Expression<Func<DataModel, TOut>>? selector, Expression<Func<DataModel, bool>>? expression = null) {
             return this
                 .GetManager<IDataManager<DataModel>>()
-                .GetMainFormsAs(selector, expression);
+                .GetDatasAs(selector, expression, null);
         }
 
         /// <summary>
@@ -155,7 +160,7 @@ namespace Cyh.WebServices.Controller
         protected IEnumerable<TOut> GetDataModelsAs<TOut>(Expression<Func<DataModel, TOut>>? selector, int begin, int count, Expression<Func<DataModel, bool>>? expression = null) {
             return this
                 .GetManager<IDataManager<DataModel>>()
-                .GetMainFormsAs(selector, begin, count, expression);
+                .GetDatasAs(selector, begin, count, expression, null);
         }
     }
 
@@ -173,8 +178,8 @@ namespace Cyh.WebServices.Controller
         protected MyCastableModelController(
             IWebAppConfigurations webAppConfigurations,
             IDataManagerActivator dataManagerActivator,
-            IDataManager dataManagerBase)
-            : base(webAppConfigurations, dataManagerActivator, dataManagerBase) {
+            IDataManagerCreater dataManagerCreaterBase)
+            : base(webAppConfigurations, dataManagerActivator, dataManagerCreaterBase) {
         }
 
         /// <summary>
@@ -185,7 +190,7 @@ namespace Cyh.WebServices.Controller
         protected ViewModel? GetViewModel(Expression<Func<DataModel, bool>> expression) {
             return this
                 .GetManager<IDataManager<DataModel>>()
-                .GetMainFormAs(new ViewModel().GetSelectorFrom<DataModel>(), expression);
+                .GetDataAs(new ViewModel().GetSelectorFrom<DataModel>(), expression, null);
         }
 
         /// <summary>
@@ -198,7 +203,24 @@ namespace Cyh.WebServices.Controller
         protected IEnumerable<ViewModel> GetViewModels(int begin, int count, Expression<Func<DataModel, bool>>? expression = null) {
             return this
                 .GetManager<IDataManager<DataModel>>()
-                .GetMainFormsAs(begin, count, new ViewModel().GetSelectorFrom<DataModel>(), expression);
+                .GetDatasAs(new ViewModel().GetSelectorFrom<DataModel>(), begin, count, expression, null);
+        }
+
+        /// <summary>
+        /// 儲存DataModel(轉換自ViewModel)
+        /// </summary>
+        /// <param name="viewModel">要儲存的DataModel</param>
+        /// <param name="execNow">是否立即執行</param>
+        /// <returns>執行結果</returns>
+        protected IDataTransResult SaveFromViewModel(ViewModel viewModel, IDataTransResult? transResult = null, bool execNow = false) {
+            IDataTransResult result = transResult ?? this.EmptyResult;
+            if (viewModel == null)
+                return result;
+            IDataManager<DataModel>? mainManager = this.GetManager<IDataManager<DataModel>>();
+            if (mainManager == null)
+                return result;
+            mainManager.SaveDataFrom(new ViewModel().GetSelectorTo<DataModel>(), viewModel, result, execNow);
+            return result;
         }
 
         /// <summary>
@@ -207,14 +229,15 @@ namespace Cyh.WebServices.Controller
         /// <param name="viewModels">要儲存的DataModel集合</param>
         /// <param name="execNow">是否立即執行</param>
         /// <returns>執行結果</returns>
-        protected IDataTransResult SaveFromViewModels(IEnumerable<ViewModel> viewModels, bool execNow = false) {
+        protected IDataTransResult SaveFromViewModels(IEnumerable<ViewModel> viewModels, IDataTransResult? transResult = null, bool execNow = false) {
+            IDataTransResult result = transResult ?? this.EmptyResult;
             if (viewModels.IsNullOrEmpty())
-                return this.EmptyResult;
+                return result;
             IDataManager<DataModel>? mainManager = this.GetManager<IDataManager<DataModel>>();
             if (mainManager == null)
-                return this.EmptyResult;
-            IDataTransResult result = this.EmptyResult;
-            return mainManager.SaveMainForms(new ViewModel().GetSelectorTo<DataModel>(), viewModels, result, execNow) ?? this.EmptyResult;
+                return result;
+            mainManager.SaveDatasFrom(new ViewModel().GetSelectorTo<DataModel>(), viewModels, result, execNow);
+            return result;
         }
     }
 
@@ -235,14 +258,12 @@ namespace Cyh.WebServices.Controller
         where SubDataModel : class, ISubModel, new()
         where SubViewModel : class, ISubModel, ISelectableModel<SubViewModel, ISubModel>, new()
     {
-        IDataManager _ThisManagerBase;
         IDataManager<SubDataModel>? _ThisManager;
         protected MyCastableModelController(
             IWebAppConfigurations webAppConfigurations,
             IDataManagerActivator dataManagerActivator,
-            IDataManager dataManagerBase)
-            : base(webAppConfigurations, dataManagerActivator, dataManagerBase) {
-            this._ThisManagerBase = dataManagerBase;
+            IDataManagerCreater dataManagerCreaterBase)
+            : base(webAppConfigurations, dataManagerActivator, dataManagerCreaterBase) {
         }
 
         /// <summary>
@@ -251,7 +272,7 @@ namespace Cyh.WebServices.Controller
         /// <typeparam name="TManager">資料管理器</typeparam>
         /// <returns>活性化後的資料管理器，如果活性化失敗，回傳 null</returns>
         protected TManager? GetSubManager<TManager>() where TManager : class, IDataManager<SubDataModel> {
-            return this.GetDataManager<TManager, SubDataModel>(this._ThisManagerBase, ref this._ThisManager);
+            return this.GetDataManager<TManager, SubDataModel>(this._ThisManagerCreaterBase, ref this._ThisManager);
         }
 
         /// <summary>
@@ -262,7 +283,7 @@ namespace Cyh.WebServices.Controller
         protected SubViewModel? GetSubViewModel(Expression<Func<SubDataModel, bool>> expression) {
             return this
                 .GetSubManager<IDataManager<SubDataModel>>()
-                .GetMainFormAs(new SubViewModel().GetSelectorFrom<SubDataModel>(), expression);
+                .GetDataAs(new SubViewModel().GetSelectorFrom<SubDataModel>(), expression, null);
         }
 
         /// <summary>
@@ -273,7 +294,7 @@ namespace Cyh.WebServices.Controller
         protected IEnumerable<SubViewModel> GetSubViewModels(Expression<Func<SubDataModel, bool>>? expression = null) {
             return this
                 .GetSubManager<IDataManager<SubDataModel>>()
-                .GetMainFormsAs(new SubViewModel().GetSelectorFrom<SubDataModel>(), expression);
+                .GetDatasAs(new SubViewModel().GetSelectorFrom<SubDataModel>(), expression, null);
         }
 
         /// <summary>
@@ -286,7 +307,24 @@ namespace Cyh.WebServices.Controller
         protected IEnumerable<SubViewModel> GetSubViewModels(int begin, int count, Expression<Func<SubDataModel, bool>>? expression = null) {
             return this
                 .GetSubManager<IDataManager<SubDataModel>>()
-                .GetMainFormsAs(begin, count, new SubViewModel().GetSelectorFrom<SubDataModel>(), expression);
+                .GetDatasAs(new SubViewModel().GetSelectorFrom<SubDataModel>(), begin, count, expression, null);
+        }
+
+        /// <summary>
+        /// 儲存次要DataModel(轉換自次要ViewModel)
+        /// </summary>
+        /// <param name="viewModel">要儲存的次要DataModel</param>
+        /// <param name="execNow">是否立即執行</param>
+        /// <returns>執行結果</returns>
+        protected IDataTransResult SaveFromSubViewModel(SubViewModel viewModel, IDataTransResult? transResult = null, bool execNow = false) {
+            IDataTransResult result = transResult ?? this.EmptyResult;
+            if (viewModel == null)
+                return result;
+            IDataManager<SubDataModel>? subManager = this.GetSubManager<IDataManager<SubDataModel>>();
+            if (subManager == null)
+                return result;
+            subManager.SaveDataFrom(new SubViewModel().GetSelectorTo<SubDataModel>(), viewModel, result, execNow);
+            return result;
         }
 
         /// <summary>
@@ -295,14 +333,15 @@ namespace Cyh.WebServices.Controller
         /// <param name="viewModels">要儲存的次要DataModel集合</param>
         /// <param name="execNow">是否立即執行</param>
         /// <returns>執行結果</returns>
-        protected IDataTransResult SaveFromSubViewModels(IEnumerable<SubViewModel> viewModels, bool execNow = false) {
+        protected IDataTransResult SaveFromSubViewModels(IEnumerable<SubViewModel> viewModels, IDataTransResult? transResult = null, bool execNow = false) {
+            IDataTransResult result = transResult ?? this.EmptyResult;
             if (viewModels.IsNullOrEmpty())
-                return this.EmptyResult;
+                return result;
             IDataManager<SubDataModel>? subManager = this.GetSubManager<IDataManager<SubDataModel>>();
             if (subManager == null)
-                return this.EmptyResult;
-            IDataTransResult result = this.EmptyResult;
-            return subManager.SaveMainForms(new SubViewModel().GetSelectorTo<SubDataModel>(), viewModels, result, execNow) ?? this.EmptyResult;
+                return result;
+            subManager.SaveDatasFrom(new SubViewModel().GetSelectorTo<SubDataModel>(), viewModels, result, execNow);
+            return result;
         }
     }
 }

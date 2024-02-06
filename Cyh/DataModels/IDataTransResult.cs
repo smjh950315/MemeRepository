@@ -1,3 +1,5 @@
+using Cyh.DataHelper;
+
 namespace Cyh.DataModels
 {
     /// <summary>
@@ -48,6 +50,14 @@ namespace Cyh.DataModels
 
     public static class DataTransResultExtends
     {
+        public const string StrDataAccesserNotInited = "Data accesser is not initialized!";
+        public const string StrNullDataInput = "No data input!";
+        public const string StrCannotConvertInput = "Cannot convert input data to acceptable type!";
+        public const string StrInvalidDataRange = "Invalid data range!";
+        public const string StrErrorOnFetching = "Error happend while fetching data!";
+        public const string StrErrorOnSaving = "Error happend while saving data!";
+        public const string StrErrorOnApplyChanges = "Error happend while applying changes!";
+
         /// <summary>
         /// 加入一次執行的結果
         /// </summary>
@@ -85,6 +95,29 @@ namespace Cyh.DataModels
                 }
                 dataTransResult.IsFinished = true;
             }
+        }
+
+
+        public static void TryAppendError_DataAccesserNotInit(this IDataTransResult? prevResult) {
+            prevResult.TryAppendTransResult(false, StrDataAccesserNotInited);
+        }
+        public static void TryAppendError_NullDataInput(this IDataTransResult? prevResult) {
+            prevResult.TryAppendTransResult(false, StrNullDataInput);
+        }
+        public static void TryAppendError_CannotConvertInput(this IDataTransResult? prevResult) {
+            prevResult.TryAppendTransResult(false, StrCannotConvertInput);
+        }
+        public static void TryAppendError_InvalidDataRange(this IDataTransResult? prevResult) {
+            prevResult.TryAppendTransResult(false, StrInvalidDataRange);
+        }
+        public static void TryAppendError_FailedOnFetching(this IDataTransResult? prevResult) {
+            prevResult.TryAppendTransResult(false, StrErrorOnFetching);
+        }
+        public static void TryAppendError_FailedOnSaving(this IDataTransResult? prevResult) {
+            prevResult.TryAppendTransResult(false, StrErrorOnSaving);
+        }
+        public static void TryAppendError_FailedOnApplyChanges(this IDataTransResult? prevResult) {
+            prevResult.TryAppendTransResult(false, StrErrorOnApplyChanges);
         }
     }
 }

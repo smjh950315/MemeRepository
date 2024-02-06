@@ -14,8 +14,8 @@ namespace MemeRepository.Controllers
         public ApiCategoryController(
             IWebAppConfigurations webAppConfigurations,
             IDataManagerActivator dataManagerActivator,
-            IDataManager<DataModel> dataManager
-            ) : base(webAppConfigurations, dataManagerActivator, dataManager) {
+            IDataManagerCreater dataManagerCreater
+            ) : base(webAppConfigurations, dataManagerActivator, dataManagerCreater) {
         }
 
         [Route("category/get_all")]
@@ -34,7 +34,7 @@ namespace MemeRepository.Controllers
                         CreateTime = DateTime.Now,
                         UpdateTime = DateTime.Now,
                     }
-            }, true);
+            }, null, true);
         }
     }
 }
