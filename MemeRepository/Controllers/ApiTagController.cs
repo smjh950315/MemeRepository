@@ -26,11 +26,11 @@ namespace MemeRepository.Controllers
             return this.GetDataModelsAs(x => x.TagID);
         }
 
-        [Route("get_names")]
-        [HttpGet]
-        public IEnumerable<string> GetTagNames() {
-            return this.GetDataModelsAs(x => x.TagName);
-        }
+        //[Route("get_names")]
+        //[HttpGet]
+        //public IEnumerable<string> GetTagNames() {
+        //    return this.GetDataModelsAs(x => x.TagName);
+        //}
 
         [Route("get_all")]
         [HttpGet]

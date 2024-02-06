@@ -24,17 +24,17 @@ namespace MemeRepository.Controllers
             return this.GetDataModels();
         }
 
-        [Route("category/Add_category")]
-        [HttpPost]
-        public IDataTransResult AddCategory(string categoryName) {
-            return this.SaveDataModels(
-                new DataModel[]{
-                    new DataModel(){
-                        CategoryName = categoryName,
-                        CreateTime = DateTime.Now,
-                        UpdateTime = DateTime.Now,
-                    }
-            }, null, true);
-        }
+        //[Route("category/Add_category")]
+        //[HttpPost]
+        //public IDataTransResult AddCategory(string categoryName) {
+        //    return this.SaveDataModels(
+        //        new DataModel[]{
+        //            new DataModel(){
+        //                CategoryName = categoryName,
+        //                CreateTime = DateTime.Now,
+        //                UpdateTime = DateTime.Now,
+        //            }
+        //    }, null, true);
+        //}
     }
 }
