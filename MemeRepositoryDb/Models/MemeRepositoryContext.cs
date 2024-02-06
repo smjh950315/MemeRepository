@@ -21,7 +21,7 @@ namespace MemeRepository.Db.Models
         public virtual DbSet<Image> Image { get; set; } = null!;
         public virtual DbSet<Tag> Tag { get; set; } = null!;
         public virtual DbSet<TagDetail> TagDetail { get; set; } = null!;
-        //神說覆寫要註解
+
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //        {
 //            if (!optionsBuilder.IsConfigured)
@@ -36,13 +36,15 @@ namespace MemeRepository.Db.Models
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.HasNoKey();
+
+                entity.Property(e => e.CategoryID).ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<CategoryDetail>(entity =>
             {
                 entity.HasKey(e => e.CategoryName);
 
-                entity.Property(e => e.CategoryName).HasMaxLength(100);
+                entity.Property(e => e.CategoryName).HasMaxLength(128);
 
                 entity.Property(e => e.CDID).ValueGeneratedOnAdd();
 
@@ -59,6 +61,8 @@ namespace MemeRepository.Db.Models
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.ImageName).HasMaxLength(128);
+
                 entity.Property(e => e.ImageType).HasMaxLength(50);
 
                 entity.Property(e => e.UpdateTime).HasColumnType("datetime");
@@ -67,13 +71,15 @@ namespace MemeRepository.Db.Models
             modelBuilder.Entity<Tag>(entity =>
             {
                 entity.HasNoKey();
+
+                entity.Property(e => e.TagID).ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<TagDetail>(entity =>
             {
                 entity.HasKey(e => e.TagName);
 
-                entity.Property(e => e.TagName).HasMaxLength(100);
+                entity.Property(e => e.TagName).HasMaxLength(128);
 
                 entity.Property(e => e.CreateTime)
                     .HasColumnType("datetime")

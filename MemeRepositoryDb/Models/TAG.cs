@@ -7,5 +7,6 @@ namespace MemeRepository.Db.Models
     {
         public long TagID { get; set; }
         public long TDID { get; set; }
+        public long ImageID { get; set; }
     }
 }

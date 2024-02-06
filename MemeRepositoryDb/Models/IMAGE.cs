@@ -6,8 +6,7 @@ namespace MemeRepository.Db.Models
     public partial class Image
     {
         public long ImageID { get; set; }
-        public long? CategoryID { get; set; }
-        public long? TagID { get; set; }
+        public string? ImageName { get; set; }
         public byte[] ImageData { get; set; } = null!;
         public int? ImageSize { get; set; }
         public string? ImageType { get; set; }

@@ -7,5 +7,6 @@ namespace MemeRepository.Db.Models
     {
         public long CategoryID { get; set; }
         public long CDID { get; set; }
+        public long ImageID { get; set; }
     }
 }
