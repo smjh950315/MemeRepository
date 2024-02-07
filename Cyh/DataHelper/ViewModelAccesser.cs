@@ -1,5 +1,6 @@
 
 using Cyh.DataModels;
+using System.Diagnostics.SymbolStore;
 using System.Linq.Expressions;
 
 namespace Cyh.DataHelper
@@ -65,6 +66,16 @@ namespace Cyh.DataHelper
         /// <returns>活性化後的資料管理器，如果活性化失敗，回傳 null</returns>
         public TManager? GetManager<TManager>() where TManager : class, IDataManager<DataModel> {
             return this.GetDataManager<TManager, DataModel>(this._ThisManagerCreaterBase, ref this._ThisManagerInstance);
+        }
+
+        /// <summary>
+        /// 取得客製資料管理器並活性化(即設定資料源)
+        /// </summary>
+        /// <typeparam name="TModel">資料模型</typeparam>
+        /// <returns>活性化後的資料管理器，如果活性化失敗，回傳 null</returns>
+        public IDataManager<TModel>? GetCustManager<TModel>() where TModel : class {
+            IDataManager<TModel>? retVal = null;
+            return this.GetDataManager<IDataManager<TModel>, TModel>(this._ThisManagerCreaterBase, ref retVal);
         }
 
         /// <summary>

@@ -19,6 +19,14 @@ namespace MemeRepository.Controllers
 
         }
 
+        IDataManager<Image> ImageManager {
+            get => this.GetCustManager<Image>();
+        }
+
+        IDataManager<Tag> TagManager {
+            get => this.GetCustManager<Tag>();
+        }
+
         [Route("get/single")]
         [HttpGet]
         public Image? GetImageViewModel(long id) {
