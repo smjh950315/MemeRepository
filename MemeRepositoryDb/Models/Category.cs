@@ -6,8 +6,7 @@ namespace MemeRepository.Db.Models
     public partial class Category
     {
         public long CategoryID { get; set; }
-        public string CategoryName { get; set; } = null!;
-        public DateTime CreateTime { get; set; }
-        public DateTime? UpdateTime { get; set; }
+        public long CDID { get; set; }
+        public long ImageID { get; set; }
     }
 }
