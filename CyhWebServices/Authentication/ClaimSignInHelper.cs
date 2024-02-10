@@ -71,7 +71,7 @@ namespace Cyh.WebServices.Authentication
     /// <summary>
     /// Claim驗證器
     /// </summary>
-    public class ClaimHelper : ISignInHelper
+    public class ClaimSignInHelper : ISignInHelper
     {
 #pragma warning disable
         AuthenticationProperties? _Property;
@@ -200,7 +200,7 @@ namespace Cyh.WebServices.Authentication
         /// <summary>
         /// 建構子，如果輸入建構參數 <paramref name="_AppName"/> 則表示將其設定為該應用程式 Cookie 的識別名
         /// </summary>
-        public ClaimHelper(string? _AppName = null) {
+        public ClaimSignInHelper(string? _AppName = null) {
             if (_AppName != null)
                 this.Claims[ClaimTypes.NameIdentifier] = _AppName;
         }

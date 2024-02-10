@@ -42,7 +42,7 @@ namespace Cyh.DataHelper
         /// <param name="filter">驗證用的敘述式</param>
         /// <param name="dataTransResult">交易執行結果</param>
         /// <returns>取得的資料</returns>
-        T? TryGetData(Expression<Func<T, bool>>? filter = null, IDataTransResult? dataTransResult = null);
+        T? TryGetData(Expression<Func<T, bool>>? filter, IDataTransResult? dataTransResult);
 
         /// <summary>
         /// 用條件取得資料集合
@@ -50,7 +50,7 @@ namespace Cyh.DataHelper
         /// <param name="filter">驗證用的敘述式</param>
         /// <param name="dataTransResult">交易執行結果</param>
         /// <returns>取得的資料</returns>
-        IEnumerable<T> TryGetDatas(Expression<Func<T, bool>>? filter, IDataTransResult? dataTransResult = null);
+        IEnumerable<T> TryGetDatas(Expression<Func<T, bool>>? filter, IDataTransResult? dataTransResult);
 
         /// <summary>
         /// 用條件以取得特定範圍筆數的資料集合
@@ -60,7 +60,7 @@ namespace Cyh.DataHelper
         /// <param name="count">要抓取的最大筆數</param>
         /// <param name="dataTransResult">交易執行結果</param>
         /// <returns>取得的資料</returns>
-        IEnumerable<T> TryGetDatas(int begin, int count, Expression<Func<T, bool>>? filter = null, IDataTransResult? dataTransResult = null);
+        IEnumerable<T> TryGetDatas(int begin, int count, Expression<Func<T, bool>>? filter, IDataTransResult? dataTransResult);
 
         /// <summary>
         /// 用條件嘗試取得單筆資料
@@ -68,7 +68,7 @@ namespace Cyh.DataHelper
         /// <param name="filter">驗證用的敘述式</param>
         /// <param name="dataTransResult">交易執行結果</param>
         /// <returns>取得的資料</returns>
-        TOut? TryGetDataAs<TOut>(Expression<Func<T, TOut>>? selctor, Expression<Func<T, bool>>? filter = null, IDataTransResult? dataTransResult = null);
+        TOut? TryGetDataAs<TOut>(Expression<Func<T, TOut>>? selctor, Expression<Func<T, bool>>? filter, IDataTransResult? dataTransResult);
 
         /// <summary>
         /// 用條件取得並轉換成另一類型的資料集合
@@ -78,7 +78,7 @@ namespace Cyh.DataHelper
         /// <param name="dataTransResult">交易執行結果</param>
         /// <typeparam name="TOut">目標資料類型</typeparam>
         /// <returns>目標資料類型集合</returns>
-        IEnumerable<TOut> TryGetDatasAs<TOut>(Expression<Func<T, TOut>>? selctor, Expression<Func<T, bool>>? filter = null, IDataTransResult? dataTransResult = null);
+        IEnumerable<TOut> TryGetDatasAs<TOut>(Expression<Func<T, TOut>>? selctor, Expression<Func<T, bool>>? filter, IDataTransResult? dataTransResult);
 
         /// <summary>
         /// 用條件以取得特定範圍筆數並轉換成另一類型的資料集合
@@ -90,7 +90,7 @@ namespace Cyh.DataHelper
         /// <param name="dataTransResult">交易執行結果</param>
         /// <typeparam name="TOut">目標資料類型</typeparam>
         /// <returns>目標資料類型集合</returns>
-        IEnumerable<TOut> TryGetDatasAs<TOut>(Expression<Func<T, TOut>>? selctor, int begin, int count, Expression<Func<T, bool>>? filter = null, IDataTransResult? dataTransResult = null);
+        IEnumerable<TOut> TryGetDatasAs<TOut>(Expression<Func<T, TOut>>? selctor, int begin, int count, Expression<Func<T, bool>>? filter, IDataTransResult? dataTransResult);
     }
 
     public static partial class MyDataHelperExtends

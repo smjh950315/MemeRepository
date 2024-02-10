@@ -1,14 +1,14 @@
 namespace Cyh.DataHelper
 {
     /// <summary>
-    /// 資料管理器的介面
+    /// 資料管理器
     /// </summary>
     public class DataManagerBase : IDataManager
     {
     }
 
     /// <summary>
-    /// 資料管理器的介面
+    /// 資料管理器
     /// </summary>
     /// <typeparam name="T">資料的模型</typeparam>
     public class DataManagerBase<T> : DataManagerBase, IDataManager<T>
@@ -17,7 +17,7 @@ namespace Cyh.DataHelper
     }
 
     /// <summary>
-    /// 資料管理器的介面
+    /// 資料管理器
     /// </summary>
     /// <typeparam name="T">主要資料的模型</typeparam>
     /// <typeparam name="U">次要資料的模型</typeparam>

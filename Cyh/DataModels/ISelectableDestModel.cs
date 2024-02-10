@@ -68,18 +68,4 @@ namespace Cyh.DataModels
         where TThisModel : class, IDataSurface, new()
     {
     }
-
-    /// <summary>
-    /// 可以從輸入模型更新的資料模型
-    /// </summary>
-    /// <typeparam name="TDataModel">輸入模型</typeparam>
-    public interface IUpdateableModel<TDataModel>
-    {
-        /// <summary>
-        /// 輸入模型更新當前資料模型
-        /// </summary>
-        /// <param name="model">輸入模型</param>
-        public void UpdateFrom(TDataModel? model);
-    }
-
 }

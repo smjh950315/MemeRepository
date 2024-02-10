@@ -11,7 +11,7 @@ namespace MemeRepository.Controllers
 {
     [ApiController]
     [Route("api/tag")]
-    public class ApiTagController : MyCastableModelController<Tag>
+    public class ApiTagController : MyModelAccessController, IModelHelper<Tag>
     {
         public ApiTagController(
             IWebAppConfigurations webAppConfigurations,
@@ -20,10 +20,12 @@ namespace MemeRepository.Controllers
             ) : base(webAppConfigurations, dataManagerActivator, dataManagerCreater) {
         }
 
+        public IDataManager<Tag>? DefaultDataManager { get; set; }
+
         [Route("get_ids")]
         [HttpGet]
         public IEnumerable<long> GetTagIds() {
-            return this.GetDataModelsAs(x => x.TagID);
+            return this.GetDataModelsAs(x => x.TagID, null);
         }
 
         //[Route("get_names")]
@@ -35,7 +37,7 @@ namespace MemeRepository.Controllers
         [Route("get_all")]
         [HttpGet]
         public IEnumerable<Tag> GetTags() {
-            return this.GetDataModels();
+            return this.GetDataModels(null);
         }
 
         [Route("save")]

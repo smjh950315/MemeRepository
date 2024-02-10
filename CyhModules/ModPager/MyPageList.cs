@@ -1,4 +1,5 @@
 using Cyh.DataHelper;
+using System.Linq.Expressions;
 
 namespace Cyh.Modules.ModPager
 {
@@ -10,6 +11,7 @@ namespace Cyh.Modules.ModPager
     {
         private delegate IPage FnCreateNewPage();
         private FnCreateNewPage _Callback_CreateNewPage;
+        private Expression<Func<T, bool>> _Filter;
         private int _PageCapacity;
 
         /// <summary>
@@ -34,7 +36,7 @@ namespace Cyh.Modules.ModPager
         /// <typeparam name="U">要成為裝載內容的分頁的類型，必須繼承自 IPage</typeparam>
         /// <param name="pageCapacity">每頁容納的內容數</param>
         /// <returns>新建立的分頁清單</returns>
-        public static MyPageList<T> CreatePageList<U>(int pageCapacity) where U : class, IPage, new() {
+        public static MyPageList<T> CreatePageList<U>(int pageCapacity, Expression<Func<T, bool>> filter) where U : class, IPage, new() {
 
             MyPageList<T> ret = new()
             {
@@ -83,7 +85,7 @@ namespace Cyh.Modules.ModPager
 #pragma warning disable
             if (page_index < 1 || this.DataReader == null) return null;
             int beginIndex = (page_index - 1) * this.PageCapacity;
-            var collection = this.DataReader.TryGetDatas(beginIndex, this.PageCapacity, null);
+            var collection = this.DataReader.TryGetDatas(beginIndex, this.PageCapacity, this._Filter, null);
 #pragma warning restore
 
             if (collection == null)
@@ -112,4 +114,3 @@ namespace Cyh.Modules.ModPager
         }
     }
 }
-#pragma warning restore IDE1006 // 命名樣式

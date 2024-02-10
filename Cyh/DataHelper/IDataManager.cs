@@ -136,6 +136,7 @@ namespace Cyh.DataHelper
         /// </summary>
         /// <typeparam name="T">主要資料的模型</typeparam>
         /// <typeparam name="P">目的資料的模型</typeparam>
+        /// <param name="selector">轉換到目標模型的函數</param>
         /// <param name="expression">主要資料的篩選條件</param>
         /// <param name="dataTransResult">交易執行結果</param>
         /// <returns>符合條件的主要資料轉換而成的目的資料模型</returns>
@@ -148,6 +149,7 @@ namespace Cyh.DataHelper
         /// <typeparam name="T">主要資料的模型</typeparam>
         /// <typeparam name="U">次要資料的模型</typeparam>
         /// <typeparam name="P">目的資料的模型</typeparam>
+        /// <param name="selector">轉換到目標模型的函數</param>
         /// <param name="expression">次要資料的篩選條件</param>
         /// <param name="dataTransResult">交易執行結果</param>
         /// <returns>符合條件的次要資料轉換而成的目的資料模型</returns>
@@ -161,6 +163,7 @@ namespace Cyh.DataHelper
         /// <typeparam name="U">次要資料的模型1</typeparam>
         /// <typeparam name="V">次要資料的模型2</typeparam>
         /// <typeparam name="P">目的資料的模型</typeparam>
+        /// <param name="selector">轉換到目標模型的函數</param>
         /// <param name="expression">次要資料2的篩選條件</param>
         /// <param name="dataTransResult">交易執行結果</param>
         /// <returns>符合條件的次要資料2轉換而成的目的資料模型</returns>
@@ -222,6 +225,7 @@ namespace Cyh.DataHelper
         /// </summary>
         /// <typeparam name="T">主要資料的模型</typeparam>
         /// <typeparam name="P">目的資料的模型</typeparam>
+        /// <param name="selector">轉換到目標模型的函數</param>
         /// <param name="begin">開始抓取資料的索引</param>
         /// <param name="count">要抓取的最大筆數</param>
         /// <param name="expression">主要資料的篩選條件</param>
@@ -237,6 +241,7 @@ namespace Cyh.DataHelper
         /// <typeparam name="T">主要資料的模型</typeparam>
         /// <typeparam name="U">次要資料的模型</typeparam>
         /// <typeparam name="P">目的資料的模型</typeparam>
+        /// <param name="selector">轉換到目標模型的函數</param>
         /// <param name="begin">開始抓取資料的索引</param>
         /// <param name="count">要抓取的最大筆數</param>
         /// <param name="expression">條件表達式</param>
@@ -253,6 +258,7 @@ namespace Cyh.DataHelper
         /// <typeparam name="U">次要資料的模型1</typeparam>
         /// <typeparam name="V">次要資料的模型2</typeparam>
         /// <typeparam name="P">目的資料的模型</typeparam>
+        /// <param name="selector">轉換到目標模型的函數</param>
         /// <param name="begin">開始抓取資料的索引</param>
         /// <param name="count">要抓取的最大筆數</param>
         /// <param name="expression">條件表達式</param>
@@ -524,7 +530,7 @@ namespace Cyh.DataHelper
         /// 以另一種資料模型儲存主要資料之集合
         /// </summary>
         /// <typeparam name="T">主要資料的模型</typeparam>
-        /// <typeparam name="P">次要資料的模型</typeparam>
+        /// <typeparam name="P">輸入資料的模型</typeparam>
         /// <param name="selector">資料轉換器(LINQ)</param>
         /// <param name="datas">來源資料</param>
         /// <param name="dataTransResult">交易執行結果</param>
@@ -543,7 +549,7 @@ namespace Cyh.DataHelper
         /// </summary>
         /// <typeparam name="T">主要資料的模型</typeparam>
         /// <typeparam name="U">次要資料的模型</typeparam>
-        /// <typeparam name="P"></typeparam>
+        /// <typeparam name="P">輸入資料的模型</typeparam>
         /// <param name="selector">資料轉換器(LINQ)</param>
         /// <param name="datas">來源資料</param>
         /// <param name="dataTransResult">交易執行結果</param>
@@ -563,7 +569,7 @@ namespace Cyh.DataHelper
         /// <typeparam name="T">主要資料的模型</typeparam>
         /// <typeparam name="U">次要資料的模型1</typeparam>
         /// <typeparam name="V">次要資料的模型2</typeparam>
-        /// <typeparam name="P"></typeparam>
+        /// <typeparam name="P">輸入資料的模型</typeparam>
         /// <param name="selector">資料轉換器(LINQ)</param>
         /// <param name="datas">來源資料</param>
         /// <param name="dataTransResult">交易執行結果</param>

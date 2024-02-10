@@ -4,12 +4,13 @@ using Cyh.WebServices.Controller;
 using DataModel = MemeRepository.Db.Models.Category;
 using Microsoft.AspNetCore.Mvc;
 using Cyh.DataModels;
+using Cyh.Modules.ModViewData;
 
 namespace MemeRepository.Controllers
 {
     [ApiController]
     [Route("api/category")]
-    public class ApiCategoryController : MyCastableModelController<DataModel>
+    public class ApiCategoryController : MyModelAccessController, IModelHelper<DataModel>
     {
         public ApiCategoryController(
             IWebAppConfigurations webAppConfigurations,
@@ -18,10 +19,12 @@ namespace MemeRepository.Controllers
             ) : base(webAppConfigurations, dataManagerActivator, dataManagerCreater) {
         }
 
+        public IDataManager<DataModel>? DefaultDataManager { get; set; }
+
         [Route("category/get_all")]
         [HttpGet]
         public IEnumerable<DataModel> GetCategory() {
-            return this.GetDataModels();
+            return this.GetDataModels(null);
         }
 
         //[Route("category/Add_category")]

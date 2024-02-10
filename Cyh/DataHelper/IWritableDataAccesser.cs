@@ -28,10 +28,10 @@ namespace Cyh.DataHelper
         /// 嘗試寫入或更新資料
         /// </summary>
         /// <param name="dataInput">要寫入資料</param>
-        /// <param name="prevResult">前一批執行結果</param>
+        /// <param name="dataTransResult">前一批執行結果</param>
         /// <param name="execNow">是否立即執行</param>
         /// <returns>執行成功與否，如不選擇立即執行，則回傳 TRUE 表示已加入貯列</returns>
-        bool TryAddOrUpdateSingle(object? dataInput, IDataTransResult? prevResult, bool execNow);
+        bool TryAddOrUpdateSingle(object? dataInput, IDataTransResult? dataTransResult, bool execNow);
 
         /// <summary>
         /// 處理例外
@@ -52,14 +52,14 @@ namespace Cyh.DataHelper
         /// <para>如選擇立即執行，將當前與更早之前加入但是還未儲存的資料進行儲存</para>
         /// </summary>
         /// <param name="data">要寫入的資料</param>
-        /// <param name="prevResult">前一批執行結果</param>
+        /// <param name="dataTransResult">資料交易明細</param>
         /// <param name="execNow">是否立即執行</param>
         /// <returns>
         /// <para>如不選擇立即執行，正常情況下會回傳 TRUE 以繼續加入資料批次，唯加入過程發生會影響整批交易的失敗，回傳 false 並鎖定整批交易；</para>
         /// <para>如選擇立即執行，回傳執行的結果是否成功；</para>
         /// <para>無論選擇是否立即執行，只要回傳false都代表錯誤發生，故整批交易都會被鎖定</para>
         /// </returns>
-        bool TryAddOrUpdate(T? data, IDataTransResult? prevResult, bool execNow);
+        bool TryAddOrUpdate(T? data, IDataTransResult? dataTransResult, bool execNow);
 
         /// <summary>
         /// 嘗試寫入或更新資料
@@ -67,16 +67,21 @@ namespace Cyh.DataHelper
         /// <para>如選擇立即執行，將當前與更早之前加入但是還未儲存的資料進行儲存</para>
         /// </summary>
         /// <param name="dataInput">要寫入的資料清單</param>
-        /// <param name="prevResult">前一批執行結果</param>
+        /// <param name="dataTransResult">資料交易明細</param>
         /// <param name="execNow">是否立即執行</param>
         /// <returns>
         /// <para>如不選擇立即執行，正常情況下會回傳 TRUE 以繼續加入資料批次，唯加入過程發生會影響整批交易的失敗，回傳 false 並鎖定整批交易；</para>
         /// <para>如選擇立即執行，回傳執行的結果是否成功；</para>
         /// <para>無論選擇是否立即執行，只要回傳false都代表錯誤發生，故整批交易都會被鎖定</para>
         /// </returns>
-        bool TryAddOrUpdate(IEnumerable<T> dataInput, IDataTransResult? prevResult, bool execNow);
+        bool TryAddOrUpdate(IEnumerable<T> dataInput, IDataTransResult? dataTransResult, bool execNow);
 
-        bool ApplyChanges(IDataTransResult? prevResult);
+        /// <summary>
+        /// 嘗試更新資料
+        /// </summary>
+        /// <param name="dataTransResult">資料交易明細</param>
+        /// <returns>是否成功</returns>
+        bool ApplyChanges(IDataTransResult? dataTransResult);
     }
 
     public static partial class MyDataHelperExtends
@@ -85,8 +90,10 @@ namespace Cyh.DataHelper
         /// 嘗試寫入或更新資料
         /// </summary>
         /// <param name="dataInputs">要寫入資料集合</param>
+        /// <param name="dataTransResult"></param>
+        /// <param name="execNow">是否立即執行</param>
         /// <returns>執行結果</returns>
-        public static IDataTransResult? TryAddOrUpdate(this IWritableDataAccesser writable, IEnumerable? dataInputs, IDataTransResult? prevResult, bool execNow) {
+        public static IDataTransResult? TryAddOrUpdate(this IWritableDataAccesser writable, IEnumerable? dataInputs, IDataTransResult? dataTransResult, bool execNow) {
             if (writable == null)
                 return null;
             if (dataInputs == null)
@@ -95,7 +102,7 @@ namespace Cyh.DataHelper
 
             foreach (object? item in dataInputs) {
                 result.TotalTransCount++;
-                if (writable.TryAddOrUpdateSingle(item, prevResult, execNow))
+                if (writable.TryAddOrUpdateSingle(item, dataTransResult, execNow))
                     result.SucceedTransCount++;
             }
             return result;
@@ -104,10 +111,12 @@ namespace Cyh.DataHelper
         /// <summary>
         /// 嘗試寫入或更新資料
         /// </summary>
-        /// <param name="dataInputs">要寫入單個資料</param>
         /// <typeparam name="T">要寫入的資料類型</typeparam>
+        /// <param name="dataInputs">要寫入單個資料</param>
+        /// <param name="dataTransResult"></param>
+        /// <param name="execNow">是否立即執行</param>
         /// <returns>執行結果</returns>
-        public static bool TryAddOrUpdateSingleT<T>(this IWritableDataAccesser<T> writable, object? dataInputs, IDataTransResult? prevResult, bool execNow) {
+        public static bool TryAddOrUpdateSingleT<T>(this IWritableDataAccesser<T> writable, object? dataInputs, IDataTransResult? dataTransResult, bool execNow) {
             if (writable == null || dataInputs == null)
                 return false;
             try {
@@ -115,7 +124,7 @@ namespace Cyh.DataHelper
 
                 if (temp == null)
                     return false;
-                return writable.TryAddOrUpdate(temp, prevResult, execNow);
+                return writable.TryAddOrUpdate(temp, dataTransResult, execNow);
             } catch (Exception? ex) {
                 writable.HandleException(ex);
                 return false;
@@ -125,42 +134,42 @@ namespace Cyh.DataHelper
 
     public static partial class MyDataHelperExtends
     {
-        public static bool __CheckNullAnd_SaveDataToAccesser<T>(IWritableDataAccesser<T>? writableDataAccesser, T? data, IDataTransResult? prevResult, bool execNow) {
+        public static bool __CheckNullAnd_SaveDataToAccesser<T>(IWritableDataAccesser<T>? writableDataAccesser, T? data, IDataTransResult? dataTransResult, bool execNow) {
 
             if (writableDataAccesser == null) {
                 // 無效的資料源頭，交易鎖定
-                prevResult.TryAppendError_DataAccesserNotInit();
-                prevResult.BatchOnFinish(false);
+                dataTransResult.TryAppendError_DataAccesserNotInit();
+                dataTransResult.BatchOnFinish(false);
                 return false;
             }
 
-            return writableDataAccesser.TryAddOrUpdate(data, prevResult, execNow);
+            return writableDataAccesser.TryAddOrUpdate(data, dataTransResult, execNow);
         }
 
-        public static bool __CheckNullAnd_SaveDatasToAccesser<T>(IWritableDataAccesser<T>? writableDataAccesser, IEnumerable<T> datas, IDataTransResult? prevResult, bool execNow) {
+        public static bool __CheckNullAnd_SaveDatasToAccesser<T>(IWritableDataAccesser<T>? writableDataAccesser, IEnumerable<T> datas, IDataTransResult? dataTransResult, bool execNow) {
 
             if (writableDataAccesser == null) {
                 // 無效的資料源頭，交易鎖定
-                prevResult.TryAppendError_DataAccesserNotInit();
+                dataTransResult.TryAppendError_DataAccesserNotInit();
                 return false;
             }
 
-            return writableDataAccesser.TryAddOrUpdate(datas, prevResult, execNow);
+            return writableDataAccesser.TryAddOrUpdate(datas, dataTransResult, execNow);
         }
 
-        public static bool __CheckNullAnd_SaveDataToAccesserFrom<T, U>(IWritableDataAccesser<T>? writableDataAccesser, Expression<Func<U, T>>? selector, U? data, IDataTransResult? prevResult, bool execNow) {
+        public static bool __CheckNullAnd_SaveDataToAccesserFrom<T, U>(IWritableDataAccesser<T>? writableDataAccesser, Expression<Func<U, T>>? selector, U? data, IDataTransResult? dataTransResult, bool execNow) {
 
             if (writableDataAccesser == null) {
                 // 無效的資料源頭，交易鎖定
-                prevResult.TryAppendError_DataAccesserNotInit();
-                prevResult.BatchOnFinish(false);
+                dataTransResult.TryAppendError_DataAccesserNotInit();
+                dataTransResult.BatchOnFinish(false);
                 return false;
             }
 
             if (selector == null) {
                 // 資料轉換器失效，後續會受到影響，交易鎖定
-                prevResult.TryAppendError_CannotConvertInput();
-                prevResult.BatchOnFinish(false);
+                dataTransResult.TryAppendError_CannotConvertInput();
+                dataTransResult.BatchOnFinish(false);
                 return false;
             }
 
@@ -169,8 +178,8 @@ namespace Cyh.DataHelper
                 converter = selector.Compile();
             } catch {
                 // 資料轉換器無法建立，後續會受到影響，交易鎖定
-                prevResult.TryAppendError_CannotConvertInput();
-                prevResult.BatchOnFinish(false);
+                dataTransResult.TryAppendError_CannotConvertInput();
+                dataTransResult.BatchOnFinish(false);
                 return false;
             }
 
@@ -183,21 +192,21 @@ namespace Cyh.DataHelper
                 temp = default;
             }
 
-            return writableDataAccesser.TryAddOrUpdate(temp, prevResult, execNow);
+            return writableDataAccesser.TryAddOrUpdate(temp, dataTransResult, execNow);
         }
 
-        public static bool __CheckNullAnd_SaveDatasToAccesserFrom<T, U>(IWritableDataAccesser<T>? writableDataAccesser, Expression<Func<U, T>>? selector, IEnumerable<U> datas, IDataTransResult? prevResult, bool execNow) {
+        public static bool __CheckNullAnd_SaveDatasToAccesserFrom<T, U>(IWritableDataAccesser<T>? writableDataAccesser, Expression<Func<U, T>>? selector, IEnumerable<U> datas, IDataTransResult? dataTransResult, bool execNow) {
 
             if (writableDataAccesser == null) {
                 // 無效的資料源頭，交易鎖定
-                prevResult.TryAppendError_DataAccesserNotInit();
-                prevResult.BatchOnFinish(false);
+                dataTransResult.TryAppendError_DataAccesserNotInit();
+                dataTransResult.BatchOnFinish(false);
                 return false;
             }
             if (selector == null) {
                 // 資料轉換器失效，後續會受到影響，交易鎖定
-                prevResult.TryAppendError_CannotConvertInput();
-                prevResult.BatchOnFinish(false);
+                dataTransResult.TryAppendError_CannotConvertInput();
+                dataTransResult.BatchOnFinish(false);
                 return false;
             }
 
@@ -206,16 +215,16 @@ namespace Cyh.DataHelper
                 converter = selector.Compile();
             } catch {
                 // 資料轉換器無法建立，後續會受到影響，交易鎖定
-                prevResult.TryAppendError_CannotConvertInput();
-                prevResult.BatchOnFinish(false);
+                dataTransResult.TryAppendError_CannotConvertInput();
+                dataTransResult.BatchOnFinish(false);
                 return false;
             }
 
             foreach (U? data in datas) {
-                writableDataAccesser.TryAddOrUpdate(converter(data), prevResult, false);
+                writableDataAccesser.TryAddOrUpdate(converter(data), dataTransResult, false);
             }
 
-            return writableDataAccesser.ApplyChanges(prevResult);
+            return writableDataAccesser.ApplyChanges(dataTransResult);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace MemeRepository.Controllers
 {
     [ApiController]
     [Route("api/image")]
-    public class ApiImageController : MyCastableModelController<Image>
+    public class ApiImageController : MyModelAccessController, IModelHelper<Image>, IModelHelper<Tag>
     {
         public ApiImageController(
             IWebAppConfigurations webAppConfigurations,
@@ -19,18 +19,14 @@ namespace MemeRepository.Controllers
 
         }
 
-        IDataManager<Image> ImageManager {
-            get => this.GetCustManager<Image>();
-        }
+        public IDataManager<Image>? DefaultDataManager { get; set; }
 
-        IDataManager<Tag> TagManager {
-            get => this.GetCustManager<Tag>();
-        }
+        IDataManager<Tag>? IModelHelper<Tag>.DefaultDataManager { get; set; }
 
         [Route("get/single")]
         [HttpGet]
         public Image? GetImageViewModel(long id) {
-            return this.GetDataModel(x => x.ImageID == id);
+            return this.GetDataModel<Image>(x => x.ImageID == id);
         }
 
         [Route("save/single")]
