@@ -30,7 +30,7 @@ namespace Cyh.Modules.ModViewData
             where DataModel : class, new()
             where ViewModel : class, new() {
             if (viewModelHelper == null) return null;
-            return viewModelHelper.DefaultDataManager.GetDataAs(viewModelHelper.GetExprToViewModel(), expression, dataTransResult);
+            return viewModelHelper.GetDataManager<DataModel>().GetDataAs(viewModelHelper.GetExprToViewModel(), expression, dataTransResult);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Cyh.Modules.ModViewData
             where DataModel : class, new()
             where ViewModel : class, new() {
             if (viewModelHelper == null) return Enumerable.Empty<ViewModel>();
-            return viewModelHelper.DefaultDataManager.GetDatasAs(viewModelHelper.GetExprToViewModel(), expression, dataTransResult);
+            return viewModelHelper.GetDataManager<DataModel>().GetDatasAs(viewModelHelper.GetExprToViewModel(), expression, dataTransResult);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Cyh.Modules.ModViewData
             where DataModel : class, new()
             where ViewModel : class, new() {
             if (viewModelHelper == null) return Enumerable.Empty<ViewModel>();
-            return viewModelHelper.DefaultDataManager.GetDatasAs(viewModelHelper.GetExprToViewModel(), begin, count, expression, dataTransResult);
+            return viewModelHelper.GetDataManager<DataModel>().GetDatasAs(viewModelHelper.GetExprToViewModel(), begin, count, expression, dataTransResult);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Cyh.Modules.ModViewData
             where ViewModel : class, new() {
             dataTransResult ??= new DataTransResultBase();
             if (viewModelHelper == null) return dataTransResult;
-            viewModelHelper.DefaultDataManager.SaveDataFrom(viewModelHelper.GetExprToDataModel(), viewModel, dataTransResult, execNow);
+            viewModelHelper.GetDataManager<DataModel>().SaveDataFrom(viewModelHelper.GetExprToDataModel(), viewModel, dataTransResult, execNow);
             return dataTransResult;
         }
 
@@ -93,7 +93,7 @@ namespace Cyh.Modules.ModViewData
             where ViewModel : class, new() {
             dataTransResult ??= new DataTransResultBase();
             if (viewModelHelper == null) return dataTransResult;
-            viewModelHelper.DefaultDataManager.SaveDatasFrom(viewModelHelper.GetExprToDataModel(), viewModels, dataTransResult, execNow);
+            viewModelHelper.GetDataManager<DataModel>().SaveDatasFrom(viewModelHelper.GetExprToDataModel(), viewModels, dataTransResult, execNow);
             return dataTransResult;
         }
     }

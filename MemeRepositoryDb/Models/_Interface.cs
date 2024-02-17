@@ -1,4 +1,0 @@
-namespace MemeRepository.Db.Models
-{
-
-}

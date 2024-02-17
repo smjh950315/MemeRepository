@@ -18,16 +18,16 @@ namespace MemeRepository.Db.Models
 
         public virtual DbSet<Category> Category { get; set; } = null!;
         public virtual DbSet<CategoryDetail> CategoryDetail { get; set; } = null!;
-        public virtual DbSet<Image> Image { get; set; } = null!;
-        public virtual DbSet<Tag> Tag { get; set; } = null!;
-        public virtual DbSet<TagDetail> TagDetail { get; set; } = null!;
+        public virtual DbSet<IMAGE> IMAGE { get; set; } = null!;
+        public virtual DbSet<TAG> TAG { get; set; } = null!;
+        public virtual DbSet<TAG_BINDING> TAG_BINDING { get; set; } = null!;
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //        {
 //            if (!optionsBuilder.IsConfigured)
 //            {
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-//                optionsBuilder.UseSqlServer("Server=localhost,1433; user id=sa; password=Password1234; Database=MemeRepository;integrated security=false;TrustServerCertificate=True");
+//                optionsBuilder.UseSqlServer("Server=localhost,1433; user id=sa; password=0000; Database=MemeRepository;integrated security=false;TrustServerCertificate=True");
 //            }
 //        }
 
@@ -55,39 +55,26 @@ namespace MemeRepository.Db.Models
                 entity.Property(e => e.UpdateTime).HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<Image>(entity =>
+            modelBuilder.Entity<IMAGE>(entity =>
             {
-                entity.Property(e => e.CreateTime)
+                entity.Property(e => e.CREATED)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
 
-                entity.Property(e => e.ImageName).HasMaxLength(128);
+                entity.Property(e => e.NAME).HasMaxLength(128);
 
-                entity.Property(e => e.ImageType).HasMaxLength(50);
+                entity.Property(e => e.TYPE).HasMaxLength(50);
 
-                entity.Property(e => e.UpdateTime).HasColumnType("datetime");
+                entity.Property(e => e.UPDATED).HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<Tag>(entity =>
+            modelBuilder.Entity<TAG>(entity =>
             {
-                entity.HasNoKey();
+                entity.Property(e => e.CREATED).HasColumnType("datetime");
 
-                entity.Property(e => e.TagID).ValueGeneratedOnAdd();
-            });
+                entity.Property(e => e.NAME).HasMaxLength(256);
 
-            modelBuilder.Entity<TagDetail>(entity =>
-            {
-                entity.HasKey(e => e.TagName);
-
-                entity.Property(e => e.TagName).HasMaxLength(128);
-
-                entity.Property(e => e.CreateTime)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.TDID).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.UpdateTime).HasColumnType("datetime");
+                entity.Property(e => e.UPDATED).HasColumnType("datetime");
             });
 
             OnModelCreatingPartial(modelBuilder);

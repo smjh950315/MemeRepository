@@ -3,10 +3,11 @@ using System.Collections.Generic;
 
 namespace MemeRepository.Db.Models
 {
-    public partial class Tag
+    public partial class TAG
     {
-        public long TagID { get; set; }
-        public long TDID { get; set; }
-        public long ImageID { get; set; }
+        public long ID { get; set; }
+        public string? NAME { get; set; }
+        public DateTime? CREATED { get; set; }
+        public DateTime? UPDATED { get; set; }
     }
 }
