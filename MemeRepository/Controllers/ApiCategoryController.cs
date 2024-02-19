@@ -1,7 +1,7 @@
 using Cyh.DataHelper;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.Controller;
-using DataModel = MemeRepository.Db.Models.Category;
+using DataModel = MemeRepository.Db.Models.CATE;
 using Microsoft.AspNetCore.Mvc;
 using Cyh.DataModels;
 using Cyh.Modules.ModViewData;

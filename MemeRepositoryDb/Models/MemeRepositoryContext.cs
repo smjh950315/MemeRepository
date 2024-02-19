@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -16,8 +16,8 @@ namespace MemeRepository.Db.Models
         {
         }
 
-        public virtual DbSet<Category> Category { get; set; } = null!;
-        public virtual DbSet<CategoryDetail> CategoryDetail { get; set; } = null!;
+        public virtual DbSet<CATE> CATE { get; set; } = null!;
+        public virtual DbSet<CATE_BINDING> CATE_BINDING { get; set; } = null!;
         public virtual DbSet<IMAGE> IMAGE { get; set; } = null!;
         public virtual DbSet<TAG> TAG { get; set; } = null!;
         public virtual DbSet<TAG_BINDING> TAG_BINDING { get; set; } = null!;
@@ -33,26 +33,13 @@ namespace MemeRepository.Db.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Category>(entity =>
+            modelBuilder.Entity<CATE>(entity =>
             {
-                entity.HasNoKey();
+                entity.Property(e => e.CREATED).HasColumnType("datetime");
 
-                entity.Property(e => e.CategoryID).ValueGeneratedOnAdd();
-            });
+                entity.Property(e => e.NAME).HasMaxLength(256);
 
-            modelBuilder.Entity<CategoryDetail>(entity =>
-            {
-                entity.HasKey(e => e.CategoryName);
-
-                entity.Property(e => e.CategoryName).HasMaxLength(128);
-
-                entity.Property(e => e.CDID).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.CreateTime)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.UpdateTime).HasColumnType("datetime");
+                entity.Property(e => e.UPDATED).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<IMAGE>(entity =>
