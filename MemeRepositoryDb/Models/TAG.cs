@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MemeRepository.Db.Models
+﻿namespace MemeRepository.Db.Models
 {
     public partial class TAG
     {

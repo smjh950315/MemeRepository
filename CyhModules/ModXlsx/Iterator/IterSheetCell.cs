@@ -24,7 +24,7 @@ namespace Cyh.Modules.ModXlsx.Iterator
         }
 
         public void Reset() {
-            this._Enumerator = _MySheetRow._XlsxRow.Cells().GetEnumerator();
+            this._Enumerator = this._MySheetRow._XlsxRow.Cells().GetEnumerator();
         }
     }
 }

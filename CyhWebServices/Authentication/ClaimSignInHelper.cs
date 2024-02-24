@@ -1,4 +1,3 @@
-using Cyh.Common;
 using Cyh.Modules.ModAuthentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -61,7 +60,7 @@ namespace Cyh.WebServices.Authentication
         }
 
         public IEnumerator<Claim> GetEnumerator() {
-            return this._Claims?.GetEnumerator() ?? Enumerable.Empty<Claim>().GetEnumerator();   
+            return this._Claims?.GetEnumerator() ?? Enumerable.Empty<Claim>().GetEnumerator();
         }
         IEnumerator IEnumerable.GetEnumerator() {
             return this.GetEnumerator();
@@ -82,7 +81,7 @@ namespace Cyh.WebServices.Authentication
         /// <summary>
         /// 預設用的 Scheme
         /// </summary>
-        public static string DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        public const string DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
         /// <summary>
         /// 預設的認證相關設定
@@ -114,8 +113,8 @@ namespace Cyh.WebServices.Authentication
         /// Claim 規則
         /// </summary>
         public string? Role {
-            get => this.Claims[ClaimTypes.Role];
-            set => this.Claims[ClaimTypes.Role] = value;
+            get => this.Claims[ClaimDefinitions.ClientRole];
+            set => this.Claims[ClaimDefinitions.ClientRole] = value;
         }
 
         /// <summary>
@@ -131,9 +130,9 @@ namespace Cyh.WebServices.Authentication
                 if (this._Identity == null)
                     this._Identity = new ClaimsIdentity(this.Scheme);
 
-                var claimed = this._Identity.Claims.ToList();
+                List<Claim> claimed = this._Identity.Claims.ToList();
 
-                foreach (var claim in claimed) {
+                foreach (Claim? claim in claimed) {
                     this._Identity.RemoveClaim(claim);
                 }
 
@@ -160,23 +159,19 @@ namespace Cyh.WebServices.Authentication
         }
 
         /// <summary>
-        /// 設定要用來當作識別的使用者ID
+        /// 設定要用來當作識別的客戶端ID
         /// </summary>
-        /// <param name="clientId">要用來當作識別的使用者ID</param>
+        /// <param name="clientId">要用來當作識別的客戶端ID</param>
         public void SetClientId(string clientId) {
-            this.Claims[ClaimTypes.Name] = clientId;
+            this.Claims[ClaimDefinitions.ClientId] = clientId;
         }
 
-        /// <summary>
-        /// 設定與登入有關的資訊
-        /// </summary>
-        /// <param name="_options">與登入有關的資訊</param>
-        public void SetLoginOptions(IMyAuthorizationOptions _options) {
+        public void SetSignInOptions(IAuthorizationOptions options) {
             if (this._Property == null) {
                 this._Property = new AuthenticationProperties();
-                this._Property.AllowRefresh = _options.AllowRefresh;
-                this._Property.ExpiresUtc = DateTimeOffset.Now.AddMinutes(_options.ExpireTime);
-                this._Property.IsPersistent = _options.IsPersist;
+                this._Property.AllowRefresh = options.AllowRefresh;
+                this._Property.ExpiresUtc = DateTimeOffset.Now + options.LifeTime;
+                this._Property.IsPersistent = options.IsPersistent;
             }
         }
 
@@ -191,7 +186,7 @@ namespace Cyh.WebServices.Authentication
                 Claim[]? claims = objects as Claim[];
                 if (claims.IsNullOrEmpty())
                     return;
-                foreach (var claim in claims) {
+                foreach (Claim claim in claims) {
                     this.Claims[claim.Type] = claim.Value;
                 }
             }
@@ -201,8 +196,9 @@ namespace Cyh.WebServices.Authentication
         /// 建構子，如果輸入建構參數 <paramref name="_AppName"/> 則表示將其設定為該應用程式 Cookie 的識別名
         /// </summary>
         public ClaimSignInHelper(string? _AppName = null) {
-            if (_AppName != null)
-                this.Claims[ClaimTypes.NameIdentifier] = _AppName;
+            if (_AppName != null) {
+                this.Claims[ClaimDefinitions.Application] = _AppName;
+            }
         }
     }
 }

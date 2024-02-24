@@ -1,30 +1,32 @@
 using Cyh.DataHelper;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.Controller;
-using DataModel = MemeRepository.Db.Models.CATE;
+using MemeRepository.Lib.Interface;
+using MemeRepository.Lib.ViewModels;
+using MemeRepository.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Cyh.DataModels;
-using Cyh.Modules.ModViewData;
 
 namespace MemeRepository.Controllers
 {
     [ApiController]
     [Route("api/category")]
-    public class ApiCategoryController : MyModelAccessController, IModelHelper<DataModel>
+    public class ApiCategoryController : MyModelAccessController
     {
+        ICateManager _CateManager;
         public ApiCategoryController(
             IWebAppConfigurations webAppConfigurations,
             IDataManagerActivator dataManagerActivator,
-            IDataManagerCreater dataManagerCreater
+            IDataManagerBuilder dataManagerCreater,
+            ICateManager cateManager
             ) : base(webAppConfigurations, dataManagerActivator, dataManagerCreater) {
+            this._CateManager = cateManager;
         }
 
-        public IDataManager<DataModel>? DefaultDataManager { get; set; }
 
         [Route("category/get_all")]
-        [HttpGet]
-        public IEnumerable<DataModel> GetCategory() {
-            return this.GetDataModels(null);
+        [HttpPost]
+        public IEnumerable<CategoryViewModel> GetCategory(IndexRange indexRange) {
+            return this._CateManager.GetAll(indexRange.Begin, indexRange.Count);
         }
 
         //[Route("category/Add_category")]

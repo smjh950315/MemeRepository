@@ -17,7 +17,7 @@ namespace Cyh.DataHelper
         /// <summary>
         /// 資料管理器(未初始化)產生器
         /// </summary>
-        IDataManagerCreater DataManagerCreater { get; }
+        IDataManagerBuilder DataManagerCreater { get; }
 
         /// <summary>
         /// 空的資料交換結果
@@ -69,6 +69,17 @@ namespace Cyh.DataHelper
                 retManager = __UnChecked_CreateAndActivateNewDataManager<DataModel>(modelHelper);
             }
             return retManager;
+        }
+
+        /// <summary>
+        /// 檢查是否有符合條件的資料
+        /// </summary>
+        /// <param name="expression">條件式</param>
+        /// <returns>符合條件的資料是否存在</returns>
+        public static bool Exist<DataModel>(this IModelHelper<DataModel>? modelHelper, Expression<Func<DataModel, bool>> expression) where DataModel : class {
+            return modelHelper
+                .GetDataManager<DataModel>()
+                .Any(expression);
         }
 
         /// <summary>

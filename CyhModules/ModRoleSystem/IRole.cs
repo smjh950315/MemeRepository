@@ -1,4 +1,4 @@
-﻿namespace Cyh.Modules.ModRoleSystem
+namespace Cyh.Modules.ModRoleSystem
 {
     /// <summary>
     /// 與角色有關的規則

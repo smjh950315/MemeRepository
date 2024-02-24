@@ -1,9 +1,7 @@
 using Cyh.DataHelper;
 using Cyh.DataModels;
 using Cyh.EFCore.Interface;
-using DocumentFormat.OpenXml.InkML;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -51,7 +49,7 @@ namespace Cyh.EFCore
         /// <summary>
         /// 特定類型的TABLE
         /// </summary>
-        public DbSet<TEntity>? Entities => this.GetDbSet<TEntity>(ref _Entities);
+        public DbSet<TEntity>? Entities => this.GetDbSet<TEntity>(ref this._Entities);
 
         /// <summary>
         /// 當前的資料來源是否可以存取

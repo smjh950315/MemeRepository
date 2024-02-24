@@ -90,7 +90,7 @@ namespace Cyh.DataHelper
         /// 嘗試寫入或更新資料
         /// </summary>
         /// <param name="dataInputs">要寫入資料集合</param>
-        /// <param name="dataTransResult"></param>
+        /// <param name="dataTransResult">執行結果</param>
         /// <param name="execNow">是否立即執行</param>
         /// <returns>執行結果</returns>
         public static IDataTransResult? TryAddOrUpdate(this IWritableDataAccesser writable, IEnumerable? dataInputs, IDataTransResult? dataTransResult, bool execNow) {
@@ -113,7 +113,7 @@ namespace Cyh.DataHelper
         /// </summary>
         /// <typeparam name="T">要寫入的資料類型</typeparam>
         /// <param name="dataInputs">要寫入單個資料</param>
-        /// <param name="dataTransResult"></param>
+        /// <param name="dataTransResult">執行結果</param>
         /// <param name="execNow">是否立即執行</param>
         /// <returns>執行結果</returns>
         public static bool TryAddOrUpdateSingleT<T>(this IWritableDataAccesser<T> writable, object? dataInputs, IDataTransResult? dataTransResult, bool execNow) {

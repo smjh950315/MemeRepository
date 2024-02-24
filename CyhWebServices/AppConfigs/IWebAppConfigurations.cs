@@ -1,5 +1,3 @@
-﻿using Cyh.Modules.ModAuthentication;
-
 namespace Cyh.WebServices.AppConfigs
 {
     /// <summary>
@@ -13,23 +11,13 @@ namespace Cyh.WebServices.AppConfigs
         public string ApplicationName { get; }
 
         /// <summary>
-        /// 基本的 Cookie 認證選項
+        /// 返回網址的參數名稱
         /// </summary>
-        public ICookieAuthenticOptions CookieAuthenticOptions { get; }
+        public string ReturnUrlParameter { get; }
 
         /// <summary>
-        /// 與登入有關的選項
+        /// 發生錯誤時的路徑
         /// </summary>
-        public IMyAuthorizationOptions LoginOptions { get; }
-
-        /// <summary>
-        /// 專案的基本路徑
-        /// </summary>
-        public IRouteSettings RouteSettings { get; }
-
-        /// <summary>
-        /// 顯示在前端的資訊選項
-        /// </summary>
-        public IViewSettings ViewSettings { get; }
+        public string Error { get; }
     }
 }

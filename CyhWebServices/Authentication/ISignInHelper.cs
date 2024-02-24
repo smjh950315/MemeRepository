@@ -12,7 +12,7 @@ namespace Cyh.WebServices.Authentication
         /// <summary>
         /// 加入預先設定好的登入選項
         /// </summary>
-        public void SetLoginOptions(IMyAuthorizationOptions _options);
+        public void SetSignInOptions(IAuthorizationOptions options);
 
         /// <summary>
         /// 以到目前為止加入的資訊取得Principal

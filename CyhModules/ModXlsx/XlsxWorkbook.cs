@@ -1,9 +1,6 @@
-using ClosedXML;
 using ClosedXML.Excel;
 using Cyh.Modules.ModXlsx.Iterator;
-using DocumentFormat.OpenXml.EMMA;
 using System.Collections;
-using System.IO;
 
 namespace Cyh.Modules.ModXlsx
 {
@@ -22,7 +19,7 @@ namespace Cyh.Modules.ModXlsx
         /// 當前Excel結構是否有效
         /// </summary>
         public bool IsValid {
-            get => _Workbook != null;
+            get => this._Workbook != null;
         }
 
         /// <summary>

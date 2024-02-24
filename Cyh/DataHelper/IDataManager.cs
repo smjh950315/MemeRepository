@@ -1,5 +1,4 @@
 using Cyh.DataModels;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace Cyh.DataHelper
@@ -50,48 +49,39 @@ namespace Cyh.DataHelper
         IMyDataAccesser<V>? SubDataSource2 { get; set; }
     }
 
-    public static partial class MyDataHelperExtends
-    {
-        /// <summary>
-        /// 資料源是否為有效狀態
-        /// </summary>
-        /// <typeparam name="T">資料的模型</typeparam>
-        /// <returns>是否為有效狀態</returns>
-        public static bool SourceIsValid<T>([NotNullWhen(true)] this IDataManager<T>? formMgr) {
-            if (formMgr == null)
-                return false;
-            return formMgr.MainDataSource != null;
-        }
-
-        /// <summary>
-        /// 資料源是否為有效狀態
-        /// </summary>
-        /// <typeparam name="T">主要資料的模型</typeparam>
-        /// <typeparam name="U">次要資料的模型</typeparam>
-        /// <returns>是否為有效狀態</returns>
-        public static bool SourceIsValid<T, U>([NotNullWhen(true)] this IDataManager<T, U>? formMgr) {
-            if (formMgr == null)
-                return false;
-            return formMgr.MainDataSource != null && formMgr.SubDataSource != null;
-        }
-
-        /// <summary>
-        /// 資料源是否為有效狀態
-        /// </summary>
-        /// <typeparam name="T">主要資料的模型</typeparam>
-        /// <typeparam name="U">次要資料的模型1</typeparam>
-        /// <typeparam name="V">次要資料的模型2</typeparam>
-        /// <returns>是否為有效狀態</returns>
-        public static bool SourceIsValid<T, U, V>([NotNullWhen(true)] this IDataManager<T, U, V>? formMgr) {
-            if (formMgr == null)
-                return false;
-            return formMgr.MainDataSource != null && formMgr.SubDataSource != null && formMgr.SubDataSource2 != null;
-        }
-    }
-
     // T,U,V get single data
     public static partial class MyDataHelperExtends
     {
+        /// <summary>
+        /// 是否有任何符合查詢條件式的資料
+        /// </summary>
+        /// <typeparam name="T">要查詢的模型</typeparam>
+        /// <param name="expression">查詢條件式</param>
+        /// <returns>是否有任何相符的結果</returns>
+        public static bool Any<T>(this IDataManager<T>? dataManager, Expression<Func<T, bool>>? expression) {
+            return __CheckNullAnd_CheckWhetherExist(dataManager?.MainDataSource, expression);
+        }
+
+        /// <summary>
+        /// 是否有任何符合查詢條件式的資料
+        /// </summary>
+        /// <typeparam name="U">要查詢的模型</typeparam>
+        /// <param name="expression">查詢條件式</param>
+        /// <returns>是否有任何相符的結果</returns>
+        public static bool Any<T, U>(this IDataManager<T, U>? dataManager, Expression<Func<U, bool>>? expression) {
+            return __CheckNullAnd_CheckWhetherExist(dataManager?.SubDataSource, expression);
+        }
+
+        /// <summary>
+        /// 是否有任何符合查詢條件式的資料
+        /// </summary>
+        /// <typeparam name="U">要查詢的模型</typeparam>
+        /// <param name="expression">查詢條件式</param>
+        /// <returns>是否有任何相符的結果</returns>
+        public static bool Any<T, U, V>(this IDataManager<T, U, V>? dataManager, Expression<Func<V, bool>>? expression) {
+            return __CheckNullAnd_CheckWhetherExist(dataManager?.SubDataSource2, expression);
+        }
+
         /// <summary>
         /// 取得主要資料
         /// </summary>
@@ -128,6 +118,7 @@ namespace Cyh.DataHelper
             return __CheckNullAnd_GetDataFromAccesser(dataManager?.SubDataSource2, expression, dataTransResult);
         }
     }
+
     // T,U,V get single diff data
     public static partial class MyDataHelperExtends
     {
@@ -217,6 +208,7 @@ namespace Cyh.DataHelper
             return __CheckNullAnd_GetDatasFromAccesser(dataManager?.SubDataSource2, begin, count, expression, dataTransResult);
         }
     }
+
     // T,U,V get multiple diff data with range
     public static partial class MyDataHelperExtends
     {
@@ -308,6 +300,7 @@ namespace Cyh.DataHelper
             return __CheckNullAnd_GetDatasFromAccesser(dataManager?.SubDataSource2, expression, dataTransResult);
         }
     }
+
     // T,U,V get multiple diff data without range
     public static partial class MyDataHelperExtends
     {
@@ -409,6 +402,7 @@ namespace Cyh.DataHelper
             return __CheckNullAnd_SaveDataToAccesser(dataManager?.SubDataSource2, data, dataTransResult, execNow);
         }
     }
+
     // T,U,V save single data from diff
     public static partial class MyDataHelperExtends
     {
@@ -469,6 +463,7 @@ namespace Cyh.DataHelper
             return __CheckNullAnd_SaveDataToAccesserFrom(dataManager?.SubDataSource2, selector, data, dataTransResult, execNow);
         }
     }
+
     // T,U,V save multiple data
     public static partial class MyDataHelperExtends
     {
@@ -523,6 +518,7 @@ namespace Cyh.DataHelper
             return __CheckNullAnd_SaveDatasToAccesser(dataManager?.SubDataSource2, datas, dataTransResult, execNow);
         }
     }
+
     // T,U,V save multiple data from diff
     public static partial class MyDataHelperExtends
     {

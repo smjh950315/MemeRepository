@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +20,11 @@
     <ProjectReference Include="..\CyhEFCore\Cyh.EFCore.csproj" />
     <ProjectReference Include="..\CyhWebServices\Cyh.WebServices.csproj" />
     <ProjectReference Include="..\MemeRepositoryDb\MemeRepository.Db.csproj" />
+    <ProjectReference Include="..\MemeRepositoryLib\MemeRepository.Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AppConfigs\" />
   </ItemGroup>
 
 </Project>

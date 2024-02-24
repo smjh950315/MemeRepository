@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CyhEFCore\Cyh.EFCore.csproj" />
+    <ProjectReference Include="..\CyhModules\Cyh.Modules.csproj" />
+    <ProjectReference Include="..\CyhWebServices\Cyh.WebServices.csproj" />
+    <ProjectReference Include="..\Cyh\Cyh.csproj" />
+  </ItemGroup>
+
+</Project>

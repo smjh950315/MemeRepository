@@ -1,31 +1,26 @@
 using Cyh.DataHelper;
 using Cyh.DataModels;
-using Cyh.EFCore;
-using Cyh.EFCore.Interface;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.Controller;
-using MemeRepository.Db.Models;
+using MemeRepository.Lib.Interface;
+using MemeRepository.Lib.ViewModels;
+using MemeRepository.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MemeRepository.Controllers
 {
     [ApiController]
     [Route("api/tag")]
-    public class ApiTagController : MyModelAccessController, IModelHelper<TAG>
+    public class ApiTagController : MyModelAccessController
     {
+        ITagManager _TagManager;
         public ApiTagController(
             IWebAppConfigurations webAppConfigurations,
             IDataManagerActivator dataManagerActivator,
-            IDataManagerCreater dataManagerCreater
+            IDataManagerBuilder dataManagerCreater,
+            ITagManager tagManager
             ) : base(webAppConfigurations, dataManagerActivator, dataManagerCreater) {
-        }
-
-        public IDataManager<TAG>? DefaultDataManager { get; set; }
-
-        [Route("get_ids")]
-        [HttpGet]
-        public IEnumerable<long> GetTagIds() {
-            return this.GetDataModelsAs(x => x.ID, null);
+            this._TagManager = tagManager;
         }
 
         //[Route("get_names")]
@@ -35,15 +30,15 @@ namespace MemeRepository.Controllers
         //}
 
         [Route("get_all")]
-        [HttpGet]
-        public IEnumerable<TAG> GetTags() {
-            return this.GetDataModels(null);
+        [HttpPost]
+        public IEnumerable<TagViewModel> GetTags(IndexRange indexRange) {
+            return this._TagManager.GetAll(indexRange.Begin, indexRange.Count);
         }
 
         [Route("save")]
         [HttpPost]
-        public IDataTransResult SaveTags(IEnumerable<TAG> tags) {
-            return this.SaveDataModels(tags, null, true);
+        public IDataTransResult SaveTags(IEnumerable<TagViewModel> tags) {
+            return this._TagManager.Save(tags, null, true);
         }
     }
 }

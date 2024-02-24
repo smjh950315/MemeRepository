@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CyhEFCore\Cyh.EFCore.csproj" />
+    <ProjectReference Include="..\MemeRepositoryLib\MemeRepository.Lib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

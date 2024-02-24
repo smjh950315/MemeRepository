@@ -5,7 +5,7 @@ namespace Cyh.Modules.ModForm
     /// </summary>
     /// <typeparam name="TMainForm"></typeparam>
     /// <typeparam name="TTargetForm"></typeparam>
-    public interface IFormGroup<TMainForm, TTargetForm>
+    public interface IFormGroup<TMainForm, TSubForm>
     {
         /// <summary>
         /// 表單的單頭
@@ -15,7 +15,12 @@ namespace Cyh.Modules.ModForm
         /// <summary>
         /// 表單的單身
         /// </summary>
-        IEnumerable<TTargetForm>? SubForms { get; set; }
+        IEnumerable<TSubForm>? SubForms { get; set; }
+    }
+
+    public interface IFormGroup<TMainForm, TSubForm, TSub2Form> : IFormGroup<TMainForm, TSubForm>
+    {
+        IEnumerable<TSub2Form>? SubForm2 { get; set; }
     }
 
     /// <summary>
@@ -23,10 +28,10 @@ namespace Cyh.Modules.ModForm
     /// </summary>
     /// <typeparam name="TMainForm"></typeparam>
     /// <typeparam name="TTargetForm"></typeparam>
-    public class FormGroup<TMainForm, TTargetForm> : IFormGroup<TMainForm, TTargetForm>
+    public class FormGroup<TMainForm, TSubForm> : IFormGroup<TMainForm, TSubForm>
     {
         public TMainForm? MainForm { get; set; }
 
-        public IEnumerable<TTargetForm>? SubForms { get; set; }
+        public IEnumerable<TSubForm>? SubForms { get; set; }
     }
 }

@@ -1,5 +1,3 @@
-using Cyh.DataHelper;
-
 namespace Cyh.DataModels
 {
     /// <summary>
@@ -57,6 +55,7 @@ namespace Cyh.DataModels
         public const string StrErrorOnFetching = "Error happend while fetching data!";
         public const string StrErrorOnSaving = "Error happend while saving data!";
         public const string StrErrorOnApplyChanges = "Error happend while applying changes!";
+        public const string StrRequireAuthorization = "Authorization is required!";
 
         /// <summary>
         /// 加入一次執行的結果
@@ -118,6 +117,9 @@ namespace Cyh.DataModels
         }
         public static void TryAppendError_FailedOnApplyChanges(this IDataTransResult? prevResult) {
             prevResult.TryAppendTransResult(false, StrErrorOnApplyChanges);
+        }
+        public static void TryAppendError_RequireAuthorization(this IDataTransResult? prevResult) {
+            prevResult.TryAppendTransResult(false, StrRequireAuthorization);
         }
     }
 }

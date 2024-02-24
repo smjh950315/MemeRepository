@@ -1,5 +1,5 @@
-using System.Linq.Expressions;
 using Cyh.DataModels;
+using System.Linq.Expressions;
 
 namespace Cyh.DataHelper
 {
@@ -111,6 +111,16 @@ namespace Cyh.DataHelper
 
     public static partial class MyDataHelperExtends
     {
+        private static bool __CheckNullAnd_CheckWhetherExist<T>(IReadOnlyDataAccesser<T>? readOnlyDataAccesser, Expression<Func<T, bool>>? expression) {
+            if (readOnlyDataAccesser == null) { return false; }
+            if (readOnlyDataAccesser.Queryable == null) { return false; }
+            if (expression == null) {
+                return readOnlyDataAccesser.Queryable.Any();
+            } else {
+                return readOnlyDataAccesser.Queryable.Any(expression);
+            }
+        }
+
         private static T? __CheckNullAnd_GetDataFromAccesser<T>(IReadOnlyDataAccesser<T>? readOnlyDataAccesser, Expression<Func<T, bool>>? expression, IDataTransResult? dataTransResult) {
             return readOnlyDataAccesser != null ? readOnlyDataAccesser.TryGetData(expression, dataTransResult) : default;
         }

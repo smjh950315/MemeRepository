@@ -10,6 +10,8 @@ namespace Cyh.DataModels
         /// <typeparam name="From">來源資料模型，必須要與當前模型有相同介面屬性</typeparam>
         /// <returns>轉換用的選擇器</returns>
         Expression<Func<From, To>> GetSelectorFromTo<From, To>() where From : IDataSurface where To : class, IDataSurface, new();
+
+        void UpdateFromTo<From, To>(From from, To to) where From : IDataSurface where To : IDataSurface;
     }
 
     /// <summary>
@@ -29,6 +31,10 @@ namespace Cyh.DataModels
         Expression<Func<TSrcData, TThisModel>> GetSelectorFrom<TSrcData>() where TSrcData : IDataSurface {
             return this.GetSelectorFromTo<TSrcData, TThisModel>();
         }
+        void UpdateFrom<From>(From from) where From : IDataSurface {
+            this.UpdateFromTo(from, this.Self());
+        }
+        TThisModel Self();
     }
 
     /// <summary>
@@ -48,6 +54,10 @@ namespace Cyh.DataModels
         Expression<Func<TThisModel, TDstData>> GetSelectorTo<TDstData>() where TDstData : class, IDataSurface, new() {
             return this.GetSelectorFromTo<TThisModel, TDstData>();
         }
+        void UpdateTo<To>(To dst) where To : class, IDataSurface {
+            this.UpdateFromTo(this.Self(), dst);
+        }
+        TThisModel Self();
     }
 
     /// <summary>

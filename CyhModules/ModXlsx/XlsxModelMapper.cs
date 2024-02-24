@@ -79,7 +79,7 @@ namespace Cyh.Modules.ModXlsx
             model = new TModel();
             IEnumerable<string> modelMembers = this.ModelMembers;
             foreach (string member in this.CommonOfColumnAndModel) {
-                int colIndex = XlsxColumnIndexMapping.FirstOrDefault(x => x.Value == member).Key;
+                int colIndex = this.XlsxColumnIndexMapping.FirstOrDefault(x => x.Value == member).Key;
                 this._SetModelInnerValue(ref model, member, row[colIndex].Value.GetText());
             }
         }
@@ -87,7 +87,7 @@ namespace Cyh.Modules.ModXlsx
             //throw new NotImplementedException("尚未完成的功能");
             if (model == null || xlsxSheetCells == null) return;
             foreach (string member in this.CommonOfColumnAndModel) {
-                int colIndex = XlsxColumnIndexMapping.FirstOrDefault(x => x.Value == member).Key;
+                int colIndex = this.XlsxColumnIndexMapping.FirstOrDefault(x => x.Value == member).Key;
                 xlsxSheetCells[colIndex].Value = this._GetModelInnerValue(model, member);
             }
         }

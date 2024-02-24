@@ -98,12 +98,12 @@ namespace Cyh.MyException
         /// </summary>
         /// <returns>字串化的參數資料</returns>
         public string GetDetailString() {
-            if (_ArgumentDetails.IsNullOrEmpty())
+            if (this._ArgumentDetails.IsNullOrEmpty())
                 return "Empty!";
 
             StringBuilder sb = new StringBuilder();
 
-            foreach (var argDetails in ArgumentDetails) {
+            foreach (var argDetails in this.ArgumentDetails) {
                 sb.Append(argDetails.ToString());
             }
 
@@ -121,8 +121,8 @@ namespace Cyh.MyException
         /// <param name="args">參數資訊集合</param>
         public MyArgumentException(params ArgumentDetail[] args) {
             if (args.IsNullOrEmpty()) return;
-            ArgumentDetails.AddRange(args);
-            Console.WriteLine("ArgumentException: " + GetDetailString() + DateTime.Now.ToString());
+            this.ArgumentDetails.AddRange(args);
+            Console.WriteLine("ArgumentException: " + this.GetDetailString() + DateTime.Now.ToString());
         }
     }
 }

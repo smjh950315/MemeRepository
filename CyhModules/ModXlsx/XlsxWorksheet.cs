@@ -10,7 +10,7 @@ namespace Cyh.Modules.ModXlsx
         internal XlsxWorkbook _MyWorkBook;
         internal IXLWorksheet _Worksheet {
             get {
-                IXLWorksheet? workSheet = CommonLib.TryGetValue(fn => this._MyWorkBook?._Workbook?.Worksheet(_SheetName), null);
+                IXLWorksheet? workSheet = CommonLib.TryGetValue(fn => this._MyWorkBook?._Workbook?.Worksheet(this._SheetName), null);
                 if (workSheet == null)
                     workSheet = this.__Unchecked_CreateSheet(this._SheetName);
                 return workSheet;

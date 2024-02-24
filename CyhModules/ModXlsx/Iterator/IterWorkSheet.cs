@@ -12,7 +12,7 @@ namespace Cyh.Modules.ModXlsx.Iterator
             if (!myWorkbook.IsValid) {
                 this._Enumerator = null;
             } else {
-                this._Enumerator = _MyWorkbook._Workbook?.Worksheets.GetEnumerator();
+                this._Enumerator = this._MyWorkbook._Workbook?.Worksheets.GetEnumerator();
             }
         }
 
@@ -36,7 +36,7 @@ namespace Cyh.Modules.ModXlsx.Iterator
 
         public void Reset() {
             if (this._MyWorkbook.IsValid) {
-                this._Enumerator = _MyWorkbook._Workbook?.Worksheets.GetEnumerator();
+                this._Enumerator = this._MyWorkbook._Workbook?.Worksheets.GetEnumerator();
             } else {
                 this._Enumerator = null;
             }

@@ -1,4 +1,3 @@
-
 using Cyh.DataHelper;
 using Cyh.DataModels;
 using System.Linq.Expressions;
@@ -11,89 +10,84 @@ namespace Cyh.Modules.ModViewData
 
     public interface IViewModelHelper<DataModel, ViewModel> : IModelHelper<DataModel>, IViewModelHelper where DataModel : class
     {
+        /// <summary>
+        /// 將資料模型轉換為檢視模型的敘述式取得函數
+        /// </summary>
+        /// <returns>轉換用的敘述式</returns>
         Expression<Func<DataModel, ViewModel>> GetExprToViewModel();
 
+        /// <summary>
+        /// 將檢視模型轉換為資料模型的敘述式取得函數
+        /// </summary>
+        /// <returns>轉換用的敘述式</returns>
         Expression<Func<ViewModel, DataModel>> GetExprToDataModel();
+
+        /// <summary>
+        /// 用來查詢與輸入資料相關的資料模型取得函數
+        /// </summary>
+        /// <param name="view">副資料檢視模型</param>
+        /// <returns>查詢用的敘述式</returns>
+        Expression<Func<DataModel, bool>> GetExprToFindDataModel(ViewModel view);
+
+        /// <summary>
+        /// 用資料的檢視模型來更新資料模型
+        /// </summary>
+        /// <param name="data">資料模型</param>
+        /// <param name="view">檢視模型</param>
+        void UpdateModelFromViewModel(DataModel data, ViewModel view);
     }
 
-    public static partial class MyDataHelperExtends
+    public static class ViewModelHelperExtends
     {
-        /// <summary>
-        /// 取得物件的 ViewModel
-        /// </summary>
-        /// <typeparam name="DataModel">DataModel</typeparam>
-        /// <typeparam name="ViewModel">ViewModel</typeparam>
-        /// <param name="expression">取得來源資料的條件</param>
-        /// <param name="dataTransResult"></param>
-        /// <returns>取得的ViewModel</returns>
-        public static ViewModel? GetViewModel<DataModel, ViewModel>(this IViewModelHelper<DataModel, ViewModel> viewModelHelper, Expression<Func<DataModel, bool>>? expression, IDataTransResult? dataTransResult)
-            where DataModel : class, new()
-            where ViewModel : class, new() {
-            if (viewModelHelper == null) return null;
-            return viewModelHelper.GetDataManager<DataModel>().GetDataAs(viewModelHelper.GetExprToViewModel(), expression, dataTransResult);
+        static private TDest? ConvertByExpr<TDest, TSrc>(Expression<Func<TSrc, TDest>>? expr, TSrc? src) {
+            if (expr == null || src == null) return default;
+            try {
+                Func<TSrc, TDest> callback = expr.Compile();
+                if (callback != null) { return callback(src); }
+                return default;
+            } catch {
+                return default;
+            }
         }
+        public static IDataTransResult SaveFromView<TDataModel, TViewModel>(
+            this IViewModelHelper<TDataModel, TViewModel> viewModelHelper,
+            TViewModel? viewModel,
+            IDataTransResult? dataTransResult,
+            bool execNow)
+            where TDataModel : class {
 
-        /// <summary>
-        /// 取得物件的 ViewModel
-        /// </summary>
-        /// <typeparam name="DataModel">DataModel</typeparam>
-        /// <typeparam name="ViewModel">ViewModel</typeparam>
-        /// <param name="expression">取得來源資料的條件</param>
-        /// <param name="dataTransResult"></param>
-        /// <returns>取得的ViewModel集合</returns>
-        public static IEnumerable<ViewModel> GetViewModels<DataModel, ViewModel>(this IViewModelHelper<DataModel, ViewModel> viewModelHelper, Expression<Func<DataModel, bool>>? expression, IDataTransResult? dataTransResult)
-            where DataModel : class, new()
-            where ViewModel : class, new() {
-            if (viewModelHelper == null) return Enumerable.Empty<ViewModel>();
-            return viewModelHelper.GetDataManager<DataModel>().GetDatasAs(viewModelHelper.GetExprToViewModel(), expression, dataTransResult);
+            dataTransResult ??= viewModelHelper.EmptyResult;
+            if (viewModel == null) { return dataTransResult; }
+
+            TDataModel? subData = viewModelHelper.GetDataModel(viewModelHelper.GetExprToFindDataModel(viewModel));
+
+            if (subData == null) {
+                subData = ConvertByExpr(viewModelHelper.GetExprToDataModel(), viewModel);
+            } else {
+                viewModelHelper.UpdateModelFromViewModel(subData, viewModel);
+            }
+            return viewModelHelper.SaveDataModel(subData, dataTransResult, execNow);
         }
+        public static IDataTransResult SaveFromView<TDataModel, TViewModel>(
+            this IViewModelHelper<TDataModel, TViewModel> viewModelHelper,
+            IEnumerable<TViewModel> viewModels,
+            IDataTransResult? dataTransResult,
+            bool execNow)
+            where TDataModel : class {
 
-        /// <summary>
-        /// 取得物件的 ViewModel
-        /// </summary>
-        /// <typeparam name="DataModel">DataModel</typeparam>
-        /// <typeparam name="ViewModel">ViewModel</typeparam>
-        /// <param name="begin">開始的索引</param>
-        /// <param name="count">最大取得的數量</param>
-        /// <param name="expression">取得來源資料的條件</param>
-        /// <param name="dataTransResult"></param>
-        /// <returns>取得的ViewModel集合</returns>
-        public static IEnumerable<ViewModel> GetViewModels<DataModel, ViewModel>(this IViewModelHelper<DataModel, ViewModel> viewModelHelper, int begin, int count, Expression<Func<DataModel, bool>>? expression, IDataTransResult? dataTransResult)
-            where DataModel : class, new()
-            where ViewModel : class, new() {
-            if (viewModelHelper == null) return Enumerable.Empty<ViewModel>();
-            return viewModelHelper.GetDataManager<DataModel>().GetDatasAs(viewModelHelper.GetExprToViewModel(), begin, count, expression, dataTransResult);
-        }
+            dataTransResult ??= viewModelHelper.EmptyResult;
+            if (viewModels.IsNullOrEmpty()) { return dataTransResult; }
 
-        /// <summary>
-        /// 儲存DataModel(轉換自ViewModel)
-        /// </summary>
-        /// <param name="viewModel">要儲存的DataModel</param>
-        /// <param name="dataTransResult">交易執行的結果</param>
-        /// <param name="execNow">是否立即執行</param>
-        /// <returns>執行結果</returns>
-        public static IDataTransResult SaveFromViewModel<DataModel, ViewModel>(this IViewModelHelper<DataModel, ViewModel> viewModelHelper, ViewModel viewModel, IDataTransResult? dataTransResult, bool execNow)
-            where DataModel : class, new()
-            where ViewModel : class, new() {
-            dataTransResult ??= new DataTransResultBase();
-            if (viewModelHelper == null) return dataTransResult;
-            viewModelHelper.GetDataManager<DataModel>().SaveDataFrom(viewModelHelper.GetExprToDataModel(), viewModel, dataTransResult, execNow);
-            return dataTransResult;
-        }
+            int count = viewModels.Count();
+            int counter = 0;
+            bool should_exec = false;
 
-        /// <summary>
-        /// 儲存DataModel(轉換自ViewModel)
-        /// </summary>
-        /// <param name="viewModels">要儲存的DataModel集合</param>
-        /// <param name="dataTransResult">交易執行的結果</param>
-        /// <param name="execNow">是否立即執行</param>
-        /// <returns>執行結果</returns>
-        public static IDataTransResult SaveFromViewModels<DataModel, ViewModel>(this IViewModelHelper<DataModel, ViewModel> viewModelHelper, IEnumerable<ViewModel> viewModels, IDataTransResult? dataTransResult, bool execNow)
-            where DataModel : class, new()
-            where ViewModel : class, new() {
-            dataTransResult ??= new DataTransResultBase();
-            if (viewModelHelper == null) return dataTransResult;
-            viewModelHelper.GetDataManager<DataModel>().SaveDatasFrom(viewModelHelper.GetExprToDataModel(), viewModels, dataTransResult, execNow);
+            foreach (TViewModel subView in viewModels) {
+                if (++counter == count && execNow) {
+                    should_exec = true;
+                }
+                dataTransResult = viewModelHelper.SaveFromView(subView, dataTransResult, should_exec);
+            }
             return dataTransResult;
         }
     }

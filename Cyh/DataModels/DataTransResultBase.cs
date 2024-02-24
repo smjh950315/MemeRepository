@@ -17,13 +17,13 @@ namespace Cyh.DataModels
         public bool IsFinished { get; set; }
 
         public string Message {
-            get => _Message ?? string.Empty;
-            set => _Message = value;
+            get => this._Message ?? string.Empty;
+            set => this._Message = value;
         }
 
         public string Accesser {
-            get => _Accesser ?? string.Empty;
-            set => _Accesser = value;
+            get => this._Accesser ?? string.Empty;
+            set => this._Accesser = value;
         }
 
         public DateTime BeginTime { get; set; }

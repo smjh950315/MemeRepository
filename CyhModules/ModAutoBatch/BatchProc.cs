@@ -79,7 +79,7 @@ namespace Cyh.Modules.ModAutoBatch
                 return this._RepeatFixedTime.Today() > lastInvoked;
             } else {
                 // 定期執行，如果上次到現在的時間間隔大於設定的間隔就立即執行
-                return DateTime.Now - lastInvoked > _RepeatTimeSpan;
+                return DateTime.Now - lastInvoked > this._RepeatTimeSpan;
             }
         }
 

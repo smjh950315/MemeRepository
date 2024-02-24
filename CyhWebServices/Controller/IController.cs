@@ -1,6 +1,4 @@
 using Cyh.WebServices.AppConfigs;
-using Cyh.WebServices.Authentication;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Cyh.WebServices.Controller
 {
@@ -12,23 +10,8 @@ namespace Cyh.WebServices.Controller
         public IWebAppConfigurations? _AppConfigurations { get; set; }
 
         /// <summary>
-        /// 當前的使用者資料
-        /// </summary>
-        public PrincipalReader? CurrentUser => this.User;
-
-        /// <summary>
         /// 是否為登入狀態
         /// </summary>
-        public bool IsLogin => this.CurrentUser?.IsAuthenticated ?? false;
-
-        /// <summary>
-        /// 首頁
-        /// </summary>
-        public IActionResult HomePage => this.RedirectToAction("Index", "Home");
-
-        /// <summary>
-        /// 登入頁面
-        /// </summary>
-        public virtual IActionResult AccountPage => this.RedirectToAction("Index", "Account");
+        public bool IsLogin => this.IsAuthenticated();
     }
 }

@@ -12,7 +12,7 @@ namespace Cyh.Modules.ModAutoBatch
             get {
                 if (this._Ptr == null)
                     return default;
-                return this._Ptr[_Pos];
+                return this._Ptr[this._Pos];
             }
         }
 

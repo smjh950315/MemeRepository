@@ -18,18 +18,19 @@ namespace Cyh.Modules.ModForm
             Expression<Func<MF, bool>> expression, Expression<Func<TF, bool>> expression2)
             where TFormGroup : class, IFormGroup<MF, TF>, new() {
 
-            if (formMgr == null)
+            if (formMgr == null) {
                 return null;
-            if (!formMgr.SourceIsValid())
+            } else if (formMgr.MainDataSource == null || formMgr.SubDataSource == null) {
                 return null;
+            } else {
+                TFormGroup formGroup = new TFormGroup
+                {
+                    MainForm = formMgr.GetData(expression, null),
+                    SubForms = formMgr.GetDatas(expression2, null)
+                };
 
-            TFormGroup formGroup = new TFormGroup
-            {
-                MainForm = formMgr.GetData(expression, null),
-                SubForms = formMgr.GetDatas(expression2, null)
-            };
-
-            return formGroup;
+                return formGroup;
+            }
         }
     }
 }

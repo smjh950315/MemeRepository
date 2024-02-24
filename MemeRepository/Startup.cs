@@ -3,7 +3,9 @@ using Cyh.EFCore.Interface;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.AppStartup;
 using MemeRepository.Db.Accesser;
+using MemeRepository.Db.DataManagers;
 using MemeRepository.Db.Models;
+using MemeRepository.Lib.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -12,6 +14,15 @@ using System.Reflection;
 
 namespace MemeRepository
 {
+    public class WebAppConfigurations : IWebAppConfigurations
+    {
+        public string ApplicationName => "MemeRepository";
+
+        public string ReturnUrlParameter => "returnUrl";
+
+        public string Error => "/error";
+    }
+
     public class Startup : Cyh.WebServices.AppStartup.MyStartup
     {
         public override IWebAppConfigurations AppConfigurations { get; }
@@ -23,7 +34,7 @@ namespace MemeRepository
 #pragma warning restore CS8618
 
         public override void ConfigureServices(IServiceCollection services) {
-            this.SetServiceSource<AppConfigs.AppConfigurations>(services);
+            this.SetServiceSource<WebAppConfigurations>(services);
 
             // 可用的部分:
             // UseControllers
@@ -58,7 +69,11 @@ namespace MemeRepository
 
             services.AddScoped<IDbContext, MyDbContext>();
             services.AddScoped<IDataManagerActivator, MyDataActivator>();
-            services.AddScoped<IDataManagerCreater, DataManagerCreater>();
+            services.AddScoped<IDataManagerBuilder, MyDataManagerBuilderBase>();
+
+            services.AddScoped<ICateManager, CategoryManager>();
+            services.AddScoped<IImageManager, ImageManager>();
+            services.AddScoped<ITagManager, TagManager>();
 
             this.RegisterRazorPages();
             this.RegisterSignalR();

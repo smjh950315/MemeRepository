@@ -1,6 +1,5 @@
 using Cyh.Modules.ModAuthentication;
 using Cyh.Modules.ModIdentity;
-using Cyh.Modules.ModRoleSystem;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.Authentication;
 using Microsoft.AspNetCore.Authentication;
@@ -15,11 +14,7 @@ namespace Cyh.WebServices.Controller
     /// </summary>
     public abstract class MyAuthenticControllerBase : MyControllerBase, IAuthenticController
     {
-        public IMyAuthorizationOptions? LoginOptions => this._AppConfigurations?.LoginOptions;
-
-        public ILoginModel? LoginModel => this.LoginOptions?.LoginModel;
-
-        public IRoleValidator? RoleValidator { get; set; }
+        public IAuthorizationOptions? LoginOptions { get; set; }
 
         public IUserValidator? UserValidator { get; set; }
 
@@ -27,56 +22,45 @@ namespace Cyh.WebServices.Controller
 
         public bool AlwaysRelogin { get; set; }
 
-        public bool HasRoleSystem { get; set; }
-
         /// <summary>
         /// 驗證器是否都有效
         /// </summary>
         public bool ValidatorIsReady {
             get => this.SignInHelper != null
-                && this.UserValidator != null
-                && this.RoleValidator != null;
+                && this.UserValidator != null;
         }
 
         protected MyAuthenticControllerBase(
             IWebAppConfigurations webAppConfigurations,
-            IRoleValidator? roleValidator,
             IUserValidator? userValidator,
             ISignInHelper? signInHelper,
-            bool alwaysRelogin,
-            bool hasRoleSystem) : base(webAppConfigurations) {
-            this.RoleValidator = roleValidator;
+            bool alwaysRelogin) : base(webAppConfigurations) {
             this.UserValidator = userValidator;
             this.SignInHelper = signInHelper;
             this.AlwaysRelogin = alwaysRelogin;
-            this.HasRoleSystem = hasRoleSystem;
+        }
+
+        protected MyAuthenticControllerBase(
+            IWebAppConfigurations webAppConfigurations,
+            IWebAuthorizationOptions authorizationOptions,
+            IUserValidator? userValidator,
+            ISignInHelper? signInHelper,
+            bool alwaysRelogin) : base(webAppConfigurations) {
+            this.UserValidator = userValidator;
+            this.SignInHelper = signInHelper;
+            this.AlwaysRelogin = alwaysRelogin;
+            this.LoginOptions = authorizationOptions;
         }
 
         /// <summary>
         /// 用 ILoginModel 介面提供的資訊將客戶端登入，如果想自訂驗證方式(帳號與密碼)，可以用 override 對此函數複寫
         /// </summary>
-        /// <param name="loginModel"></param>
         /// <returns>是否成功登入</returns>
-        protected virtual bool ValidateAndSignIn(ILoginModel? loginModel) {
-            if (loginModel == null)
-                return false;
+        protected virtual bool ValidateAndSignIn(string? account, string? password) {
+            string? user_id = this.UserValidator?
+                .GetUserIdIfValid(account, password);
 
-            if (this.HasRoleSystem) {
-                if (!this.ValidatorIsReady) {
-                    return false;
-                }
-            }
-
-            var user = this.UserValidator?
-                .FindUserByLoginModel(loginModel);
-
-            if (user == null)
-                return false;
-
-            if (this.LogUserIn(user))
-                return true;
-
-            return false;
+            return this.Login(user_id);
         }
 
         /// <summary>
@@ -85,14 +69,14 @@ namespace Cyh.WebServices.Controller
         /// <param name="user"></param>
         /// <param name="_claims"></param>
         /// <returns>是否成功登入</returns>
-        protected virtual bool LogUserIn(IUser? user, params Claim[]? _claims) {
-            if (HasNull(this.LoginOptions, user)) { return false; }
+        protected virtual bool Login(string? client_id, params Claim[]? _claims) {
+            if (this.LoginOptions == null || client_id.IsNullOrEmpty()) { return false; }
             if (this.SignInHelper == null) { return false; }
 #pragma warning disable
-            if (this.SignInHelper.PrepareSignInAndReady(this, user.ID.ToString(), false)) {
-                this.SignInHelper.SetClientId(user.ID.ToString());
+            if (this.SignInHelper.PrepareSignInAndReady(this, client_id, false)) {
+                this.SignInHelper.SetClientId(client_id);
                 this.SignInHelper.AddAdditionalInfos(_claims);
-                this.SignInHelper.SetLoginOptions(this.LoginOptions);
+                this.SignInHelper.SetSignInOptions(this.LoginOptions);
                 this.SignInHelper.SignInAsync(this);
                 return true;
             }
