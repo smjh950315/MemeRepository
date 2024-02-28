@@ -7,15 +7,17 @@ using System.Linq.Expressions;
 
 namespace MemeRepository.Controllers
 {
-    public class DemoController : MyModelAccessController, IModelHelper<TAG>
+    public class DemoController : MyControllerBase
     {
         public IDataManager<TAG>? DefaultDataManager { get; set; }
         public DemoController(
             IWebAppConfigurations webAppConfigurations,
             IDataManagerActivator dataManagerActivator,
             IDataManagerBuilder dataManagerCreater
-            ) : base(webAppConfigurations, dataManagerActivator, dataManagerCreater) {
+            ) : base(webAppConfigurations) {
         }
+
+#pragma warning disable CS0219, CS8600, CS8604
         private void GetSetDataDemos<T>() where T : class {
             Expression<Func<T, TAG>>? selectorToData = null;
             Expression<Func<TAG, T>>? selectorFromData = null;
@@ -27,7 +29,7 @@ namespace MemeRepository.Controllers
             IDataTransResult dataTransResult = null;
             object? nuknow = null;
 
-            IModelHelper<TAG> modelHelper = this;
+            IModelHelper<TAG> modelHelper = null;
             modelHelper.GetDataModel(filter);
             modelHelper.GetDataModels(0, 1, filter);
             modelHelper.GetDataModelAs(selectorFromData, filter);
@@ -56,5 +58,6 @@ namespace MemeRepository.Controllers
             myDataAccesser?.TryGetDataAs(selectorFromData, filter, dataTransResult);
             myDataAccesser?.TryGetDatasAs(selectorFromData, 0, 1, filter, dataTransResult);
         }
+#pragma warning restore CS0219, CS8600, CS8604
     }
 }

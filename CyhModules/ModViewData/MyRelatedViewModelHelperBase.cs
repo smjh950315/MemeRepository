@@ -170,6 +170,21 @@ namespace Cyh.Modules.ModViewData
             }
             return dataTransResult;
         }
+
+        protected IDataTransResult Remove(TSubViewModel? subView, IDataTransResult? dataTransResult, bool execNow) {
+            return this.SubModelHelper.RemoveFromView(subView, dataTransResult, execNow);
+        }
+
+        protected IDataTransResult Remove(IEnumerable<TSubViewModel>? subViews, IDataTransResult? dataTransResult, bool execNow) {
+            return this.SubModelHelper.RemoveFromView(subViews ?? Enumerable.Empty<TSubViewModel>(), dataTransResult, execNow);
+        }
+
+        protected IDataTransResult Remove(IFormGroup<TMainViewModel, TSubViewModel>? formGroup, IDataTransResult? dataTransResult, bool execNow) {
+            if (formGroup == null) { return this.MainModelHelper.EmptyResult; }
+            dataTransResult = this.Remove(formGroup.MainForm, dataTransResult, false);
+            this.Remove(formGroup.SubForms, dataTransResult, true);
+            return dataTransResult;
+        }
     }
 
     /// <summary>
@@ -287,6 +302,28 @@ namespace Cyh.Modules.ModViewData
         /// <returns>執行結果</returns>
         protected IDataTransResult Update(IEnumerable<TSub2ViewModel>? subViews, IDataTransResult? dataTransResult, bool execNow) {
             return this.Sub2ModelHelper.SaveFromView(subViews ?? Enumerable.Empty<TSub2ViewModel>(), dataTransResult, execNow);
+        }
+
+        /// <summary>
+        /// 更新副資料模型
+        /// </summary>
+        /// <param name="subView">副資料檢視模型</param>
+        /// <param name="dataTransResult">執行結果</param>
+        /// <param name="execNow">是否立即執行</param>
+        /// <returns>執行結果</returns>
+        protected IDataTransResult Remove(TSub2ViewModel? subView, IDataTransResult? dataTransResult, bool execNow) {
+            return this.Sub2ModelHelper.RemoveFromView(subView, dataTransResult, execNow);
+        }
+
+        /// <summary>
+        /// 更新副資料模型(複數)
+        /// </summary>
+        /// <param name="subViews">副資料檢視模型(複數)</param>
+        /// <param name="dataTransResult">執行結果</param>
+        /// <param name="execNow">是否立即執行</param>
+        /// <returns>執行結果</returns>
+        protected IDataTransResult Remove(IEnumerable<TSub2ViewModel>? subViews, IDataTransResult? dataTransResult, bool execNow) {
+            return this.Sub2ModelHelper.RemoveFromView(subViews ?? Enumerable.Empty<TSub2ViewModel>(), dataTransResult, execNow);
         }
     }
 }

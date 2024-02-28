@@ -196,6 +196,20 @@ namespace Cyh.EFCore
             }
         }
 
+        private void _Remove(TEntity? entity) {
+            if (entity == null || !this.EntityTypeInfo.IsValid || this.Entities == null)
+                return;
+
+            if (this.EntityTypeInfo.HasPrimaryKey) {
+                TEntity? model = this.Entities.Find(this._TryGetEntityKeyValue(entity));
+                if (model != null) {
+                    this.Entities.Remove(model);
+                }
+            } else {
+                this.Entities.Remove(entity);
+            }
+        }
+
         public void SetAccesserId(string accesserId) {
             this._AccesserId = accesserId;
         }
@@ -410,6 +424,71 @@ namespace Cyh.EFCore
                 prevResult.BatchOnFinish(false);
                 return false;
             }
+        }
+
+        public bool TryRemove(TEntity? data, IDataTransResult? dataTransResult, bool execNow) {
+            if (!this._CanAccessDataSource(dataTransResult)) {
+                // 當前資料來源無法使用，結束整批交易
+                return false;
+            }
+#pragma warning disable CS8602
+            try {
+                this._Remove(data);
+                if (execNow) {
+                    // 立即執行
+                    this._Context.SaveChanges();
+                    // 此為最後一個執行批次，故加入一次成功結果
+                    dataTransResult.TryAppendTransResult(true);
+                    // 執行成功，打上成功標記
+                    dataTransResult.BatchOnFinish(true);
+                } else {
+                    // 不立即執行則先設定為 false
+                    dataTransResult.TryAppendTransResult(false);
+                }
+                return true;
+            } catch (Exception ex) {
+                return this._HandleExcetionAndLog(dataTransResult, ex, ERR_ACTION_TYPE.ON_SAVING, execNow);
+            }
+#pragma warning restore CS8602
+        }
+
+        public bool TryRemoveSingle(object? data, IDataTransResult? dataTransResult, bool execNow) {
+            return this.TryRemoveSingleT(data, dataTransResult, execNow);
+        }
+
+        public bool TryRemove(Expression<Func<TEntity, bool>> expression, IDataTransResult? dataTransResult, bool execNow) {
+            if (!this._CanAccessDataSource(dataTransResult)) {
+                // 當前資料來源無法使用，結束整批交易
+                return false;
+            }
+#pragma warning disable CS8602
+            try {
+                IEnumerable<TEntity>? entity = this.Entities?.Where(expression);
+                if (!entity.IsNullOrEmpty()) {
+                    this.Entities.RemoveRange(entity);
+                }
+                if (execNow) {
+                    // 立即執行
+                    this._Context.SaveChanges();
+                    // 此為最後一個執行批次，故加入一次成功結果
+                    dataTransResult.TryAppendTransResult(true);
+                    // 執行成功，打上成功標記
+                    dataTransResult.BatchOnFinish(true);
+                } else {
+                    // 不立即執行則先設定為 false
+                    dataTransResult.TryAppendTransResult(false);
+                }
+                return true;
+            } catch (Exception ex) {
+                return this._HandleExcetionAndLog(dataTransResult, ex, ERR_ACTION_TYPE.ON_SAVING, execNow);
+            }
+#pragma warning restore CS8602
+        }
+
+        public bool Any(Expression<Func<TEntity, bool>>? predicate) {
+            if (this.Entities == null) { return false; }
+            if (predicate == null) { return this.Entities.Any(); }
+            return this.Entities.Any(predicate);
         }
     }
 }

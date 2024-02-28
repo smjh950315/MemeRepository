@@ -100,6 +100,9 @@ namespace Cyh.Modules.ModViewData
             return this.MainModelHelper.SaveFromView(viewModels, dataTransResult, execNow);
         }
 
+        protected IDataTransResult Remove(TViewModel? viewModel, IDataTransResult? dataTransResult, bool execNow) {
+            return this.MainModelHelper.RemoveFromView(viewModel, dataTransResult, execNow);
+        }
     }
 
     public abstract class MyViewModelHelperBase<TDataModel, TViewModel, IDataModel>

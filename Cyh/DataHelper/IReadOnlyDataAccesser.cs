@@ -1,6 +1,5 @@
 using Cyh.DataModels;
 using System.Linq.Expressions;
-
 namespace Cyh.DataHelper
 {
     /// <summary>
@@ -35,6 +34,8 @@ namespace Cyh.DataHelper
         /// 資料源查詢的介面
         /// </summary>
         IQueryable<T>? Queryable { get; }
+
+        bool Any(Expression<Func<T, bool>>? predicate);
 
         /// <summary>
         /// 用條件嘗試取得單筆資料
@@ -91,58 +92,5 @@ namespace Cyh.DataHelper
         /// <typeparam name="TOut">目標資料類型</typeparam>
         /// <returns>目標資料類型集合</returns>
         IEnumerable<TOut> TryGetDatasAs<TOut>(Expression<Func<T, TOut>>? selctor, int begin, int count, Expression<Func<T, bool>>? filter, IDataTransResult? dataTransResult);
-    }
-
-    public static partial class MyDataHelperExtends
-    {
-        /// <summary>
-        /// 可以存取到的資料數量
-        /// </summary>
-        /// <typeparam name="T">資料類型</typeparam>
-        /// <returns>資料數量</returns>
-        public static int Count<T>(this IReadOnlyDataAccesser<T>? readOnlyDataAccesser) {
-            if (readOnlyDataAccesser == null)
-                return 0;
-            if (!readOnlyDataAccesser.IsAccessable || readOnlyDataAccesser.Queryable == null)
-                return 0;
-            return readOnlyDataAccesser.Queryable.Count();
-        }
-    }
-
-    public static partial class MyDataHelperExtends
-    {
-        private static bool __CheckNullAnd_CheckWhetherExist<T>(IReadOnlyDataAccesser<T>? readOnlyDataAccesser, Expression<Func<T, bool>>? expression) {
-            if (readOnlyDataAccesser == null) { return false; }
-            if (readOnlyDataAccesser.Queryable == null) { return false; }
-            if (expression == null) {
-                return readOnlyDataAccesser.Queryable.Any();
-            } else {
-                return readOnlyDataAccesser.Queryable.Any(expression);
-            }
-        }
-
-        private static T? __CheckNullAnd_GetDataFromAccesser<T>(IReadOnlyDataAccesser<T>? readOnlyDataAccesser, Expression<Func<T, bool>>? expression, IDataTransResult? dataTransResult) {
-            return readOnlyDataAccesser != null ? readOnlyDataAccesser.TryGetData(expression, dataTransResult) : default;
-        }
-
-        private static IEnumerable<T> __CheckNullAnd_GetDatasFromAccesser<T>(IReadOnlyDataAccesser<T>? readOnlyDataAccesser, Expression<Func<T, bool>>? expression, IDataTransResult? dataTransResult) {
-            return readOnlyDataAccesser != null ? readOnlyDataAccesser.TryGetDatas(expression, dataTransResult) : Enumerable.Empty<T>();
-        }
-
-        private static IEnumerable<T> __CheckNullAnd_GetDatasFromAccesser<T>(IReadOnlyDataAccesser<T>? readOnlyDataAccesser, int begin, int count, Expression<Func<T, bool>>? expression, IDataTransResult? dataTransResult) {
-            return readOnlyDataAccesser != null ? readOnlyDataAccesser.TryGetDatas(begin, count, expression, dataTransResult) : Enumerable.Empty<T>();
-        }
-
-        private static U? __CheckNullAnd_GetDataFromAccesserAs<T, U>(IReadOnlyDataAccesser<T>? readOnlyDataAccesser, Expression<Func<T, U>>? selector, Expression<Func<T, bool>>? expression, IDataTransResult? dataTransResult) {
-            return readOnlyDataAccesser != null ? readOnlyDataAccesser.TryGetDataAs(selector, expression, dataTransResult) : default;
-        }
-
-        private static IEnumerable<U> __CheckNullAnd_GetDatasFromAccesserAs<T, U>(IReadOnlyDataAccesser<T>? readOnlyDataAccesser, Expression<Func<T, U>>? selector, Expression<Func<T, bool>>? expression, IDataTransResult? dataTransResult) {
-            return readOnlyDataAccesser != null ? readOnlyDataAccesser.TryGetDatasAs(selector, expression, dataTransResult) : Enumerable.Empty<U>();
-        }
-
-        private static IEnumerable<U> __CheckNullAnd_GetDatasFromAccesserAs<T, U>(IReadOnlyDataAccesser<T>? readOnlyDataAccesser, Expression<Func<T, U>>? selector, int begin, int count, Expression<Func<T, bool>>? expression, IDataTransResult? dataTransResult) {
-            return readOnlyDataAccesser != null ? readOnlyDataAccesser.TryGetDatasAs(selector, begin, count, expression, dataTransResult) : Enumerable.Empty<U>();
-        }
     }
 }

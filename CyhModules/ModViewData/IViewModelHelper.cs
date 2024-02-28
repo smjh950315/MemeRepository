@@ -68,6 +68,7 @@ namespace Cyh.Modules.ModViewData
             }
             return viewModelHelper.SaveDataModel(subData, dataTransResult, execNow);
         }
+
         public static IDataTransResult SaveFromView<TDataModel, TViewModel>(
             this IViewModelHelper<TDataModel, TViewModel> viewModelHelper,
             IEnumerable<TViewModel> viewModels,
@@ -87,6 +88,39 @@ namespace Cyh.Modules.ModViewData
                     should_exec = true;
                 }
                 dataTransResult = viewModelHelper.SaveFromView(subView, dataTransResult, should_exec);
+            }
+            return dataTransResult;
+        }
+
+        public static IDataTransResult RemoveFromView<TDataModel, TViewModel>(
+            this IViewModelHelper<TDataModel, TViewModel> viewModelHelper,
+            TViewModel? viewModel,
+            IDataTransResult? dataTransResult,
+            bool execNow)
+            where TDataModel : class {
+            dataTransResult ??= viewModelHelper.EmptyResult;
+            if (viewModel == null) { return dataTransResult; }
+            return viewModelHelper.RemoveDataModelFrom(viewModelHelper.GetExprToDataModel(), viewModel, dataTransResult, execNow);
+        }
+
+        public static IDataTransResult RemoveFromView<TDataModel, TViewModel>(
+            this IViewModelHelper<TDataModel, TViewModel> viewModelHelper,
+            IEnumerable<TViewModel> viewModels,
+            IDataTransResult? dataTransResult,
+            bool execNow)
+            where TDataModel : class {
+            dataTransResult ??= viewModelHelper.EmptyResult;
+            if (viewModels.IsNullOrEmpty()) { return dataTransResult; }
+
+            int count = viewModels.Count();
+            int counter = 0;
+            bool should_exec = false;
+
+            foreach (TViewModel subView in viewModels) {
+                if (++counter == count && execNow) {
+                    should_exec = true;
+                }
+                dataTransResult = viewModelHelper.RemoveDataModelFrom(viewModelHelper.GetExprToDataModel(), subView, dataTransResult, should_exec);
             }
             return dataTransResult;
         }

@@ -1,5 +1,4 @@
 using Cyh;
-using Cyh.DataHelper;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.Controller;
 using MemeRepository.Lib.Interface;
@@ -9,15 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MemeRepository.Controllers
 {
-    public class ImageController : MyModelAccessController
+    public class ImageController : MyControllerBase
     {
         IImageManager _ImageManager;
         public ImageController(
             IWebAppConfigurations webAppConfigurations,
-            IDataManagerActivator dataManagerActivator,
-            IDataManagerBuilder dataManagerCreater,
             IImageManager imageManager)
-            : base(webAppConfigurations, dataManagerActivator, dataManagerCreater) {
+            : base(webAppConfigurations) {
             this._ImageManager = imageManager;
         }
         //Expression<Func<ImageInformationViewModel, IMAGE>> IViewModelHelper<IMAGE, ImageInformationViewModel>.GetExprToDataModel() {

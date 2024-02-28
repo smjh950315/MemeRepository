@@ -1,4 +1,3 @@
-using Cyh.DataHelper;
 using Cyh.DataModels;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.Controller;
@@ -11,15 +10,13 @@ namespace MemeRepository.Controllers
 {
     [ApiController]
     [Route("api/tag")]
-    public class ApiTagController : MyModelAccessController
+    public class ApiTagController : MyControllerBase
     {
         ITagManager _TagManager;
         public ApiTagController(
             IWebAppConfigurations webAppConfigurations,
-            IDataManagerActivator dataManagerActivator,
-            IDataManagerBuilder dataManagerCreater,
             ITagManager tagManager
-            ) : base(webAppConfigurations, dataManagerActivator, dataManagerCreater) {
+            ) : base(webAppConfigurations) {
             this._TagManager = tagManager;
         }
 

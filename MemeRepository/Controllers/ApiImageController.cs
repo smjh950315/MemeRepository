@@ -10,7 +10,7 @@ namespace MemeRepository.Controllers
 {
     [ApiController]
     [Route("api/image")]
-    public class ApiImageController : MyModelAccessController
+    public class ApiImageController : MyControllerBase
     {
         IImageManager _ImageManager;
         public ApiImageController(
@@ -18,7 +18,7 @@ namespace MemeRepository.Controllers
             IDataManagerActivator dataManagerActivator,
             IDataManagerBuilder dataManagerCreater,
             IImageManager imageManager)
-            : base(webAppConfigurations, dataManagerActivator, dataManagerCreater) {
+            : base(webAppConfigurations) {
             this._ImageManager = imageManager;
         }
 

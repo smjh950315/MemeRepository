@@ -31,15 +31,4 @@ namespace Cyh.DataHelper
     public interface IMyDataAccesser<T> : IMyDataAccesser, IWritableDataAccesser<T>, IReadOnlyDataAccesser<T>
     {
     }
-
-    public static partial class MyDataHelperExtends
-    {
-        /// <summary>
-        /// 資料存取器驗證
-        /// </summary>
-        /// <returns>資料存取器的資料來源是否有效</returns>
-        public static bool DataSourceIsValid<T>(this IMyDataAccesser? myDataAccesser) {
-            return myDataAccesser?.IsAccessable ?? false;
-        }
-    }
 }
