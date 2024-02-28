@@ -7,12 +7,12 @@ using System.Linq.Expressions;
 
 namespace MemeRepository.Lib.Managers
 {
-    public class TagViewManager<TTagModel>
+    public class TagManager<TTagModel>
         : MemeRepositoryManagerBase<TTagModel, TagViewModel, ITag>
         , ITagManager
         where TTagModel : class, ITag, new()
     {
-        public TagViewManager(IDataManagerActivator dataManagerActivator, IDataManagerBuilder dataManagerCreaterBase)
+        public TagManager(IDataManagerActivator dataManagerActivator, IDataManagerBuilder dataManagerCreaterBase)
             : base(dataManagerActivator, dataManagerCreaterBase) {
         }
 
@@ -22,6 +22,17 @@ namespace MemeRepository.Lib.Managers
 
         public override Expression<Func<TTagModel, bool>> GetExprToFindDataModel(TagViewModel view) {
             return x => x.ID == view.ID;
+        }
+
+        public IEnumerable<TagViewModel> GetDetails(IEnumerable<long> ids) {
+            List<TagViewModel> details = new List<TagViewModel>();
+            foreach (long id in ids) {
+                TagViewModel? detail = this.GetById(id);
+                if (detail != null) {
+                    details.Add(detail);
+                }
+            }
+            return details;
         }
     }
 }

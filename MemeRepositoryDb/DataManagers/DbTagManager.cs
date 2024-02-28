@@ -4,9 +4,9 @@ using MemeRepository.Lib.Managers;
 
 namespace MemeRepository.Db.DataManagers
 {
-    public class CategoryManager : CategoryViewManager<CATE>
+    public class DbTagManager : TagManager<TAG>
     {
-        public CategoryManager(IDataManagerActivator dataManagerActivator, IDataManagerBuilder dataManagerCreaterBase)
+        public DbTagManager(IDataManagerActivator dataManagerActivator, IDataManagerBuilder dataManagerCreaterBase)
             : base(dataManagerActivator, dataManagerCreaterBase) {
         }
     }

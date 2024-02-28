@@ -20,9 +20,9 @@ namespace MemeRepository.Controllers
         }
 
 
-        [Route("category/get_all")]
+        [Route("get/all")]
         [HttpPost]
-        public IEnumerable<CategoryViewModel> GetCategory(IndexRange indexRange) {
+        public IEnumerable<CateViewModel> GetCategory(IndexRange indexRange) {
             return this._CateManager.GetAll(indexRange.Begin, indexRange.Count);
         }
 

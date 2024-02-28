@@ -55,7 +55,7 @@ namespace MemeRepository.Db.Models
                 entity.Property(e => e.UPDATED).HasColumnType("datetime");
             });
 
-            OnModelCreatingPartial(modelBuilder);
+            this.OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

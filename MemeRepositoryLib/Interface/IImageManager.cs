@@ -3,7 +3,7 @@ using MemeRepository.Lib.ViewModels;
 
 namespace MemeRepository.Lib.Interface
 {
-    public interface IImageManager : IMemeRepositoryManager<ImageViewModel>
+    public interface IImageManager : IMemeRepositoryManager<ImageDetailViewModel>
     {
     }
 }

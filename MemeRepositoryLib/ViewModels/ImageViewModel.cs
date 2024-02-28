@@ -4,6 +4,9 @@ using System.Linq.Expressions;
 
 namespace MemeRepository.Lib.ViewModels
 {
+    /// <summary>
+    /// 圖像資料檢視
+    /// </summary>
     public class ImageViewModel : IImage, ISelectableModel<ImageViewModel, IImage>
     {
         public long ID { get; set; }
@@ -13,9 +16,6 @@ namespace MemeRepository.Lib.ViewModels
         public string? TYPE { get; set; }
         public DateTime? CREATED { get; set; }
         public DateTime? UPDATED { get; set; }
-
-        public IEnumerable<TagViewModel> Tags { get; set; } = null!;
-        public IEnumerable<CategoryViewModel> Categories { get; set; } = null!;
 
         public Expression<Func<From, To>> GetSelectorFromTo<From, To>()
             where From : IImage

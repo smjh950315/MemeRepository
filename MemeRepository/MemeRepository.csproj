@@ -35,4 +35,10 @@
     <Folder Include="AppConfigs\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\ApiDocuments\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

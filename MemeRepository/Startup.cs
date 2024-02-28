@@ -1,3 +1,4 @@
+using Cyh;
 using Cyh.DataHelper;
 using Cyh.EFCore.Interface;
 using Cyh.WebServices.AppConfigs;
@@ -8,7 +9,6 @@ using MemeRepository.Db.Models;
 using MemeRepository.Lib.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 
 // Scaffold-DbContext "Server=localhost,1433; user id=sa; password=0000; Database=MemeRepository;integrated security=false;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -NoPluralize -UseDatabaseNames -Context MemeRepositoryContext -OutputDir Models -Force
 
@@ -57,9 +57,10 @@ namespace MemeRepository
             this.RegisterSwagger(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                //c.IncludeXmlComments(xmlPath);
+                IEnumerable<string> xmlFileList = MyFileHelper.GetFileListWithRoot(true, $"{AppContext.BaseDirectory}MyApiDoc\\", "*.xml");
+
+                c.MyIncludeXmlComments(xmlFileList, true);
+                //c.EnableAnnotations();
             });
 
             // 如果註解這段，程式可以正常執行但是需要用到DB的功能會失效
@@ -71,9 +72,9 @@ namespace MemeRepository
             services.AddScoped<IDataManagerActivator, MyDataActivator>();
             services.AddScoped<IDataManagerBuilder, MyDataManagerBuilderBase>();
 
-            services.AddScoped<ICateManager, CategoryManager>();
-            services.AddScoped<IImageManager, ImageManager>();
-            services.AddScoped<ITagManager, TagManager>();
+            services.AddScoped<ICateManager, DbCategoryManager>();
+            services.AddScoped<ITagManager, DbTagManager>();
+            services.AddScoped<IImageManager, DbImageDetailManager>();
 
             this.RegisterRazorPages();
             this.RegisterSignalR();

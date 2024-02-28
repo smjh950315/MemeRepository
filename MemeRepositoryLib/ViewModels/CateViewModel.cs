@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace MemeRepository.Lib.ViewModels
 {
-    public class CategoryViewModel : ICategory, ISelectableModel<CategoryViewModel, ICategory>
+    public class CateViewModel : ICategory, ISelectableModel<CateViewModel, ICategory>
     {
         public long ID { get; set; }
         public string? NAME { get; set; }
@@ -23,7 +23,7 @@ namespace MemeRepository.Lib.ViewModels
             };
         }
 
-        public CategoryViewModel Self() => this;
+        public CateViewModel Self() => this;
 
         public void UpdateFromTo<From, To>(From from, To to)
             where From : ICategory

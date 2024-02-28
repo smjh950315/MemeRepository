@@ -32,4 +32,34 @@ namespace MemeRepository.Lib.Prototype
             return this.SaveFromView(viewModels, result, execNow);
         }
     }
+
+    public abstract class MemeRepositoryManagerBase<TDataModel1, TViewModel1, TDataModel2, TViewModel2>
+        : MyRelatedViewModelHelperBase<TDataModel1, TViewModel1, TDataModel2, TViewModel2>
+        where TDataModel1 : class
+        where TDataModel2 : class
+        where TViewModel1 : class
+        where TViewModel2 : class
+    {
+        public MemeRepositoryManagerBase(
+            IDataManagerActivator dataManagerActivator,
+            IDataManagerBuilder dataManagerCreaterBase)
+            : base(dataManagerActivator, dataManagerCreaterBase) {
+        }
+    }
+
+    public abstract class MemeRepositoryManagerBase<TDataModel1, TViewModel1, TDataModel2, TViewModel2, TDataModel3, TViewModel3>
+        : MyRelatedViewModelHelperBase<TDataModel1, TViewModel1, TDataModel2, TViewModel2, TDataModel3, TViewModel3>
+        where TDataModel1 : class
+        where TDataModel2 : class
+        where TDataModel3 : class
+        where TViewModel1 : class
+        where TViewModel2 : class
+        where TViewModel3 : class
+    {
+        public MemeRepositoryManagerBase(
+            IDataManagerActivator dataManagerActivator,
+            IDataManagerBuilder dataManagerCreaterBase)
+            : base(dataManagerActivator, dataManagerCreaterBase) {
+        }
+    }
 }

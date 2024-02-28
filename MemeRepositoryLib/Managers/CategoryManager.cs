@@ -7,20 +7,20 @@ using System.Linq.Expressions;
 
 namespace MemeRepository.Lib.Managers
 {
-    public class CategoryViewManager<TCategoryModel>
-        : MemeRepositoryManagerBase<TCategoryModel, CategoryViewModel, ICategory>
+    public class CategoryManager<TCategoryModel>
+        : MemeRepositoryManagerBase<TCategoryModel, CateViewModel, ICategory>
         , ICateManager
         where TCategoryModel : class, ICategory, new()
     {
-        public CategoryViewManager(IDataManagerActivator dataManagerActivator, IDataManagerBuilder dataManagerCreaterBase)
+        public CategoryManager(IDataManagerActivator dataManagerActivator, IDataManagerBuilder dataManagerCreaterBase)
             : base(dataManagerActivator, dataManagerCreaterBase) {
         }
 
-        public override CategoryViewModel? GetById(long id) {
+        public override CateViewModel? GetById(long id) {
             return this.GetView(x => x.ID == id);
         }
 
-        public override Expression<Func<TCategoryModel, bool>> GetExprToFindDataModel(CategoryViewModel view) {
+        public override Expression<Func<TCategoryModel, bool>> GetExprToFindDataModel(CateViewModel view) {
             return x => x.ID == view.ID;
         }
     }

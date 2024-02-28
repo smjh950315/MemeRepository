@@ -103,7 +103,7 @@ namespace Cyh.Modules.ModViewData
         /// <returns>檢視資料組，如果沒有符合的結果回傳null</returns>
         protected virtual TViewGroup? GetViewGroup<TViewGroup>(Expression<Func<TMainDataModel, bool>> expression)
             where TViewGroup : class, IFormGroup<TMainViewModel, TSubViewModel>, new() {
-            if (this.MainModelHelper.Exist(expression)) { return null; }
+            if (!this.MainModelHelper.Exist(expression)) { return null; }
             TMainDataModel? mainData = this.MainModelHelper.GetDataModel(expression);
             if (mainData == null) { return null; }
 
@@ -154,7 +154,7 @@ namespace Cyh.Modules.ModViewData
         /// <summary>
         /// 從檢視資料組更新
         /// </summary>
-        /// <param name="formGroup">檢視資料組</param>
+        /// <param name="formGroups">檢視資料組</param>
         /// <returns>執行結果</returns>
         protected IDataTransResult Update(IEnumerable<IFormGroup<TMainViewModel, TSubViewModel>> formGroups, IDataTransResult? dataTransResult, bool execNow) {
             if (formGroups.IsNullOrEmpty()) { return this.MainModelHelper.EmptyResult; }
@@ -302,6 +302,39 @@ namespace Cyh.Modules.ModViewData
         /// <returns>執行結果</returns>
         protected IDataTransResult Update(IEnumerable<TSub2ViewModel>? subViews, IDataTransResult? dataTransResult, bool execNow) {
             return this.Sub2ModelHelper.SaveFromView(subViews ?? Enumerable.Empty<TSub2ViewModel>(), dataTransResult, execNow);
+        }
+
+        /// <summary>
+        /// 從檢視資料組更新
+        /// </summary>
+        /// <param name="formGroup">檢視資料組</param>
+        /// <returns>執行結果</returns>
+        protected IDataTransResult Update(IFormGroup<TMainViewModel, TSubViewModel, TSub2ViewModel>? formGroup, IDataTransResult? dataTransResult, bool execNow) {
+            if (formGroup == null) { return this.MainModelHelper.EmptyResult; }
+            dataTransResult = this.Update(formGroup.MainForm, dataTransResult, false);
+            this.Update(formGroup.SubForms, dataTransResult, false);
+            this.Update(formGroup.SubForm2, dataTransResult, true);
+            return dataTransResult;
+        }
+
+        /// <summary>
+        /// 從檢視資料組更新
+        /// </summary>
+        /// <param name="formGroups">檢視資料組</param>
+        /// <returns>執行結果</returns>
+        protected IDataTransResult Update(IEnumerable<IFormGroup<TMainViewModel, TSubViewModel, TSub2ViewModel>> formGroups, IDataTransResult? dataTransResult, bool execNow) {
+            if (formGroups.IsNullOrEmpty()) { return this.MainModelHelper.EmptyResult; }
+            dataTransResult ??= this.EmptyResult;
+            int count = formGroups.Count();
+            int counter = 0;
+            bool should_exec = false;
+            foreach (IFormGroup<TMainViewModel, TSubViewModel, TSub2ViewModel> formGroup in formGroups) {
+                if (++counter == count && execNow) {
+                    should_exec = true;
+                }
+                dataTransResult = this.Update(formGroup, dataTransResult, should_exec);
+            }
+            return dataTransResult;
         }
 
         /// <summary>

@@ -3,8 +3,8 @@ using Cyh.DataModels;
 using Cyh.WebServices.AppConfigs;
 using Cyh.WebServices.Controller;
 using MemeRepository.Lib.Interface;
+using MemeRepository.Lib.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using ImgViewModel = MemeRepository.Lib.ViewModels.ImageViewModel;
 
 namespace MemeRepository.Controllers
 {
@@ -22,15 +22,15 @@ namespace MemeRepository.Controllers
             this._ImageManager = imageManager;
         }
 
-        [Route("get/single/{id}")]
+        [Route("get/{id}")]
         [HttpGet]
-        public ImgViewModel? GetImageViewModel(long id) {
+        public ImageDetailViewModel? GetImageViewModel(long id) {
             return this._ImageManager.GetById(id);
         }
 
-        [Route("save/single")]
+        [Route("save/")]
         [HttpPost]
-        public IDataTransResult SaveViewModel(IEnumerable<ImgViewModel> imageViewModel) {
+        public IDataTransResult SaveViewModel(IEnumerable<ImageDetailViewModel> imageViewModel) {
             return this._ImageManager.Save(imageViewModel, null, true);
         }
 

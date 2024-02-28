@@ -26,7 +26,7 @@ namespace MemeRepository.Controllers
         //    return this.GetDataModelsAs(x => x.TagName);
         //}
 
-        [Route("get_all")]
+        [Route("get/all")]
         [HttpPost]
         public IEnumerable<TagViewModel> GetTags(IndexRange indexRange) {
             return this._TagManager.GetAll(indexRange.Begin, indexRange.Count);

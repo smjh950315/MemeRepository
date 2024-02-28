@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MemeRepository.Lib</name>
+    </assembly>
+    <members>
+        <member name="T:MemeRepository.Lib.ViewModels.ImageViewModel">
+            <summary>
+            圖像資料檢視
+            </summary>
+        </member>
+    </members>
+</doc>

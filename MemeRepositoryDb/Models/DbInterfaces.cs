@@ -1,4 +1,3 @@
-using MemeRepository.Db.Interface;
 using MemeRepository.Lib.DataModels;
 
 namespace MemeRepository.Db.Models
@@ -12,6 +11,6 @@ namespace MemeRepository.Db.Models
     public partial class CATE : ICategory
     {
     }
-    public partial class TAG_BINDING : IImageAttributeBindingModel { }
-    public partial class CATE_BINDING : IImageAttributeBindingModel { }
+    public partial class TAG_BINDING : ITagBinding { }
+    public partial class CATE_BINDING : ICateBinding { }
 }
