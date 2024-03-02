@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="DataHelper\IViewModelHelper.cs" />
+    <Compile Remove="Internal\**" />
+    <EmbeddedResource Remove="Internal\**" />
+    <None Remove="Internal\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Internal\" />
+    <Compile Remove="DataHelper\IViewModelHelper.cs" />
   </ItemGroup>
 
 </Project>

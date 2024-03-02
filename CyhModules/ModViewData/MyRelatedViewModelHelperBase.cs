@@ -107,11 +107,15 @@ namespace Cyh.Modules.ModViewData
             TMainDataModel? mainData = this.MainModelHelper.GetDataModel(expression);
             if (mainData == null) { return null; }
 
+            TMainViewModel? mainView = ConvertByExpr(this.GetExprToViewModel(), mainData);
+            if (mainView == null) { return null; }
+
             IEnumerable<TSubViewModel> subViews = this.SubModelHelper.GetDataModelsAs(
                 this.GetExprToSubViewModel(), this.GetExprRelateToMainData(mainData));
+
             return new TViewGroup
             {
-                MainForm = ConvertByExpr(this.GetExprToViewModel(), mainData),
+                MainForm = mainView,
                 SubForms = subViews
             };
         }
@@ -277,7 +281,7 @@ namespace Cyh.Modules.ModViewData
             if (viewGroup is IFormGroup<TMainViewModel, TSubViewModel, TSub2ViewModel> vGroup3) {
                 IEnumerable<TSub2ViewModel> subViews = this.Sub2ModelHelper.GetDataModelsAs(
                     this.GetExprToSub2ViewModel(), this.GetExprRelateToMainData2(mainData));
-                vGroup3.SubForm2 = subViews;
+                vGroup3.SubForms2 = subViews;
             }
             return viewGroup;
         }
@@ -313,7 +317,7 @@ namespace Cyh.Modules.ModViewData
             if (formGroup == null) { return this.MainModelHelper.EmptyResult; }
             dataTransResult = this.Update(formGroup.MainForm, dataTransResult, false);
             this.Update(formGroup.SubForms, dataTransResult, false);
-            this.Update(formGroup.SubForm2, dataTransResult, true);
+            this.Update(formGroup.SubForms2, dataTransResult, true);
             return dataTransResult;
         }
 

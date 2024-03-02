@@ -463,7 +463,7 @@ namespace Cyh.EFCore
             }
 #pragma warning disable CS8602
             try {
-                IEnumerable<TEntity>? entity = this.Entities?.Where(expression);
+                IEnumerable<TEntity>? entity = this.Entities?.Where(expression).ToList();
                 if (!entity.IsNullOrEmpty()) {
                     this.Entities.RemoveRange(entity);
                 }

@@ -36,7 +36,7 @@ namespace Cyh.DataModels
         public List<TransDetails> TransDetails {
             get {
                 if (this._TransDetails == null)
-                    this._TransDetails = new List<TransDetails>();
+                    this._TransDetails = [];
                 return this._TransDetails;
             }
             set { this._TransDetails = value; }

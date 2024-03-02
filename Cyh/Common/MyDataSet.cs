@@ -11,16 +11,12 @@ namespace Cyh.Common
         /// <summary>
         /// 此資料及集的名稱
         /// </summary>
-        public string Name {
-            get => this._Name ?? "Unnamed";
-        }
+        public string Name => this._Name ?? "Unnamed";
 
         /// <summary>
         /// 當前資料集以保存的Key
         /// </summary>
-        public IEnumerable<string> Keys {
-            get => this._KeyValuePairs?.Keys ?? Enumerable.Empty<string>();
-        }
+        public IEnumerable<string> Keys => this._KeyValuePairs?.Keys ?? Enumerable.Empty<string>();
 
         /// <summary>
         /// 用key值取得儲存的資料
@@ -31,7 +27,7 @@ namespace Cyh.Common
         /// <returns>對應名稱的驗證資料</returns>
         public object? this[string key] {
             get {
-                if (this._KeyValuePairs == null) return null;
+                if (this._KeyValuePairs == null) { return null; }
                 try {
                     return this._KeyValuePairs[key];
                 } catch { return null; }

@@ -28,7 +28,6 @@ namespace Cyh.DataHelper
             : base(dataManagerActivator, dataManagerCreaterBase) {
             this.ModelType = typeof(T);
         }
-        public IModelHelper<T> MainModelHelper => this;
     }
     public class MyModelHelperBase<TMainDataModel, TSubDataModel>
         : MyModelHelperBase<TMainDataModel>, IModelHelper<TSubDataModel>
@@ -41,6 +40,5 @@ namespace Cyh.DataHelper
             IDataManagerBuilder dataManagerCreaterBase)
             : base(dataManagerActivator, dataManagerCreaterBase) {
         }
-        public IModelHelper<TSubDataModel> SubModelHelper => this;
     }
 }

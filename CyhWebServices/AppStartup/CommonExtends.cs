@@ -85,6 +85,9 @@ namespace Cyh.WebServices.AppStartup
             if (MyStartup.UseCookie)
                 return;
 
+            if (startup.Services == null)
+                throw new NullReferenceException($"{nameof(startup.Services)} 尚未設定!");
+
             AuthorizationServiceRoutes route = cookie.Routes;
             startup.Services.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
                 .Configure<Microsoft.AspNetCore.DataProtection.IDataProtectionProvider>((options, dataProvider) => {

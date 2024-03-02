@@ -11,17 +11,15 @@ namespace Cyh.Modules.ModPager
     {
         private delegate IPage FnCreateNewPage();
         private FnCreateNewPage _Callback_CreateNewPage;
-        private Expression<Func<T, bool>> _Filter;
+        private Expression<Func<T, bool>>? _Filter;
         private int _PageCapacity;
 
         /// <summary>
         /// 建立新頁面的函數
         /// </summary>
-        /// <typeparam name="U"></typeparam>
-        /// <returns></returns>
-        private static IPage __Impl_CreateNewPage<U>() where U : class, IPage, new() {
-            return new U();
-        }
+        /// <typeparam name="U">頁面的類型</typeparam>
+        /// <returns>未初始化的頁面</returns>
+        private static IPage __Impl_CreateNewPage<U>() where U : class, IPage, new() => new U();
 
 #pragma warning disable
         /// <summary>
@@ -36,23 +34,20 @@ namespace Cyh.Modules.ModPager
         /// <typeparam name="U">要成為裝載內容的分頁的類型，必須繼承自 IPage</typeparam>
         /// <param name="pageCapacity">每頁容納的內容數</param>
         /// <returns>新建立的分頁清單</returns>
-        public static MyPageList<T> CreatePageList<U>(int pageCapacity, Expression<Func<T, bool>> filter) where U : class, IPage, new() {
-
-            MyPageList<T> ret = new()
+        public static MyPageList<T> CreatePageList<U>(int pageCapacity, Expression<Func<T, bool>>? filter) where U : class, IPage, new() {
+            return new()
             {
                 _PageCapacity = pageCapacity,
-                _Callback_CreateNewPage = __Impl_CreateNewPage<U>
+                _Callback_CreateNewPage = __Impl_CreateNewPage<U>,
+                _Filter = filter
             };
-            return ret;
         }
 
         /// <summary>
         /// 取得空的頁面用來儲存資料
         /// </summary>
         /// <returns>新建的頁面</returns>
-        public IPage CreateNewPage() {
-            return this._Callback_CreateNewPage();
-        }
+        public IPage CreateNewPage() => this._Callback_CreateNewPage();
 
         /// <summary>
         /// 資料的來源
@@ -62,19 +57,12 @@ namespace Cyh.Modules.ModPager
         /// <summary>
         /// 頁數
         /// </summary>
-        public int Count {
-            get {
-                if (this.DataReader == null) return 0;
-                return this.DataReader.Count() / this.PageCapacity;
-            }
-        }
+        public int Count => this.DataReader == null ? 0 : this.DataReader.Count() / this.PageCapacity;
 
         /// <summary>
         /// 每一頁能容納的內容數量
         /// </summary>
-        public int PageCapacity {
-            get => this._PageCapacity;
-        }
+        public int PageCapacity => this._PageCapacity;
 
         /// <summary>
         /// 取得指定頁的資料
@@ -102,12 +90,17 @@ namespace Cyh.Modules.ModPager
         /// </summary>
         /// <param name="dataReader">資料來源的實體</param>
         /// <returns>是否設定成功</returns>
-        public bool SetDataSource(IReadOnlyDataAccesser<T> dataReader) {
+        public bool SetDataSource(IReadOnlyDataAccesser<T>? dataReader) {
             this.DataReader = dataReader;
             return this.DataReader != null;
         }
 
-        public bool SetDataSource(IReadOnlyDataAccesser dataReader) {
+        /// <summary>
+        /// 設定資料來源
+        /// </summary>
+        /// <param name="dataReader">資料來源的實體</param>
+        /// <returns>是否設定成功</returns>
+        public bool SetDataSource(IReadOnlyDataAccesser? dataReader) {
             if (dataReader is IReadOnlyDataAccesser<T> ds)
                 return this.SetDataSource(ds);
             return false;
